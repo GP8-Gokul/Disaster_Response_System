@@ -32,15 +32,13 @@ class MainMenuScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(children: [
-        const Text('Main Menu Screen'),
-        MainMenuButton(onTap: () => aidDistributionScreen(context), text: 'Aid Distribution'),
-        MainMenuButton(onTap: () => resourcesScreen(context), text: 'Resources'),
-        MainMenuButton(onTap: () => disasterEventsScreen(context), text: 'Disaster Events'),
-        MainMenuButton(onTap: () => incidentReportsScreen(context), text: 'Incident Reports'),
-        MainMenuButton(onTap: () => volunteersScreen(context), text: 'Volunteers'),
-      ],),
-    );
+    return Column(children: [
+      const Text('Main Menu Screen'),
+      MainMenuButton(onTap: () => aidDistributionScreen(context), text: 'Aid Distribution'),
+      MainMenuButton(onTap: () => resourcesScreen(context), text: 'Resources'),
+      MainMenuButton(onTap: () => disasterEventsScreen(context), text: 'Disaster Events'),
+      MainMenuButton(onTap: () => incidentReportsScreen(context), text: 'Incident Reports'),
+      MainMenuButton(onTap: () => volunteersScreen(context), text: 'Volunteers'),
+    ],);
   }
 }
