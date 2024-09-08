@@ -47,7 +47,7 @@ create_resource= '''
     quantity INTEGER, 
     availability_status VARCHAR NOT NULL,
     event_id INTEGER,
-    FOREIGN KEY (event_id) REFERENCES disaster_events (event_id)
+    FOREIGN KEY (event_id) REFERENCES disaster_events(event_id)
     );
 '''
 
@@ -67,7 +67,7 @@ create_volunteers='''
     skills VARCHAR, 
     availability_status VARCHAR NOT NULL, 
     event_id INTEGER,
-    FOREIGN KEY (event id) REFERENCES disaster events(event_id) 
+    FOREIGN KEY (event id) REFERENCES disaster_events(event_id) 
     );
 '''
 
