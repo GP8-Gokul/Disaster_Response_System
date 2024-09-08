@@ -15,26 +15,29 @@ create_aid_distribution_sql = '''
     FOREIGN KEY (resource_id) REFERENCES resources (resource_id),
     FOREIGN KEY (volunteer_id) REFERENCES volunteers (volunteer_id)
 );
+
 '''
 
 create_disaster_events ='''
     CREATE TABLE disaster_events(
-        event _ id INTEGER PRIMARY KEY AUTOINCREMENT, 
+        event_id INTEGER PRIMARY KEY AUTOINCREMENT, 
         event_name VARCHAR NOT NULL,
         event_type VARCHAR NOT NULL,
         location VARCHAR NOT NULL, 
-        start date DATE NOT NULL,
-        end date DATE,
+        start_date DATE NOT NULL,
+        end_date DATE,
         description TEXT
-    )
+    );
 '''
 create_incident_report ='''
-    CREATE TABLE incident _ reports(
+    CREATE TABLE incident_reports(
     report_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    event id INTEGER NOT NULL,
+    event_id INTEGER NOT NULL,
     report_date DATE NOT NULL,
-    description TEXT
- )
+    description TEXT,
+    reported_by VARCHAR,
+    FOREIGN KEY(event_id) REFERENCES disaster_events(event_id)
+ );
 '''
 
 
