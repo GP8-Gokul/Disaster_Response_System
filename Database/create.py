@@ -39,7 +39,37 @@ create_incident_report ='''
     FOREIGN KEY(event_id) REFERENCES disaster_events(event_id)
  );
 '''
+create_resource= '''
+    CREATE TABLE resources(
+    resource_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    resource_name VARCHAR NOT NULL,
+    resource_type VARCHAR NOT NULL, 
+    quantity INTEGER, 
+    availability_status VARCHAR NOT NULL,
+    event_id INTEGER,
+    FOREIGN KEY (event_id) REFERENCES disaster_events (event_id)
+    );
+'''
 
+create_users= '''
+    CREATE TABLE users(
+    user id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username VARCHAR NOT NULL,
+    password_hash VARCHAR NOT NULL, 
+    role VARCHAR NOT NULL 
+    );
+'''
+create_volunteers='''
+    CREATE TABLE volunteers( 
+    volunteer_id INTEGER PRIMARY KEY AUTOINCREMENT, 
+    name VARCHAR NOT NULL, 
+    contact_info VARCHAR NOT NULL,
+    skills VARCHAR, 
+    availability_status VARCHAR NOT NULL, 
+    event_id INTEGER,
+    FOREIGN KEY (event id) REFERENCES disaster events(event_id) 
+    );
+'''
 
 #connect sqlite  database
 conn = sqlite3.connect(db)
@@ -49,6 +79,9 @@ cur = conn.cursor()
 cur.execute(create_aid_distribution_sql)
 cur.execute(create_disaster_events)
 cur.execute(create_incident_report)
+cur.execute(create_resource)
+cur.execute(create_users)
+cur.execute(create_volunteers)
 conn.commit()
 print("Table created successfully.")
 
