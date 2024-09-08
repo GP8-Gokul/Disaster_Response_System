@@ -28,6 +28,14 @@ create_disaster_events ='''
         description TEXT
     )
 '''
+create_incident_report ='''
+    CREATE TABLE incident _ reports(
+    report_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    event id INTEGER NOT NULL,
+    report_date DATE NOT NULL,
+    description TEXT
+ )
+'''
 
 
 #connect sqlite  database
@@ -37,6 +45,7 @@ conn = sqlite3.connect(db)
 cur = conn.cursor()
 cur.execute(create_aid_distribution_sql)
 cur.execute(create_disaster_events)
+cur.execute(create_incident_report)
 conn.commit()
 print("Table created successfully.")
 
