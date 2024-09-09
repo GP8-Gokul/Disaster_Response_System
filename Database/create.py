@@ -15,7 +15,6 @@ create_aid_distribution_sql = '''
     FOREIGN KEY (resource_id) REFERENCES resources (resource_id),
     FOREIGN KEY (volunteer_id) REFERENCES volunteers (volunteer_id)
 );
-
 '''
 
 create_disaster_events ='''
