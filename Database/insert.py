@@ -11,19 +11,19 @@ from connect import get_cursor, commit;
 
 def insert_disaster_event(event_name, event_type, location, start_date, end_date=None, description=None):
  cursor=get_cursor()
- cursor.execute("insert into disaster_event values(event_name, event_type, location, start_date, end_date=None, description=None;")
+ cursor.execute("insert into disaster_events values(event_name, event_type, location, start_date, end_date=None, description=None;")
  commit()
 
 
 def insert_resource(resource_name, resource_type, quantity, availability_status, event_id=None):
  cursor=get_cursor()
- cursor.execute("insert into resource values(resource_name, resource_type, quantity, availability_status, event_id=None);")
+ cursor.execute("insert into resources values(resource_name, resource_type, quantity, availability_status, event_id=None);")
  commit()
 
 
 def insert_volunteer(name, contact_info, skills, availability_status, event_id=None):
  cursor=get_cursor()
- cursor.execute("insert into volunteer values(name, contact_info, skills, availability_status, event_id=None);")
+ cursor.execute("insert into volunteers values(name, contact_info, skills, availability_status, event_id=None);")
  commit()
 
 
@@ -35,12 +35,12 @@ def insert_aid_distribution(event_id, resource_id, volunteer_id, quantity_distri
 
 def insert_user(username, password_hash, role):
  cursor=get_cursor()
- cursor.execute("insert into user values(username, password_hash, role);")
+ cursor.execute("insert into users values(username, password_hash, role);")
  commit()
 
 
 def insert_incident_report(event_id, report_date, description, reported_by):
  cursor=get_cursor()
- cursor.execute("insert into incident_report values(event_id, report_date, description, reported_by);")
+ cursor.execute("insert into incident_reports values(event_id, report_date, description, reported_by);")
  commit()
 
