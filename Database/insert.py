@@ -11,19 +11,19 @@ from connect import get_cursor, commit;
 
 def insert_disaster_event(event_name, event_type, location, start_date, end_date=None, description=None):
  cursor=get_cursor()
- cursor.execute(f"insert into disaster_events values({event_name}, {event_type}, {location}, {start_date}, {end_date=None}, {description=None};")
+ cursor.execute(f"insert into disaster_events values({event_name}, {event_type}, {location}, {start_date}, {end_date}, {description};")
  commit()
 
 
 def insert_resource(resource_name, resource_type, quantity, availability_status, event_id=None):
  cursor=get_cursor()
- cursor.execute(f"insert into resources values({resource_name}, {resource_type}, {quantity}, {availability_status}, {event_id=None});")
+ cursor.execute(f"insert into resources values({resource_name}, {resource_type}, {quantity}, {availability_status}, {event_id});")
  commit()
 
 
 def insert_volunteer(name, contact_info, skills, availability_status, event_id=None):
  cursor=get_cursor()
- cursor.execute(f"insert into volunteers values({name}, {contact_info}, {skills}, {availability_status}, {event_id=None});")
+ cursor.execute(f"insert into volunteers values({name}, {contact_info}, {skills}, {availability_status}, {event_id});")
  commit()
 
 
