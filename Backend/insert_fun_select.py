@@ -6,7 +6,7 @@ def insert_interface(data):
         jdata = json.loads(data) if isinstance(data, str) else data
 
 
-        table = jdata.get('table')
+        table = jdata.pop('table',None)
         if not table:
             return {"status": "error", "message": "Invalid table."}
 
