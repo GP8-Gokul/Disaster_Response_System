@@ -1,7 +1,7 @@
 from Database.insert import *
 
 def insert_interface(data):
-    pass
+  
     try:
         jdata = json.loads(data) if isinstance(data, str) else data
 
