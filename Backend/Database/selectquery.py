@@ -5,7 +5,7 @@
 # get_incident_reports()
 # get_record_by_id(table, record_id)
 
-from connect import get_cursor, commit;
+from .connect import get_cursor, commit;
 from flask import jsonify;
 
 def get_disaster_events():

@@ -7,7 +7,7 @@
 
 
 
-from connect import get_cursor, commit;
+from .connect import get_cursor, commit;
 
 def insert_disaster_event(event_name, event_type, location, start_date, end_date=None, description=None):
  cursor=get_cursor()

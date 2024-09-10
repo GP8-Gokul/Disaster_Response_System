@@ -1,7 +1,7 @@
-from Backend.delete_fun_select import delete_interface
-from Backend.insert_fun_select import insert_interface
-from Backend.select_fun_select import select_interface
-from Backend.update_fun_select import update_interface
+from delete_fun_select import delete_interface
+from insert_fun_select import insert_interface
+from select_fun_select import select_interface
+from update_fun_select import update_interface
 
 from flask import Flask, request, jsonify
 from flask_cors import CORS
@@ -9,7 +9,7 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 
-@app.route('/', methods=['POST'])
+@app.route('/', methods=['GET'])
 def home():
     return "Welcome to the backend"
 
@@ -32,6 +32,9 @@ def update():
 def select():
     data = request.get_json()
     return jsonify(select_interface(data))
+
+if __name__ == '__main__':
+    app.run(debug=True, host='0.0.0.0', port=5000)
 
 
 

@@ -1,4 +1,4 @@
-from selectquery import *
+from Database.selectquery import *
 
 def select_interface(data):
     pass    

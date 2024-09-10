@@ -1,6 +1,0 @@
-{
-    "python.analysis.extraPaths": [
-        "./Database"
-    ],
-    "cmake.sourceDirectory": "G:/Dbms project/Disaster_Relief/Frontend/drs/windows/runner"
-}
