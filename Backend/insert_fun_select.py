@@ -10,11 +10,19 @@ def insert_interface(data):
         if not table:
             return {"status": "error", "message": "Invalid table."}
 
-        # Call the appropriate function based on the table name
+       
         if table == 'users':
-            return insert_into_users(jdata)
-        elif table == 'orders':
-            return insert_into_orders(jdata)
+            return insert_users(jdata)
+        elif table == 'disaster_events':
+            return insert_disaster_events(jdata)
+        elif table == 'resources':
+            return insert_resources(jdata)
+        elif table == 'volunteers':
+            return insert_volunteers(jdata)
+        elif table == 'incident_reports':
+            return insert_incident_reports(jdata)
+        elif table == 'aid_distribution':
+            return insert_aid_distribution(jdata)
         else:
             return {"status": "error", "message": f"Unknown table: {table}"}
 
