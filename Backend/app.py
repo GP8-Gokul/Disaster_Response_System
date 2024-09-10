@@ -11,7 +11,7 @@ CORS(app)
 
 @app.route('/', methods=['GET'])
 def home():
-    return "Welcome to the backend"
+    return "Hello, World!"
 
 @app.route('/insert', methods=['POST'])
 def insert():
