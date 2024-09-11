@@ -1,6 +1,6 @@
 import sqlite3
 
-db="disaster.db"
+db = "Backend/Database/disaster.db"
 
 create_aid_distribution_sql = '''
     CREATE TABLE aid_distribution (
@@ -17,7 +17,7 @@ create_aid_distribution_sql = '''
 );
 '''
 
-create_disaster_events ='''
+create_disaster_events = '''
     CREATE TABLE disaster_events(
         event_id INTEGER PRIMARY KEY AUTOINCREMENT, 
         event_name VARCHAR NOT NULL,
@@ -28,7 +28,8 @@ create_disaster_events ='''
         description TEXT
     );
 '''
-create_incident_report ='''
+
+create_incident_report = '''
     CREATE TABLE incident_reports(
     report_id INTEGER PRIMARY KEY AUTOINCREMENT,
     event_id INTEGER NOT NULL,
@@ -38,7 +39,8 @@ create_incident_report ='''
     FOREIGN KEY(event_id) REFERENCES disaster_events(event_id)
  );
 '''
-create_resource= '''
+
+create_resource = '''
     CREATE TABLE resources(
     resource_id INTEGER PRIMARY KEY AUTOINCREMENT,
     resource_name VARCHAR NOT NULL,
@@ -50,15 +52,16 @@ create_resource= '''
     );
 '''
 
-create_users= '''
+create_users = '''
     CREATE TABLE users(
-    user id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER PRIMARY KEY AUTOINCREMENT,
     username VARCHAR NOT NULL,
     password_hash VARCHAR NOT NULL, 
     role VARCHAR NOT NULL 
     );
 '''
-create_volunteers='''
+
+create_volunteers = '''
     CREATE TABLE volunteers( 
     volunteer_id INTEGER PRIMARY KEY AUTOINCREMENT, 
     name VARCHAR NOT NULL, 
@@ -66,11 +69,11 @@ create_volunteers='''
     skills VARCHAR, 
     availability_status VARCHAR NOT NULL, 
     event_id INTEGER,
-    FOREIGN KEY (event id) REFERENCES disaster_events(event_id) 
+    FOREIGN KEY (event_id) REFERENCES disaster_events(event_id) 
     );
 '''
 
-#connect sqlite  database
+# Connect to SQLite database
 conn = sqlite3.connect(db)
 
 # Create a cursor
@@ -82,9 +85,7 @@ cur.execute(create_resource)
 cur.execute(create_users)
 cur.execute(create_volunteers)
 conn.commit()
-print("Table created successfully.")
-
+print("Tables created successfully.")
 
 # Close connection
 conn.close()
-

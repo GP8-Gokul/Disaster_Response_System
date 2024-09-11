@@ -5,7 +5,7 @@
 
 import sqlite3
 
-db="disaster.db"
+db="Backend/Database/disaster.db"
 
 
 def get_cursor():
