@@ -3,34 +3,32 @@ import json
 def insert_interface(data):
   
     try:
-        jdata = json.loads(data) if isinstance(data, str) else data
 
-
-        table = jdata.pop('table',None)
+        table = data.pop('table',None)
 
        
         if table == 'users':
-            insert_users(jdata[username], jdata[password_hash],jdata[role])
+            insert_users(data[username], data[password_hash],data[role])
 
 
         elif table == 'disaster_events':
-            insert_disaster_events(jdata[event_name], jdata[event_type],jdata[location],jdata[start_date],jdata[end_date],jdata[description])
+            insert_disaster_events(data[event_name], data[event_type],data[location],data[start_date],data[end_date],data[description])
 
 
         elif table == 'resources':
-            insert_resources(jdata[resource_name],jdata[resource_type],jdata[quantity],jdata[availability_status],jdata[event_id])
+            insert_resources(data[resource_name],data[resource_type],data[quantity],data[availability_status],data[event_id])
 
 
         elif table == 'volunteers':
-             insert_volunteers(jdata[name],jdata[contact_info],jdata[skills],jdata[availability_status],jdata[event_id])
+             insert_volunteers(data[name],data[contact_info],data[skills],data[availability_status],data[event_id])
 
 
         elif table == 'incident_reports':
-             insert_incident_reports(jdata[event_id],jdata[report_date],jdata[description],jdata[reported_by])
+             insert_incident_reports(data[event_id],data[report_date],data[description],data[reported_by])
 
 
         elif table == 'aid_distribution':
-             insert_aid_distribution(jdata[event_id],jdata[resource_id],jdata[volunteer_id],jdata[quanity_distributed],jdata[distribution_date],jdata[location])
+             insert_aid_distribution(data[event_id],data[resource_id],data[volunteer_id],data[quanity_distributed],data[distribution_date],data[location])
 
 
         else:
