@@ -117,7 +117,7 @@ def get_record_by_id(table, record_id):
     cursor = get_cursor()
     
     try:
-        cursor.execute("SELECT * FROM {} WHERE id = {}".format(table, record_id))
+        cursor.execute("SELECT * FROM {table} WHERE id = {record_id}")
         row = cursor.fetchone()
 
         if(table == 'disaster_events'):
