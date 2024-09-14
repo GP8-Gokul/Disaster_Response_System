@@ -116,19 +116,26 @@ def get_incident_reports():
 def get_record_by_id(table, record_id):
     cursor = get_cursor()
     
-    try:
-        cursor.execute("SELECT * FROM ? WHERE id = ?",(table,record_id))
-        row = cursor.fetchone()
-
+    try: 
         if(table == 'disaster_events'):
+            cursor.execute("SELECT * FROM ? WHERE event_id = ?",(table,record_id))
+            row = cursor.fetchone()
             column_names = ['event_id', 'event_name', 'event_type', 'location', 'start_date', 'end_date', 'description']
         elif(table == 'resources'):
+            cursor.execute("SELECT * FROM ? WHERE resource_id = ?",(table,record_id))
+            row = cursor.fetchone()
             column_names = ['resource_id', 'resource_name', 'resource_type', 'quantity', 'availability_status', 'event_id']
         elif(table == 'volunteers'):
+            cursor.execute("SELECT * FROM ? WHERE volunteer_id = ?",(table,record_id))
+            row = cursor.fetchone()
             column_names = ['volunteer_id', 'volunteer_name', 'volunteer_contact_info', 'volunteer_skills', 'volunteer_availability_status', 'event_id']
         elif(table == 'aid_distribution'):
+            cursor.execute("SELECT * FROM ? WHERE distribution_id = ?",(table,record_id))
+            row = cursor.fetchone()
             column_names = ['distribution_id','event_id', 'resource_id', 'volunteer_id', 'quantity_distributed', 'distribution_date', 'location']
         elif(table == 'incident_reports'):
+            cursor.execute("SELECT * FROM ? WHERE report_id = ?",(table,record_id))
+            row = cursor.fetchone()
             column_names = ['report_id', 'event_id', 'report_date', 'report_description', 'reported_by']
         
         row = dict(zip(column_names, row))
@@ -141,7 +148,7 @@ def get_record_by_id(table, record_id):
     finally:
         cursor.close()
 
-    return jsonify(row)
+    return row
 
 
 
