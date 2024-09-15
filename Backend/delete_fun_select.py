@@ -7,3 +7,5 @@ def delete_interface(data):
 
     except Exception as e:
         return {"status": "error", "message": str(e)}
+    
+    return {"status": "success", "message": "Record deleted successfully."}
