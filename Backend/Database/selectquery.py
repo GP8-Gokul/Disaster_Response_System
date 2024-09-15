@@ -6,7 +6,6 @@
 # get_record_by_id(table, record_id)
 
 from .connect import get_cursor, commit;
-from flask import jsonify;
 
 def get_disaster_events():
     cursor = get_cursor()
@@ -19,15 +18,10 @@ def get_disaster_events():
 
         disaster_events = [dict(zip(column_names, row)) for row in rows]
 
-        commit()
-
     except:
         return None
 
-    finally:
-        cursor.close()
-
-    return jsonify(disaster_events)
+    return (disaster_events)
 
 def get_resources():
     cursor = get_cursor()
@@ -40,15 +34,10 @@ def get_resources():
 
         resources = [dict(zip(column_names, row)) for row in rows]
 
-        commit()
-
     except:
         return None
 
-    finally:
-        cursor.close()
-
-    return jsonify(resources)
+    return (resources)
 
 def get_volunteers():
     cursor = get_cursor()
@@ -61,15 +50,10 @@ def get_volunteers():
     
         volunteers = [dict(zip(column_names, row)) for row in rows]
 
-        commit()
-
     except:
         return None
 
-    finally:
-        cursor.close()
-
-    return jsonify(volunteers)
+    return (volunteers)
 
 def get_aid_distribution():
     cursor = get_cursor()
@@ -82,15 +66,10 @@ def get_aid_distribution():
 
         aid_distribution = [dict(zip(column_names, row)) for row in rows]
 
-        commit()
-
     except:
         return None
 
-    finally:
-        cursor.close()
-
-    return jsonify(aid_distribution)
+    return (aid_distribution)
 
 def get_incident_reports():
     cursor = get_cursor()
@@ -103,15 +82,11 @@ def get_incident_reports():
 
         incident_reports = [dict(zip(column_names, row)) for row in rows]
 
-        commit()
 
     except:
         return None
 
-    finally:
-        cursor.close()
-
-    return jsonify(incident_reports)
+    return (incident_reports)
 
 def get_record_by_id(table, record_id):
     cursor = get_cursor()
@@ -140,13 +115,8 @@ def get_record_by_id(table, record_id):
         
         row = dict(zip(column_names, row))
 
-        commit()
-
     except:
         return None
-
-    finally:
-        cursor.close()
 
     return row
 
