@@ -28,7 +28,7 @@ def insert_interface(data):
 
 
         elif table == 'aid_distribution':
-             insert_aid_distribution(data['event_id'],data['resource_id'],data['volunteer_id'],data['quanity_distributed'],data['distribution_date'],data['location'])
+             insert_aid_distribution(data['event_id'],data['resource_id'],data['volunteer_id'],data['quantity_distributed'],data['distribution_date'],data['location'])
 
 
         else:
