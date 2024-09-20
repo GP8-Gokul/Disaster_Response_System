@@ -14,8 +14,6 @@ class _RecordByIDPageState extends State<RecordByIDPage> {
   Map<String, dynamic>? recordData;
   bool isLoading = false;
   String? errorMessage;
-
-  // List of table names and their corresponding values in the database
   final Map<String, String> tableMap = {
     'Disaster Events': 'disaster_events',
     'Resources': 'resources',
@@ -24,7 +22,7 @@ class _RecordByIDPageState extends State<RecordByIDPage> {
     'Incident Reports': 'incident_reports',
   };
 
-  String? selectedTable; // Variable to hold the selected table
+  String? selectedTable;
 
   Future<void> fetchRecordByID() async {
     int id = int.tryParse(_idController.text.trim()) ?? 0;
@@ -68,12 +66,11 @@ class _RecordByIDPageState extends State<RecordByIDPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Dropdown for table selection
             DropdownButtonFormField<String>(
               value: selectedTable,
               items: tableMap.entries.map((entry) {
                 return DropdownMenuItem<String>(
-                  value: entry.value, // This will be passed as the table name
+                  value: entry.value,
                   child: Text(entry.key),
                 );
               }).toList(),
@@ -88,7 +85,6 @@ class _RecordByIDPageState extends State<RecordByIDPage> {
               ),
             ),
             const SizedBox(height: 10),
-            // Text field for ID input
             TextField(
               controller: _idController,
               keyboardType: TextInputType.number,
