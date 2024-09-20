@@ -51,7 +51,7 @@ class _VolunteersPageState extends State<VolunteersPage> {
                           style: const TextStyle(color: Colors.white),
                         ),
                         Text(
-                          'Volunteer Name: ${volunteers['name']}',
+                          'Volunteer Name: ${volunteers['volunteer_name']}',
                           style: const TextStyle(color: Colors.white),
                         ),
                       ],
