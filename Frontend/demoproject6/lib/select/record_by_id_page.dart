@@ -10,19 +10,28 @@ class RecordByIDPage extends StatefulWidget {
 }
 
 class _RecordByIDPageState extends State<RecordByIDPage> {
-  final TextEditingController _tableController = TextEditingController();
   final TextEditingController _idController = TextEditingController();
   Map<String, dynamic>? recordData;
   bool isLoading = false;
   String? errorMessage;
 
+  // List of table names and their corresponding values in the database
+  final Map<String, String> tableMap = {
+    'Disaster Events': 'disaster_events',
+    'Resources': 'resources',
+    'Volunteers': 'volunteers',
+    'Aid Distribution': 'aid_distribution',
+    'Incident Reports': 'incident_reports',
+  };
+
+  String? selectedTable; // Variable to hold the selected table
+
   Future<void> fetchRecordByID() async {
-    String table = _tableController.text.trim();
     int id = int.tryParse(_idController.text.trim()) ?? 0;
 
-    if (table.isEmpty || id == 0) {
+    if (selectedTable == null || id == 0) {
       setState(() {
-        errorMessage = 'Please enter a valid table name and ID.';
+        errorMessage = 'Please select a table and enter a valid ID.';
       });
       return;
     }
@@ -33,7 +42,7 @@ class _RecordByIDPageState extends State<RecordByIDPage> {
     });
 
     try {
-      var fetchedRecord = await ApiService().getRecordByID(table, id);
+      var fetchedRecord = await ApiService().getRecordByID(selectedTable!, id);
       setState(() {
         recordData = fetchedRecord;
       });
@@ -59,14 +68,27 @@ class _RecordByIDPageState extends State<RecordByIDPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            TextField(
-              controller: _tableController,
+            // Dropdown for table selection
+            DropdownButtonFormField<String>(
+              value: selectedTable,
+              items: tableMap.entries.map((entry) {
+                return DropdownMenuItem<String>(
+                  value: entry.value, // This will be passed as the table name
+                  child: Text(entry.key),
+                );
+              }).toList(),
+              onChanged: (value) {
+                setState(() {
+                  selectedTable = value;
+                });
+              },
               decoration: const InputDecoration(
-                labelText: 'Table Name',
+                labelText: 'Select Table',
                 border: OutlineInputBorder(),
               ),
             ),
             const SizedBox(height: 10),
+            // Text field for ID input
             TextField(
               controller: _idController,
               keyboardType: TextInputType.number,
