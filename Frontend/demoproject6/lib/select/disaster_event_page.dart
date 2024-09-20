@@ -81,11 +81,7 @@ class _DisasterEventsPageState extends State<DisasterEventsPage> {
                     ),
                     onTap: () {
                       HeroDialogRoute(
-                        builder: (context) {
-                          return Dialog(
-                            child: buildCard(event),
-                          );
-                        },
+                        builder: (context) => buildCard(event),
                       );
                     },
                     shape: RoundedRectangleBorder(
