@@ -1,31 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:demoproject6/services/api_service/api_select.dart';
 
-class ResourcesPage extends StatefulWidget {
-  const ResourcesPage({super.key});
+class IncidentReportPage extends StatefulWidget {
+  const IncidentReportPage({super.key});
 
   @override
   // ignore: library_private_types_in_public_api
-  _ResourcesPageState createState() => _ResourcesPageState();
+  _IncidentReportPageState createState() => _IncidentReportPageState();
 }
 
-class _ResourcesPageState extends State<ResourcesPage> {
-  late Future<List<dynamic>> resources;
+class _IncidentReportPageState extends State<IncidentReportPage> {
+  // ignore: non_constant_identifier_names
+  late Future<List<dynamic>> incident_report;
 
   @override
   void initState() {
     super.initState();
-    resources = ApiService().getResources();
+    incident_report = ApiService().getIncidentReports();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Resources'),
+        title: const Text('Volunteers'),
       ),
       body: FutureBuilder<List<dynamic>>(
-        future: resources,
+        future: incident_report,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -37,7 +38,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
             return ListView.builder(
               itemCount: snapshot.data!.length,
               itemBuilder: (context, index) {
-                var resource = snapshot.data![index];
+                var incidents = snapshot.data![index];
                 return GestureDetector(
                   onTap: () {},
                   child: Container(
@@ -47,15 +48,11 @@ class _ResourcesPageState extends State<ResourcesPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Resource ID: ${resource['resource_id']}',
+                          'Report ID: ${incidents['report_id']}',
                           style: const TextStyle(color: Colors.white),
                         ),
                         Text(
-                          'Resource Name: ${resource['resource_name']}',
-                          style: const TextStyle(color: Colors.white),
-                        ),
-                        Text(
-                          'Resource Type: ${resource['resource_type']}',
+                          'Event ID: ${incidents['event_id']}',
                           style: const TextStyle(color: Colors.white),
                         ),
                       ],

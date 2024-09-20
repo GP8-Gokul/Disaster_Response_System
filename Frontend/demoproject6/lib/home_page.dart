@@ -8,7 +8,7 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Disaster & Resources'),
+        title: const Text('FUNCTIONS'),
       ),
       body: Center(
         child: Column(
@@ -16,16 +16,9 @@ class HomePage extends StatelessWidget {
           children: [
             ElevatedButton(
               onPressed: () {
-                Navigator.pushNamed(context, disaster_events);
+                Navigator.pushNamed(context, select_page);
               },
-              child: const Text('Disaster Events'),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pushNamed(context, resources);
-              },
-              child: const Text('Resources'),
+              child: const Text('SELECT'),
             ),
           ],
         ),
