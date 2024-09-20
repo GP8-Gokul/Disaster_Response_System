@@ -1,31 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:demoproject6/services/api_service/api_select.dart';
 
-class ResourcesPage extends StatefulWidget {
-  const ResourcesPage({super.key});
+class AidDistributionPage extends StatefulWidget {
+  const AidDistributionPage({super.key});
 
   @override
   // ignore: library_private_types_in_public_api
-  _ResourcesPageState createState() => _ResourcesPageState();
+  _AidDistributionPageState createState() => _AidDistributionPageState();
 }
 
-class _ResourcesPageState extends State<ResourcesPage> {
-  late Future<List<dynamic>> resources;
+class _AidDistributionPageState extends State<AidDistributionPage> {
+  // ignore: non_constant_identifier_names
+  late Future<List<dynamic>> aid_distribution;
 
   @override
   void initState() {
     super.initState();
-    resources = ApiService().getResources();
+    aid_distribution = ApiService().getAidDistribution();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Resources'),
+        title: const Text('Aid Distribution'),
       ),
       body: FutureBuilder<List<dynamic>>(
-        future: resources,
+        future: aid_distribution,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -37,7 +38,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
             return ListView.builder(
               itemCount: snapshot.data!.length,
               itemBuilder: (context, index) {
-                var resource = snapshot.data![index];
+                var aid = snapshot.data![index];
                 return GestureDetector(
                   onTap: () {},
                   child: Container(
@@ -47,15 +48,15 @@ class _ResourcesPageState extends State<ResourcesPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Resource ID: ${resource['resource_id']}',
+                          'Aid ID: ${aid['distribution_id']}',
                           style: const TextStyle(color: Colors.white),
                         ),
                         Text(
-                          'Resource Name: ${resource['resource_name']}',
+                          'Event ID: ${aid['event_id']}',
                           style: const TextStyle(color: Colors.white),
                         ),
                         Text(
-                          'Resource Type: ${resource['resource_type']}',
+                          'Resource ID: ${aid['resource_id']}',
                           style: const TextStyle(color: Colors.white),
                         ),
                       ],

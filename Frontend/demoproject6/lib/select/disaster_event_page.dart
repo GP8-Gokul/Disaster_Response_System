@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:demoproject6/services/api.dart';
+import 'package:demoproject6/services/api_service/api_select.dart';
 
 class DisasterEventsPage extends StatefulWidget {
   const DisasterEventsPage({super.key});
@@ -38,9 +38,29 @@ class _DisasterEventsPageState extends State<DisasterEventsPage> {
               itemCount: snapshot.data!.length,
               itemBuilder: (context, index) {
                 var event = snapshot.data![index];
-                return ListTile(
-                  title: Text(event['event_name']),
-                  subtitle: Text('Location: ${event['location']}'),
+                return GestureDetector(
+                  onTap: () {},
+                  child: Container(
+                    color: Colors.black,
+                    padding: const EdgeInsets.all(10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Event ID: ${event['event_id']}',
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                        Text(
+                          'Event Name: ${event['event_name']}',
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                        Text(
+                          'Event Type: ${event['event_type']}',
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                      ],
+                    ),
+                  ),
                 );
               },
             );
