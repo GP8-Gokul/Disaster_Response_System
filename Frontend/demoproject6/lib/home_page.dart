@@ -1,70 +1,116 @@
 import 'package:flutter/material.dart';
-import 'package:demoproject6/services/routes.dart';
+import 'package:demoproject6/services/route_service/routes.dart';
 
-class HomePage extends StatelessWidget {
-  final Color color1 = const Color.fromRGBO(3, 102, 102, 1);
-  final Color color2 = const Color.fromRGBO(36, 130, 119, 1);
-  final Color color3 = const Color.fromRGBO(70, 157, 137, 1);
-  final Color color4 = const Color.fromRGBO(103, 185, 154, 1);
-  final Color color5 = const Color.fromRGBO(136, 212, 171, 1);
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
 
-  const HomePage({super.key}); // Fifth color (not used yet)
+  @override
+  // ignore: library_private_types_in_public_api
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  final Color color1 = const Color.fromRGBO(248, 249, 250, 1);
+  final Color color2 = const Color.fromRGBO(173, 181, 189, 1);
+  final Color color3 = const Color.fromRGBO(16, 17, 18, 1);
+  final Color color4 = const Color.fromRGBO(52, 58, 64, 1);
+  final Color color5 = const Color.fromRGBO(108, 117, 125, 1);
+
+  void _showNotification(BuildContext context, String text) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Center(child: Text(text)),
+        backgroundColor: color3,
+        duration: const Duration(seconds: 1),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: color3,
         appBar: AppBar(
-          title: const Center(child: Text('Home Page')),
-          backgroundColor: color1,
+          title: const Text('HOME',
+              style: TextStyle(
+                color: Color.fromRGBO(248, 249, 250, 1),
+                fontSize: 35,
+                fontWeight: FontWeight.bold,
+              )),
+          backgroundColor: color4,
+          actions: [
+            PopupMenuButton<String>(
+              icon: const Icon(Icons.menu),
+              iconColor: color2,
+              onSelected: (value) {
+                if (value == 'logout') {
+                  _showNotification(context, 'Logout not yet implemented');
+                }
+              },
+              itemBuilder: (BuildContext context) {
+                return [
+                  const PopupMenuItem<String>(
+                    value: 'logout',
+                    child: Text('Logout',
+                        style: TextStyle(
+                          color: Color.fromRGBO(248, 249, 250, 1),
+                        )),
+                  ),
+                ];
+              },
+              color: color5,
+            ),
+          ],
         ),
-        body: Padding(
-          padding:
-              const EdgeInsets.all(16.0), // Padding around the entire layout
-          child: OrientationBuilder(
-            builder: (context, orientation) {
-              return GridView.count(
-                crossAxisCount: orientation == Orientation.portrait
-                    ? 2
-                    : 2, // 2x2 layout for both orientations
-                crossAxisSpacing: 16,
-                mainAxisSpacing: 16,
-                children: <Widget>[
-                  buildCard('SELECT', color1, context),
-                  buildCard('UPDATE', color1, context),
-                  buildCard('INSERT', color1, context),
-                  buildCard('DELETE', color1, context),
-                ],
-              );
-            },
+        backgroundColor: color5,
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 30),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                buildButton('SELECT'),
+                const SizedBox(height: 15),
+                buildButton('UPDATE'),
+                const SizedBox(height: 15),
+                buildButton('INSERT'),
+                const SizedBox(height: 15),
+                buildButton('DELETE'),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  Widget buildCard(String text, Color color, BuildContext context) {
-    return Card(
-      color: color,
-      elevation: 5,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: InkWell(
-        onTap: () {
+  Widget buildButton(String text) {
+    return SizedBox(
+      width: 250,
+      height: 60,
+      child: ElevatedButton(
+        onPressed: () {
           if (text == 'SELECT') {
             Navigator.pushNamed(context, select_page);
-          } else {}
+          } else if (text == 'UPDATE') {
+            _showNotification(context, 'UPDATE not yet implemented');
+          } else if (text == 'INSERT') {
+            _showNotification(context, 'INSERT not yet implemented');
+          } else if (text == 'DELETE') {
+            _showNotification(context, 'DELETE not yet implemented');
+          }
         },
-        child: Center(
-          child: Text(
-            text,
-            style: const TextStyle(
-              fontSize: 20,
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: color2,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30), // Circular corners
+          ),
+        ),
+        child: Text(
+          text,
+          style: TextStyle(
+            fontSize: 18,
+            color: color3,
           ),
         ),
       ),

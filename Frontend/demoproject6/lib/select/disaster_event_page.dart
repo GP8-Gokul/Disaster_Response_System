@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:demoproject6/services/api_service/api_select.dart';
-import 'package:demoproject6/services/hero_dialog_route.dart';
+import 'package:demoproject6/services/route_service/hero_dialog_route.dart';
 
 class DisasterEventsPage extends StatefulWidget {
   const DisasterEventsPage({super.key});
@@ -21,17 +21,23 @@ class _DisasterEventsPageState extends State<DisasterEventsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final Color color1 = Color.fromRGBO(3, 102, 102, 1);
-    final Color color2 = Color.fromRGBO(36, 130, 119, 1);
-    final Color color3 = Color.fromRGBO(70, 157, 137, 1);
-    final Color color4 = Color.fromRGBO(103, 185, 154, 1);
-    final Color color5 = Color.fromRGBO(136, 212, 171, 1);
+    const Color color1 = Color.fromRGBO(248, 249, 250, 1);
+    const Color color2 = Color.fromRGBO(173, 181, 189, 1);
+    const Color color3 = Color.fromRGBO(16, 17, 18, 1);
+    const Color color4 = Color.fromRGBO(52, 58, 64, 1);
+    const Color color5 = Color.fromRGBO(108, 117, 125, 1);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Disaster Events'),
-        backgroundColor: color1,
+        title: const Text('Disaster Events',
+            style: TextStyle(
+              color: Color.fromRGBO(248, 249, 250, 1),
+              fontSize: 35,
+              fontWeight: FontWeight.bold,
+            )),
+        backgroundColor: color3,
       ),
+      backgroundColor: color5,
       body: FutureBuilder<List<dynamic>>(
         future: disasterEvents,
         builder: (context, snapshot) {
@@ -103,7 +109,7 @@ class _DisasterEventsPageState extends State<DisasterEventsPage> {
   }
 
   Widget buildCard(Map<String, dynamic> event) {
-    const Color color1 = Color.fromRGBO(3, 102, 102, 1);
+    const Color color1 = Color.fromRGBO(52, 58, 64, 1);
 
     return Card(
       margin: const EdgeInsets.all(16),
