@@ -45,7 +45,7 @@ class SelectPage extends StatelessWidget {
                   }),
                   const SizedBox(height: 20),
                   buildCard(aid_distributions, color5, () {
-                    Navigator.pushNamed(context, aid_distributions);
+                    Navigator.pushNamed(context, aid_distribution);
                   }),
                   const SizedBox(height: 20),
                   buildCard(incident_report, color1, () {
