@@ -71,7 +71,9 @@ Future<Map<String, String>?> showVolunteerDialog(
                 volunteerAvailabilityStatusController.text,
                 eventIdController.text,
               );
-              Navigator.of(context).pop();
+              if (context.mounted) {
+                Navigator.of(context).pop();
+              }
               completer.complete({
                 'volunteerName': volunteerNameController.text,
                 'contactInfo': volunteerContactInfoController.text,

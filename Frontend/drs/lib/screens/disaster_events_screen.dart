@@ -112,23 +112,23 @@ class _DisasterEventsScreenState extends State<DisasterEventsScreen> {
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
-                                              Text('Event Type:'),
+                                              const Text('Event Type:'),
                                               TextField(
                                                 controller: eventTypeController,
                                               ),
-                                              Text('Location:'),
+                                              const Text('Location:'),
                                               TextField(
                                                 controller: locationController,
                                               ),
-                                              Text('Start Date:'),
+                                              const Text('Start Date:'),
                                               TextField(
                                                 controller: startDateController,
                                               ),
-                                              Text('End Date:'),
+                                              const Text('End Date:'),
                                               TextField(
                                                 controller: endDateController,
                                               ),
-                                              Text('Description:'),
+                                              const Text('Description:'),
                                               TextField(
                                                 controller:
                                                     descriptionController,
@@ -184,12 +184,14 @@ class _DisasterEventsScreenState extends State<DisasterEventsScreen> {
                                                   }),
                                                 )
                                                     .then((response) {
-                                                  ScaffoldMessenger.of(context)
-                                                      .showSnackBar(
-                                                    SnackBar(
-                                                        content: Text(
-                                                            'Response: ${response.body}')),
-                                                  );
+                                                  if (mounted) {
+                                                    ScaffoldMessenger.of(context)
+                                                        .showSnackBar(
+                                                      SnackBar(
+                                                          content: Text(
+                                                              'Response: ${response.body}')),
+                                                    );
+                                                  }
                                                 });
 
                                                 http.post(
