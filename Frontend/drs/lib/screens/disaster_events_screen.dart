@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:drs/services/api/disaster_event/disaster_event_api.dart';
+import 'package:drs/services/api/disaster_event_api.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
