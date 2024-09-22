@@ -1,6 +1,5 @@
 import 'package:drs/services/api/volunteers/volunteer_api.dart';
 import 'package:flutter/material.dart';
-import 'dart:developer' as devtools;
 import 'dart:async';
 
 Future<Map<String, String>?> showVolunteerDialog(
