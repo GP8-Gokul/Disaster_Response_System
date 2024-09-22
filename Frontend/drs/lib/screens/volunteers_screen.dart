@@ -1,4 +1,5 @@
 import 'package:drs/services/api/api.dart';
+import 'package:drs/services/api/inserting/insert_volunteer.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer' as devtools show log;
 
@@ -93,84 +94,14 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
             },
           ),
           floatingActionButton: FloatingActionButton(
-            onPressed: () {
-              showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    TextEditingController volunteerNameController =
-                        TextEditingController();
-                    TextEditingController volunteerContactInfoController =
-                        TextEditingController();
-                    TextEditingController volunteerSkillsController =
-                        TextEditingController();
-                    TextEditingController
-                        volunteerAvailabilityStatusController =
-                        TextEditingController();
-                    TextEditingController eventIdController =
-                        TextEditingController();
-
-                    return AlertDialog(
-                      title: const Text('Add Volunteer'),
-                      content: Column(
-                        children: [
-                          TextField(
-                            controller: volunteerNameController,
-                            decoration: const InputDecoration(
-                              labelText: 'Volunteer Name',
-                            ),
-                          ),
-                          TextField(
-                            controller: volunteerContactInfoController,
-                            decoration: const InputDecoration(
-                              labelText: 'Contact Info',
-                            ),
-                          ),
-                          TextField(
-                            controller: volunteerSkillsController,
-                            decoration: const InputDecoration(
-                              labelText: 'Skills',
-                            ),
-                          ),
-                          TextField(
-                            controller: volunteerAvailabilityStatusController,
-                            decoration: const InputDecoration(
-                              labelText: 'Availability Status',
-                            ),
-                          ),
-                          TextField(
-                            controller: eventIdController,
-                            decoration: const InputDecoration(
-                              labelText: 'Event ID',
-                            ),
-                          ),
-                        ],
-                      ),
-                      actions: <Widget>[
-                        TextButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: const Text('Cancel'),
-                        ),
-                        TextButton(
-                          onPressed: () async {
-                            response = await addVolunteer(
-                                volunteerNameController.text,
-                                volunteerContactInfoController.text,
-                                volunteerSkillsController.text,
-                                volunteerAvailabilityStatusController.text,
-                                eventIdController.text);
-
-                            setState(() {
-                              devtools.log('Adding volunteer');
-                              futureGetVolunteers = fetchVolunteers();
-                            });
-                          },
-                          child: const Text('Submit'),
-                        ),
-                      ],
-                    );
-                  });
+            onPressed: () async {
+              final result =
+                  await showVolunteerDialog(context, fetchVolunteers, response);
+              if (result != null) {
+                setState(() {
+                  futureGetVolunteers = fetchVolunteers();
+                });
+              }
             },
             backgroundColor: Colors.white.withOpacity(0.5),
             child: const Icon(Icons.add),
