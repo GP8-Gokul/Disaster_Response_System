@@ -5,6 +5,8 @@ import 'package:drs/services/inserting/insert_volunteer.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer' as devtools show log;
 
+import 'package:flutter_slidable/flutter_slidable.dart';
+
 class VolunteersScreen extends StatefulWidget {
   const VolunteersScreen({super.key});
   static String routeName = 'volunteers';
@@ -63,41 +65,68 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
                       return Padding(
                         padding: const EdgeInsets.only(
                             top: 8.0, left: 8.0, right: 8.0),
-                        child: ListTile(
-                          title: Text("Name: ${event['volunteer_name']}"),
-                          subtitle: Text("ID: ${event['volunteer_id']}"),
-                          tileColor: const Color.fromARGB(255, 50, 48, 48)
-                              .withOpacity(0.4),
-                          trailing: IconButton(
-                            icon: const Icon(Icons.drive_file_rename_outline,
-                                color: Color.fromARGB(255, 255, 255, 255)),
-                            onPressed: () {
-                              devtools.log('Volunteer updated');
-                            },
-                          ),
-                          contentPadding: const EdgeInsets.symmetric(
-                              vertical: 1.0, horizontal: 16.0),
-                          textColor: Colors.black,
-                          titleTextStyle: const TextStyle(
-                            fontSize: 20.0,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          subtitleTextStyle: const TextStyle(
-                            fontSize: 14.0,
-                            fontWeight: FontWeight.w500,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(25.0),
-                          ),
-                          onTap: () {
-                            Navigator.of(context).push(
-                              HeroDialogRoute(
-                                builder: (context) => Dialog(
-                                  child: DisplayVolunteer(volunteer: event),
-                                ),
+                        child: Slidable(
+                          endActionPane: ActionPane(
+                            motion: const StretchMotion(),
+                            children: [
+                              SlidableAction(
+                                onPressed: (context) {
+                                  devtools.log('Slide action pressed');
+                                },
+                                backgroundColor:
+                                    const Color.fromARGB(0, 206, 201, 201)
+                                        .withOpacity(0.0),
+                                foregroundColor:
+                                    const Color.fromARGB(255, 93, 13, 13),
+                                icon: Icons.delete,
+                                label: 'Delete',
                               ),
-                            );
-                          },
+                            ],
+                          ),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: const Color.fromARGB(255, 50, 48, 48)
+                                  .withOpacity(0.4),
+                              borderRadius: BorderRadius.circular(25.0),
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 8.0, horizontal: 16.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Name: ${event['volunteer_name']}",
+                                      style: const TextStyle(
+                                        fontSize: 20.0,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                    Text(
+                                      "ID: ${event['volunteer_id']}",
+                                      style: const TextStyle(
+                                        fontSize: 14.0,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                IconButton(
+                                  icon: const Icon(
+                                    Icons.drive_file_rename_outline,
+                                    color: Color.fromARGB(255, 255, 255, 255),
+                                  ),
+                                  onPressed: () {
+                                    devtools.log('Volunteer updated');
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                       );
                     },
@@ -116,10 +145,10 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
                 }
               },
               backgroundColor:
-                  const Color.fromARGB(255, 50, 48, 48).withOpacity(0.4),
+                  const Color.fromARGB(255, 84, 80, 80).withOpacity(1.0),
               child: const Icon(Icons.add),
             ),
-            backgroundColor: Colors.transparent,
+            backgroundColor: const Color.fromARGB(0, 0, 0, 0),
           ),
         ],
       ),
