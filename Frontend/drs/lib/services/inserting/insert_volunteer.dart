@@ -1,4 +1,4 @@
-import 'package:drs/services/api/api.dart';
+import 'package:drs/services/api/volunteers/volunteer_api.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer' as devtools;
 import 'dart:async';
@@ -65,7 +65,7 @@ Future<Map<String, String>?> showVolunteerDialog(
           ),
           TextButton(
             onPressed: () async {
-              var response = await addVolunteer(
+              await addVolunteer(
                 volunteerNameController.text,
                 volunteerContactInfoController.text,
                 volunteerSkillsController.text,
