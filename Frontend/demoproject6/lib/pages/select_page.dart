@@ -7,12 +7,6 @@ class SelectPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const Color color1 = Color.fromRGBO(16, 17, 18, 1);
-    const Color color2 = Color.fromRGBO(173, 181, 189, 1);
-    const Color color3 = Color.fromRGBO(248, 249, 250, 1);
-    const Color color4 = Color.fromRGBO(52, 58, 64, 1);
-    const Color color5 = Color.fromRGBO(108, 117, 125, 1);
-
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -22,9 +16,9 @@ class SelectPage extends StatelessWidget {
                 fontSize: 35,
                 fontWeight: FontWeight.bold,
               )),
-          backgroundColor: color1,
+          backgroundColor: const Color.fromRGBO(16, 17, 18, 1),
         ),
-        backgroundColor: color5, // White background
+        backgroundColor: const Color.fromRGBO(108, 117, 125, 1),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Center(
@@ -32,23 +26,23 @@ class SelectPage extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  buildCard(disaster_event, color1, () {
+                  buildCard(disaster_event, const Color.fromRGBO(16, 17, 18, 1), () {
                     Navigator.pushNamed(context, disaster_events);
                   }),
                   const SizedBox(height: 20),
-                  buildCard(resource, color2, () {
+                  buildCard(resource, const Color.fromRGBO(173, 181, 189, 1), () {
                     Navigator.pushNamed(context, resources);
                   }),
                   const SizedBox(height: 20),
-                  buildCard(volunteer, color4, () {
+                  buildCard(volunteer, const Color.fromRGBO(52, 58, 64, 1), () {
                     Navigator.pushNamed(context, volunteers);
                   }),
                   const SizedBox(height: 20),
-                  buildCard(aid_distributions, color5, () {
+                  buildCard(aid_distributions, const Color.fromRGBO(108, 117, 125, 1), () {
                     Navigator.pushNamed(context, aid_distribution);
                   }),
                   const SizedBox(height: 20),
-                  buildCard(incident_report, color1, () {
+                  buildCard(incident_report, const Color.fromRGBO(16, 17, 18, 1), () {
                     Navigator.pushNamed(context, incident_reports);
                   }),
                 ],
