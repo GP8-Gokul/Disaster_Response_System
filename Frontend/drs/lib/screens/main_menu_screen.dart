@@ -32,13 +32,97 @@ class MainMenuScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
-      const Text('Main Menu Screen'),
-      MainMenuButton(onTap: () => aidDistributionScreen(context), text: 'Aid Distribution'),
-      MainMenuButton(onTap: () => resourcesScreen(context), text: 'Resources'),
-      MainMenuButton(onTap: () => disasterEventsScreen(context), text: 'Disaster Events'),
-      MainMenuButton(onTap: () => incidentReportsScreen(context), text: 'Incident Reports'),
-      MainMenuButton(onTap: () => volunteersScreen(context), text: 'Volunteers'),
-    ],);
+    return Stack(
+      children: [
+        Positioned.fill(
+          child: Image.asset(
+        'assets/images/background.jpg',
+        fit: BoxFit.cover,
+          ),
+        ),
+        Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          title: const Text(
+            'Disaster Response',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              decoration: TextDecoration.underline,
+              decorationThickness: 2.0,
+            ),
+          ),
+          centerTitle: true,
+        ),
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+          // Description with glowing effect
+          Container(
+            padding: const EdgeInsets.all(8.0),
+            decoration: BoxDecoration(
+              color: Colors.transparent,
+              borderRadius: BorderRadius.circular(10.0),
+             
+            ),
+            child: const Text(
+              'The Disaster Response System (DRS) is a platform that helps in managing disaster response activities. It provides a way to distribute aid, manage resources, report incidents, and manage volunteers.',
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 16.0,
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          const SizedBox(height: 10),
+          const Divider(
+            color: Colors.black,
+            thickness: 2.0,
+            height: 20.0,
+          ),
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                MainMenuButton(
+            onTap: () => aidDistributionScreen(context),
+            text: 'Aid Distribution',
+                ),
+                const SizedBox(height: 5),
+                MainMenuButton(
+            onTap: () => resourcesScreen(context),
+            text: 'Resources',
+                ),
+                const SizedBox(height: 5),
+                MainMenuButton(
+            onTap: () => disasterEventsScreen(context),
+            text: 'Disaster Events',
+                ),
+                const SizedBox(height: 5),
+                MainMenuButton(
+            onTap: () => incidentReportsScreen(context),
+            text: 'Incident Reports',
+                ),
+                const SizedBox(height: 5),
+                MainMenuButton(
+            onTap: () => volunteersScreen(context),
+            text: 'Volunteers',
+                ),
+                const SizedBox(height: 10),
+              ],
+            ),
+          ),
+              ],
+            ),
+          ),
+        ),
+  
+      ),
+      ],
+    );
   }
 }
