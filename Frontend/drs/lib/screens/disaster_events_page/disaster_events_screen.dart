@@ -1,4 +1,5 @@
 import 'package:drs/screens/disaster_events_page/display_disaster_events.dart';
+import 'package:drs/screens/disaster_events_page/insert_disaster_events.dart';
 import 'package:drs/services/api/disaster_event_api.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer' as devtools show log;
@@ -16,11 +17,37 @@ class DisasterEventsScreen extends StatefulWidget {
 class _DisasterEventsScreenState extends State<DisasterEventsScreen> {
   late Future<List<Map<String, dynamic>>> futureGetDisasterEvents;
   dynamic response;
+  List<Map<String, dynamic>> allEvents = [];
+  List<Map<String, dynamic>> filteredEvents = [];
+
+  TextEditingController searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     futureGetDisasterEvents = fetchDisasterEvents();
+    futureGetDisasterEvents.then((events) {
+      setState(() {
+        allEvents = events;
+        filteredEvents = events;
+      });
+    });
+    searchController.addListener(_filterEvents);
+  }
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
+  }
+
+  void _filterEvents() {
+    final query = searchController.text.toLowerCase();
+    setState(() {
+      filteredEvents = allEvents
+          .where((event) => event['event_name'].toLowerCase().contains(query))
+          .toList();
+    });
   }
 
   @override
@@ -38,127 +65,159 @@ class _DisasterEventsScreenState extends State<DisasterEventsScreen> {
             appBar: AppBar(
               title: const Text('Disaster Events'),
               centerTitle: true,
-              backgroundColor: const Color.fromARGB(57, 0, 0, 0),
+              backgroundColor: const Color.fromARGB(100, 0, 0, 0),
               titleTextStyle: const TextStyle(
-                  fontSize: 24.0,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black),
+                fontSize: 24.0,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+              elevation: 5,
+              shadowColor: Colors.black.withOpacity(0.3),
             ),
-            body: FutureBuilder(
-              future: futureGetDisasterEvents,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                } else if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
-                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Center(child: Text('No Events found.'));
-                } else {
-                  return ListView.builder(
-                    itemCount: snapshot.data!.length,
-                    itemBuilder: (context, index) {
-                      final event = snapshot.data![index];
-                      return Padding(
-                        padding: const EdgeInsets.only(
-                            top: 8.0, left: 8.0, right: 8.0),
-                        child: Slidable(
-                          endActionPane: ActionPane(
-                            motion: const StretchMotion(),
-                            children: [
-                              SlidableAction(
-                                onPressed: (context) {
-                                  devtools.log('Slide action pressed');
-                                },
-                                backgroundColor:
-                                    const Color.fromARGB(0, 206, 201, 201)
-                                        .withOpacity(0.0),
-                                foregroundColor:
-                                    const Color.fromARGB(255, 93, 13, 13),
-                                icon: Icons.delete,
-                                label: 'Delete',
-                              ),
-                            ],
+            body: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: TextField(
+                    controller: searchController,
+                    decoration: InputDecoration(
+                      labelText: 'Search Events',
+                      hintText: 'Enter event name',
+                      prefixIcon: const Icon(Icons.search),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: filteredEvents.isEmpty
+                      ? const Center(
+                          child: Text(
+                            'Record not present.',
+                            style: TextStyle(fontSize: 18.0),
                           ),
-                          child: GestureDetector(
-                            onTap: () {
-                              devtools.log('Event tapped');
-                              HeroDialogRoute(
-                                builder: (context) => DisplayDisasterEvents(
-                                  event: event,
-                                ),
-                              );
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: const Color.fromARGB(255, 50, 48, 48)
-                                    .withOpacity(0.4),
-                                borderRadius: BorderRadius.circular(25.0),
-                              ),
+                        )
+                      : ListView.builder(
+                          itemCount: filteredEvents.length,
+                          itemBuilder: (context, index) {
+                            final event = filteredEvents[index];
+                            return Padding(
                               padding: const EdgeInsets.symmetric(
                                   vertical: 8.0, horizontal: 16.0),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "Name: ${event['event_name']}",
-                                        style: const TextStyle(
-                                          fontSize: 20.0,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black,
-                                        ),
-                                      ),
-                                      Text(
-                                        "ID: ${event['event_id']}",
-                                        style: const TextStyle(
-                                          fontSize: 14.0,
-                                          fontWeight: FontWeight.w500,
-                                          color: Colors.black,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  IconButton(
-                                    icon: const Icon(
-                                      Icons.edit,
-                                      color: Color.fromARGB(255, 255, 255, 255),
+                              child: Slidable(
+                                endActionPane: ActionPane(
+                                  motion: const StretchMotion(),
+                                  children: [
+                                    SlidableAction(
+                                      onPressed: (context) {
+                                        devtools.log('Slide action pressed');
+                                      },
+                                      backgroundColor: const Color.fromARGB(
+                                          255, 255, 102, 102),
+                                      icon: Icons.delete,
+                                      label: 'Delete',
                                     ),
-                                    onPressed: () {
-                                      devtools.log('Event updated');
-                                    },
+                                  ],
+                                ),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    devtools.log('Event tapped');
+                                    Navigator.of(context).push(
+                                      HeroDialogRoute(
+                                        builder: (context) =>
+                                            DisplayDisasterEvents(
+                                          event: event,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color:
+                                          const Color.fromARGB(255, 70, 70, 70)
+                                              .withOpacity(0.8),
+                                      borderRadius: BorderRadius.circular(15.0),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.3),
+                                          blurRadius: 8,
+                                          offset: const Offset(0, 4),
+                                        ),
+                                      ],
+                                    ),
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 16.0, horizontal: 24.0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                "Name: ${event['event_name']}",
+                                                style: const TextStyle(
+                                                  fontSize: 20.0,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.white,
+                                                ),
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                              const SizedBox(height: 6),
+                                              Text(
+                                                "ID: ${event['event_id']}",
+                                                style: const TextStyle(
+                                                  fontSize: 14.0,
+                                                  color: Colors.white70,
+                                                ),
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        IconButton(
+                                          icon: const Icon(
+                                            Icons.edit,
+                                            color: Colors.white,
+                                          ),
+                                          onPressed: () {
+                                            devtools.log('Event updated');
+                                          },
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ],
+                                ),
                               ),
-                            ),
-                          ),
+                            );
+                          },
                         ),
-                      );
-                    },
-                  );
+                ),
+              ],
+            ),
+            floatingActionButton: FloatingActionButton(
+              onPressed: () async {
+                final result = await showDisasterEventsDialog(
+                    context, fetchDisasterEvents, response);
+                if (result != null) {
+                  setState(() {
+                    futureGetDisasterEvents = fetchDisasterEvents();
+                    futureGetDisasterEvents.then((events) {
+                      setState(() {
+                        allEvents = events;
+                        filteredEvents = events;
+                      });
+                    });
+                  });
                 }
               },
+              backgroundColor: Colors.redAccent,
+              child: const Icon(Icons.add, color: Colors.white),
             ),
-            // floatingActionButton: FloatingActionButton(
-            //   onPressed: () async {
-            //     final result = await showVolunteerDialog(
-            //         context, fetchVolunteers, response);
-            //     if (result != null) {
-            //       setState(() {
-            //         futureGetDisasterEvents = fetchDisasterEvents();
-            //       });
-            //     }
-            //   },
-            //   backgroundColor:
-            //       const Color.fromARGB(255, 84, 80, 80).withOpacity(1.0),
-            //   child: const Icon(Icons.add),
-            // ),
-            backgroundColor: const Color.fromARGB(0, 0, 0, 0),
+            backgroundColor: Colors.transparent,
           ),
         ],
       ),
