@@ -15,6 +15,7 @@ Future<List<Map<String, dynamic>>> fetchDisasterEvents() async {
     List<dynamic> data = jsonDecode(response.body);
     return data
         .map((event) => {
+              'event_id': event['event_id'],
               'event_name': event['event_name'],
               'event_type': event['event_type'],
               'location': event['location'],

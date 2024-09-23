@@ -8,13 +8,13 @@ class DisplayDisasterEvents extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 8,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15),
       ),
       shadowColor: const Color.fromARGB(255, 35, 33, 33),
       color: const Color.fromARGB(255, 67, 63, 63),
-      margin: const EdgeInsets.all(16.0),
+      margin: const EdgeInsets.only(
+          top: 16.0, left: 16.0, right: 16.0, bottom: 64.0),
       child: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -90,38 +90,48 @@ class DisplayDisasterEvents extends StatelessWidget {
               ),
             ),
             const Divider(color: Colors.white24, height: 24),
-            const Text(
-              'Start Date',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.white54,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              event['start_date'],
-              style: const TextStyle(
-                fontSize: 18,
-                color: Colors.white,
-              ),
-            ),
-            const Divider(color: Colors.white24, height: 24),
-            const Text(
-              'End Date',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.white54,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              event['end_date'],
-              style: const TextStyle(
-                fontSize: 18,
-                color: Colors.white,
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  children: [
+                    const Text(
+                      'Start Date',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.white54,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      event['start_date'],
+                      style: const TextStyle(
+                        fontSize: 18,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+                Column(
+                  children: [
+                    const Text(
+                      'End Date',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.white54,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      event['end_date'],
+                      style: const TextStyle(
+                        fontSize: 18,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
             const Divider(color: Colors.white24, height: 24),
             const Text(
