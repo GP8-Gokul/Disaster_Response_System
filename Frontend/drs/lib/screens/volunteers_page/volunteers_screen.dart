@@ -1,6 +1,7 @@
 import 'package:drs/services/api/volunteer_api.dart';
 import 'package:drs/screens/volunteers_page/insert_volunteer.dart';
 import 'package:flutter/material.dart';
+import 'package:drs/screens/volunteers_page/display_volunteer.dart';
 import 'dart:developer' as devtools show log;
 
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -92,26 +93,41 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "Name: ${event['volunteer_name']}",
-                                      style: const TextStyle(
-                                        fontSize: 20.0,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.black,
-                                      ),
+                                ListTile(
+                                    title: Text(
+                                    "Name: ${event['volunteer_name']}",
+                                    style: const TextStyle(
+                                      fontSize: 20.0,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black,
                                     ),
-                                    Text(
-                                      "ID: ${event['volunteer_id']}",
-                                      style: const TextStyle(
-                                        fontSize: 14.0,
-                                        fontWeight: FontWeight.w500,
-                                        color: Colors.black,
-                                      ),
                                     ),
-                                  ],
+                                    subtitle: Text(
+                                    "ID: ${event['volunteer_id']}",
+                                    style: const TextStyle(
+                                      fontSize: 14.0,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.black,
+                                    ),
+                                    ),
+                                    onTap: () {
+                                        showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                          content: DisplayVolunteer(volunteer: event),
+                                          actions: [
+                                            TextButton(
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                            child: const Text('Close'),
+                                            ),
+                                          ],
+                                          );
+                                        },
+                                        );
+                                    },
                                 ),
                                 IconButton(
                                   icon: const Icon(
