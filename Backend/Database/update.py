@@ -9,10 +9,10 @@ def update_record(table, column, value, condition_column, condition_value):
     except Exception as e:
         print(f"An error occurred: {e}")
     else:
-        print("Record updated successfully")
+        print(f"ERROR WHILE UPDATING volunteer: {e}")
     commit()
     
-def update_volunteer(volunteer_id, name, contact_info, skills, availability_status, event_id)
+def update_volunteer(volunteer_id, name, contact_info, skills, availability_status, event_id):
     cursor=get_cursor()
     try:
         cursor.execute("UPDATE volunteers SET name = ?, contact_info = ?, skills = ?, availablity_status = ?, event_id = ? WHERE volunteer_id = ?",(name, contact_info, skills, availability_status, event_id, volunteer_id))
