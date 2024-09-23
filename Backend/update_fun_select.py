@@ -30,4 +30,4 @@ def update_interface(data):
             return {"status": "error", "message": "Invalid table name"}, 400
 
     except Exception as e:
-        return {"status": "error", "message": f"An error occurred: (e)"}, 500
+        return {"status": "error", "message": f"An error occurred: {str(e)}"}, 500
