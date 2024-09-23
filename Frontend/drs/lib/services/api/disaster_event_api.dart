@@ -60,7 +60,8 @@ Future deleteDisasterEvent(eventId) async {
     headers: {'Content-Type': 'application/json'},
     body: jsonEncode({
       'table': 'disaster_events',
-      'event_id': eventId,
+      'column': 'event_id',
+      'value': eventId,
     }),
   );
 
