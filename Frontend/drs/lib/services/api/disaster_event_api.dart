@@ -53,3 +53,20 @@ Future addDisasterEvents(disasterName, disasterType, disasterLocation,
     devtools.log('Failed to add event');
   }
 }
+
+Future deleteDisasterEvent(eventId) async {
+  final response = await http.post(
+    Uri.parse('${url}delete'),
+    headers: {'Content-Type': 'application/json'},
+    body: jsonEncode({
+      'table': 'disaster_events',
+      'event_id': eventId,
+    }),
+  );
+
+  if (response.statusCode == 200) {
+    return response;
+  } else {
+    throw Exception('Failed to delete disaster event');
+  }
+}

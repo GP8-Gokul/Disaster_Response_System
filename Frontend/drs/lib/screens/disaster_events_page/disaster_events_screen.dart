@@ -110,13 +110,20 @@ class _DisasterEventsScreenState extends State<DisasterEventsScreen> {
                                   motion: const StretchMotion(),
                                   children: [
                                     SlidableAction(
+                                      borderRadius: BorderRadius.circular(15.0),
                                       onPressed: (context) {
                                         devtools.log('Slide action pressed');
+                                        deleteDisasterEvent(event['event_id']);
+                                        setState(() {
+                                          allEvents.remove(event);
+                                          filteredEvents.remove(event);
+                                        });
                                       },
                                       backgroundColor: const Color.fromARGB(
-                                          255, 255, 102, 102),
+                                          148, 226, 125, 125),
                                       icon: Icons.delete,
-                                      label: 'Delete',
+                                      foregroundColor:
+                                          const Color.fromARGB(255, 74, 71, 71),
                                     ),
                                   ],
                                 ),
