@@ -3,7 +3,7 @@ import 'package:drs/services/api/json_decode.dart';
 import 'dart:developer' as devtools show log;
 import 'package:http/http.dart' as http;
 
-const url = 'http://10.0.2.2:5000/';
+const url = 'https://drs-1.onrender.com/';
 
 Future<List<Map<String, dynamic>>> fetchVolunteers() async {
   final response = await http.post(

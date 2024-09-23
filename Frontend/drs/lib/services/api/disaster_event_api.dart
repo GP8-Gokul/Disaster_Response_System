@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'dart:developer' as devtools show log;
 
-const url = 'http://10.0.2.2:5000/';
+const url = 'https://drs-1.onrender.com/';
 
 Future<List<Map<String, dynamic>>> fetchDisasterEvents() async {
   final response = await http.post(
