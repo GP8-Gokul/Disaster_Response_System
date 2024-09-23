@@ -1,5 +1,5 @@
 import 'package:drs/services/api/volunteer_api.dart';
-import 'package:drs/screens/inserting/insert_volunteer.dart';
+import 'package:drs/screens/volunteers_page/insert_volunteer.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer' as devtools show log;
 
@@ -115,7 +115,7 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
                                 ),
                                 IconButton(
                                   icon: const Icon(
-                                    Icons.drive_file_rename_outline,
+                                    Icons.edit,
                                     color: Color.fromARGB(255, 255, 255, 255),
                                   ),
                                   onPressed: () {
