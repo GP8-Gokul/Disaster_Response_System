@@ -7,9 +7,8 @@ def update_interface(data):
 
         table = data["table"]
 
-        if "record_id" in data and data["record_id"]:
-            record_id = data["record_id"]
-            result = update_record(table, data.get("column"), data.get("value"), record_id, data.get("condition_column"))
+        if data["condition_value"]:
+            result = update_record(table, data.get("column"), data.get("value"), data.get("condition_column"),data.get("condition_value"))
             return result if result else {"status": "success", "message": "Record updated successfully"}, 200
 
         if table == "disaster_events":
