@@ -1,5 +1,9 @@
+import 'package:drs/screens/hero_dialog_route.dart';
+import 'package:drs/screens/volunteers_page/display_volunteer.dart';
+import 'package:drs/screens/volunteers_page/insert_volunteer.dart';
 import 'package:drs/services/api/volunteer_api.dart';
 import 'package:flutter/material.dart';
+import 'dart:developer' as devtools show log;
 
 class VolunteersScreen extends StatefulWidget {
   const VolunteersScreen({super.key});
@@ -19,174 +23,106 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
     futureGetVolunteers = fetchVolunteers();
   }
 
-
-
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        buildBackgroundImage(),
-        Scaffold(
-          appBar: buildAppBar(),
-          body:  buildFutureBuilder(futureGetVolunteers),
-            floatingActionButton: FloatingActionButton(
-            onPressed: () {
-              showDialog(
-                context: context, 
-                builder: (BuildContext context) {
-                  TextEditingController volunteerNameController= TextEditingController();
-                  TextEditingController volunteerContactInfoController= TextEditingController();
-                  TextEditingController volunteerSkillsController= TextEditingController();
-                  TextEditingController volunteerAvailabilityStatusController= TextEditingController();
-                  TextEditingController eventIdController= TextEditingController();
-
-                  return AlertDialog(
-                    title: const Text('Add Volunteer'),
-                    content: Column(
-                      children: [
-                        TextField(
-                          controller: volunteerNameController,
-                          decoration: const InputDecoration(
-                            labelText: 'Volunteer Name',
+    return SafeArea(
+      child: Stack(
+        children: [
+          Positioned.fill(
+            child: Image.asset(
+              'assets/images/background.jpg',
+              fit: BoxFit.cover,
+            ),
+          ),
+          Scaffold(
+            appBar: AppBar(
+              title: const Text('Volunteers'),
+              centerTitle: true,
+              backgroundColor: const Color.fromARGB(57, 0, 0, 0),
+              titleTextStyle: const TextStyle(
+                  fontSize: 24.0,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black),
+            ),
+            body: FutureBuilder(
+              future: futureGetVolunteers,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return const Center(child: Text('No volunteers found.'));
+                } else {
+                  return ListView.builder(
+                    itemCount: snapshot.data!.length,
+                    itemBuilder: (context, index) {
+                      final event = snapshot.data![index];
+                      return Padding(
+                        padding: const EdgeInsets.only(
+                            top: 8.0, left: 8.0, right: 8.0),
+                        child: ListTile(
+                          title: Text("Name: ${event['volunteer_name']}"),
+                          subtitle: Text("ID: ${event['volunteer_id']}"),
+                          tileColor: const Color.fromARGB(255, 50, 48, 48)
+                              .withOpacity(0.4),
+                          trailing: IconButton(
+                            icon: const Icon(Icons.drive_file_rename_outline,
+                                color: Color.fromARGB(255, 255, 255, 255)),
+                            onPressed: () {
+                              devtools.log('Volunteer updated');
+                            },
                           ),
-                        ),
-                        TextField(
-                          controller: volunteerContactInfoController,
-                          decoration: const InputDecoration(
-                            labelText: 'Contact Info',
+                          contentPadding: const EdgeInsets.symmetric(
+                              vertical: 1.0, horizontal: 16.0),
+                          textColor: Colors.black,
+                          titleTextStyle: const TextStyle(
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.bold,
                           ),
-                        ),
-                        TextField(
-                          controller: volunteerSkillsController,
-                          decoration: const InputDecoration(
-                            labelText: 'Skills',
+                          subtitleTextStyle: const TextStyle(
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.w500,
                           ),
-                        ),
-                        TextField(
-                          controller: volunteerAvailabilityStatusController,
-                          decoration: const InputDecoration(
-                            labelText: 'Availability Status',
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(25.0),
                           ),
+                          onTap: () {
+                            Navigator.of(context).push(
+                              HeroDialogRoute(
+                                builder: (context) => Dialog(
+                                  child: DisplayVolunteer(volunteer: event),
+                                ),
+                              ),
+                            );
+                          },
                         ),
-                        TextField(
-                          controller: eventIdController,
-                          decoration: const InputDecoration(
-                            labelText: 'Event ID',
-                          ),
-                        ),
-                      ],
-                    ),
-                    actions: <Widget>[
-                      TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: const Text('Cancel'),
-                      ),
-                      TextButton(
-                      onPressed: () async {
-                        response = await addVolunteer(
-                          volunteerNameController.text,
-                          volunteerContactInfoController.text,
-                          volunteerSkillsController.text,
-                          volunteerAvailabilityStatusController.text,
-                          eventIdController.text);
-                        if (response.statuscode == 200) {
-                          setState(() {
-                            futureGetVolunteers = fetchVolunteers();
-                          });
-                        }
-                      },
-                      child: const Text('Submit'),
-                      ),
-                    ],
+                      );
+                    },
                   );
                 }
-                );
-            },
-            backgroundColor: Colors.white.withOpacity(0.5),
-            child: const Icon(Icons.add),
+              },
             ),
-          backgroundColor: Colors.transparent,
-        ),
-      ],
+            floatingActionButton: FloatingActionButton(
+              onPressed: () async {
+                final result = await showVolunteerDialog(
+                    context, fetchVolunteers, response);
+                if (result != null) {
+                  setState(() {
+                    futureGetVolunteers = fetchVolunteers();
+                  });
+                }
+              },
+              backgroundColor:
+                  const Color.fromARGB(255, 50, 48, 48).withOpacity(0.4),
+              child: const Icon(Icons.add),
+            ),
+            backgroundColor: Colors.transparent,
+          ),
+        ],
+      ),
     );
   }
-}
-
-
-Widget buildBackgroundImage() {
-  return Positioned.fill(
-    child: Image.asset(
-      'assets/images/background.jpg',
-      fit: BoxFit.cover,
-    ),
-  );
-}
-
-AppBar buildAppBar() {
-  return AppBar(
-    title: const Text('Volunteers'),
-    centerTitle: true,
-    backgroundColor: Colors.transparent,
-    titleTextStyle: const TextStyle(
-      fontSize: 24.0,
-      fontWeight: FontWeight.bold,
-      color: Colors.black
-    ),
-  );
-}
-
-FutureBuilder buildFutureBuilder(Future<List<Map<String, dynamic>>> futureGetVolunteers){
-  return FutureBuilder(
-    future: futureGetVolunteers,
-    builder: (context,snapshot) {
-      if(snapshot.connectionState == ConnectionState.waiting){
-        return const Center(
-          child: CircularProgressIndicator(),
-        );
-      } else if(snapshot.hasError) {
-        return Center(child: Text('Error: ${snapshot.error}'));
-      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-        return const Center(child: Text('No volunteers found.'));
-      } else {
-        return ListView.builder(
-          itemCount: snapshot.data!.length,
-          itemBuilder: (context, index) {
-            final event = snapshot.data![index];
-            return Container(
-              margin: const EdgeInsets.all(8.0),
-              child: ListTile(
-                  title: Text("Name: ${event['volunteer_name']}"),
-                subtitle: Text("ID: ${event['volunteer_id']}"),
-                tileColor: Colors.white.withOpacity(0.3),
-                trailing: IconButton(
-                  icon: const Icon(Icons.delete, color: Colors.grey),
-                  onPressed: (){
-                  //not implemented
-                  },
-                ),
-                contentPadding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                textColor: Colors.black,
-                titleTextStyle: const TextStyle(
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.bold,
-                  ),
-                subtitleTextStyle: const TextStyle(
-                  fontSize: 16.0,
-                  fontWeight: FontWeight.w500,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                    side: BorderSide(color: Colors.black.withOpacity(0.0), width: 1.0),
-                    
-                  ),
-                onTap: () {},
-              ),
-            );
-          },
-        );
-      }
-    },
-  );
 }
