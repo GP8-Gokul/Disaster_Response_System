@@ -28,12 +28,7 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
     return SafeArea(
       child: Stack(
         children: [
-          Positioned.fill(
-            child: Image.asset(
-              'assets/images/background.jpg',
-              fit: BoxFit.cover,
-            ),
-          ),
+          buildBackgroundImage(),
           Scaffold(
             appBar: AppBar(
               title: const Text('Volunteers'),
@@ -125,4 +120,13 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
       ),
     );
   }
+}
+
+Widget buildBackgroundImage(){
+  return Positioned.fill(
+    child: Image.asset(
+      'assets/images/background.jpg',
+      fit: BoxFit.cover,
+    ),
+  );
 }
