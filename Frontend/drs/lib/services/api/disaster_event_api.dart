@@ -3,8 +3,6 @@ import 'package:drs/services/api/root_api.dart';
 import 'package:http/http.dart' as http;
 import 'dart:developer' as devtools show log;
 
-
-
 Future<List<Map<String, dynamic>>> fetchDisasterEvents() async {
   final response = await http.post(
     Uri.parse('${url}select'),
@@ -70,5 +68,36 @@ Future deleteDisasterEvent(eventId) async {
     return response;
   } else {
     throw Exception('Failed to delete disaster event');
+  }
+}
+
+Future updateDisasterEvents(
+    eventId,
+    disasterName,
+    disasterType,
+    disasterLocation,
+    disasterStartDate,
+    disasterEndDate,
+    disasterDescription) async {
+  devtools.log('updateDisasterEvents');
+  final response = await http.post(
+    Uri.parse('${url}update'),
+    headers: {'Content-Type': 'application/json'},
+    body: jsonEncode({
+      'table': 'disaster_events',
+      'event_id': eventId,
+      'event_name': disasterName,
+      'event_type': disasterType,
+      'location': disasterLocation,
+      'start_date': disasterStartDate,
+      'end_date': disasterEndDate,
+      'description': disasterDescription,
+    }),
+  );
+  devtools.log(response.body);
+  if (response.statusCode == 200) {
+    return response;
+  } else {
+    throw Exception('Failed to update disaster event');
   }
 }

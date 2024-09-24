@@ -1,5 +1,6 @@
 import 'package:drs/screens/disaster_events_page/display_disaster_events.dart';
 import 'package:drs/screens/disaster_events_page/insert_disaster_events.dart';
+import 'package:drs/screens/disaster_events_page/update_disaster_events.dart';
 import 'package:drs/services/api/disaster_event_api.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer' as devtools show log;
@@ -69,7 +70,7 @@ class _DisasterEventsScreenState extends State<DisasterEventsScreen> {
               titleTextStyle: const TextStyle(
                 fontSize: 24.0,
                 fontWeight: FontWeight.bold,
-                color: Colors.white,
+                color: Color.fromARGB(255, 31, 29, 29),
               ),
               elevation: 5,
               shadowColor: Colors.black.withOpacity(0.3),
@@ -110,7 +111,7 @@ class _DisasterEventsScreenState extends State<DisasterEventsScreen> {
                                   motion: const StretchMotion(),
                                   children: [
                                     SlidableAction(
-                                      borderRadius: BorderRadius.circular(15.0),
+                                      borderRadius: BorderRadius.circular(25),
                                       onPressed: (context) {
                                         devtools.log('Slide action pressed');
                                         deleteDisasterEvent(event['event_id']);
@@ -143,15 +144,8 @@ class _DisasterEventsScreenState extends State<DisasterEventsScreen> {
                                     decoration: BoxDecoration(
                                       color:
                                           const Color.fromARGB(255, 70, 70, 70)
-                                              .withOpacity(0.8),
-                                      borderRadius: BorderRadius.circular(15.0),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black.withOpacity(0.3),
-                                          blurRadius: 8,
-                                          offset: const Offset(0, 4),
-                                        ),
-                                      ],
+                                              .withOpacity(0.6),
+                                      borderRadius: BorderRadius.circular(25.0),
                                     ),
                                     padding: const EdgeInsets.symmetric(
                                         vertical: 16.0, horizontal: 24.0),
@@ -169,7 +163,8 @@ class _DisasterEventsScreenState extends State<DisasterEventsScreen> {
                                                 style: const TextStyle(
                                                   fontSize: 20.0,
                                                   fontWeight: FontWeight.bold,
-                                                  color: Colors.white,
+                                                  color: Color.fromARGB(
+                                                      255, 41, 39, 39),
                                                 ),
                                                 overflow: TextOverflow.ellipsis,
                                               ),
@@ -178,7 +173,8 @@ class _DisasterEventsScreenState extends State<DisasterEventsScreen> {
                                                 "ID: ${event['event_id']}",
                                                 style: const TextStyle(
                                                   fontSize: 14.0,
-                                                  color: Colors.white70,
+                                                  color: Color.fromARGB(
+                                                      179, 47, 45, 45),
                                                 ),
                                                 overflow: TextOverflow.ellipsis,
                                               ),
@@ -190,8 +186,27 @@ class _DisasterEventsScreenState extends State<DisasterEventsScreen> {
                                             Icons.edit,
                                             color: Colors.white,
                                           ),
-                                          onPressed: () {
-                                            devtools.log('Event updated');
+                                          onPressed: () async {
+                                            devtools.log('Edit button pressed');
+                                            final result =
+                                                await updateDisasterEventsDialog(
+                                                    context,
+                                                    fetchDisasterEvents,
+                                                    event,
+                                                    response);
+                                            if (result != null) {
+                                              setState(() {
+                                                futureGetDisasterEvents =
+                                                    fetchDisasterEvents();
+                                                futureGetDisasterEvents
+                                                    .then((events) {
+                                                  setState(() {
+                                                    allEvents = events;
+                                                    filteredEvents = events;
+                                                  });
+                                                });
+                                              });
+                                            }
                                           },
                                         ),
                                       ],
@@ -207,7 +222,8 @@ class _DisasterEventsScreenState extends State<DisasterEventsScreen> {
             ),
             floatingActionButton: FloatingActionButton(
               onPressed: () async {
-                final result = await showDisasterEventsDialog(
+                devtools.log('Floating action button pressed');
+                final result = await insertDisasterEventsDialog(
                     context, fetchDisasterEvents, response);
                 if (result != null) {
                   setState(() {
@@ -221,7 +237,7 @@ class _DisasterEventsScreenState extends State<DisasterEventsScreen> {
                   });
                 }
               },
-              backgroundColor: Colors.redAccent,
+              backgroundColor: const Color.fromARGB(255, 23, 22, 22),
               child: const Icon(Icons.add, color: Colors.white),
             ),
             backgroundColor: Colors.transparent,

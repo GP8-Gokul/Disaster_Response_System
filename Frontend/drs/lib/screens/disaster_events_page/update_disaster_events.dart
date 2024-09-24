@@ -2,29 +2,32 @@ import 'package:drs/services/api/disaster_event_api.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
-Future<Map<String, String>?> insertDisasterEventsDialog(
-    BuildContext context, Function fetchDisasterEvents, response) async {
+Future<Map<String, String>?> updateDisasterEventsDialog(BuildContext context,
+    Function fetchDisasterEvents, Map<String, dynamic> event, response) async {
   Completer<Map<String, String>?> completer = Completer();
 
   showDialog(
     context: context,
     builder: (BuildContext context) {
-      TextEditingController disasterNameController = TextEditingController();
-      TextEditingController disasterTypeController = TextEditingController();
+      TextEditingController disasterNameController =
+          TextEditingController(text: event['event_name']);
+      TextEditingController disasterTypeController =
+          TextEditingController(text: event['event_type']);
       TextEditingController disasterLocationController =
-          TextEditingController();
+          TextEditingController(text: event['location']);
       TextEditingController disasterStartDateController =
-          TextEditingController();
-      TextEditingController disasterEndDateController = TextEditingController();
+          TextEditingController(text: event['start_date']);
+      TextEditingController disasterEndDateController =
+          TextEditingController(text: event['end_date']);
       TextEditingController disasterDescriptionController =
-          TextEditingController();
+          TextEditingController(text: event['description']);
 
       return AlertDialog(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15.0),
         ),
         title: const Text(
-          'Add Disaster Event',
+          'Update Disaster Event',
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 20.0,
@@ -133,7 +136,8 @@ Future<Map<String, String>?> insertDisasterEventsDialog(
           ),
           ElevatedButton(
             onPressed: () async {
-              await addDisasterEvents(
+              await updateDisasterEvents(
+                event['event_id'],
                 disasterNameController.text,
                 disasterTypeController.text,
                 disasterLocationController.text,
@@ -145,6 +149,7 @@ Future<Map<String, String>?> insertDisasterEventsDialog(
                 Navigator.of(context).pop();
               }
               completer.complete({
+                'eventId': event['event_id'],
                 'disasterName': disasterNameController.text,
                 'disasterType': disasterTypeController.text,
                 'disasterLocation': disasterLocationController.text,
