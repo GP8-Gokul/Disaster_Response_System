@@ -1,6 +1,6 @@
-from Database.selectquery import *
+from Database.update import *
 def update_interface(data):
-    try
+    try:
     
         if "table" not in data:
             return {"status": "error", "message": "'table' key is missing in the request data"}, 400
@@ -10,7 +10,6 @@ def update_interface(data):
         if "record_id" not in data or not data["record_id"]:
             return {"status": "error", "message": "'record_id' key is missing or empty in the request data"}, 400
 
-        record_id = data["record_id"]
         if table == "disaster_events":
             return update_disaster_event(data.get("event_name"), data.get("event_type"), data.get("location"), data.get("start_date"), data.get("end_date"), data.get("description"))
         
