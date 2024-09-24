@@ -15,7 +15,7 @@ def update_record(table, column, value, record_id,condition_column):
 def update_volunteer(volunteer_id, name, contact_info, skills, availability_status, event_id):
     cursor=get_cursor()
     try:
-        cursor.execute(f"UPDATE volunteers SET {name} = ?, {contact_info} = ?, {skills} = ?, {availablity_status} = ?, {event_id} = ? WHERE {volunteer_id} = ?",(name, contact_info, skills, availability_status, event_id, volunteer_id))
+        cursor.execute(f"UPDATE volunteers SET {name} = ?, {contact_info} = ?, {skills} = ?, {availability_status} = ?, {event_id} = ? WHERE {volunteer_id} = ?",(name, contact_info, skills, availability_status, event_id, volunteer_id))
         commit()
         print("UPDATED")
     except Exception as e:
