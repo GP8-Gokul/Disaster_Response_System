@@ -15,7 +15,7 @@ def update_record(table, column, value, record_id,condition_column):
 def update_volunteer(volunteer_id, name, contact_info, skills, availability_status, event_id):
     cursor=get_cursor()
     try:
-        cursor.execute("UPDATE volunteers SET name = ?, contact_info = ?, skills = ?, availablity_status = ?, event_id = ? WHERE volunteer_id = ?",(name, contact_info, skills, availability_status, event_id, volunteer_id))
+        cursor.execute(f"UPDATE volunteers SET {name} = ?, {contact_info} = ?, {skills} = ?, {availablity_status} = ?, {event_id} = ? WHERE {volunteer_id} = ?",(name, contact_info, skills, availability_status, event_id, volunteer_id))
         commit()
         print("UPDATED")
     except Exception as e:
@@ -25,7 +25,7 @@ def update_volunteer(volunteer_id, name, contact_info, skills, availability_stat
 def update_disaster_event(event_id, event_name, event_type, location, start_date, end_date, description):
     cursor = get_cursor()
     try:
-        cursor.execute("UPDATE disaster_events SET event_name = ?, event_type = ?, location = ?, start_date = ?, end_date = ?, description = ? WHERE event_id = ?",(event_name, event_type, location, start_date, end_date, description, event_id))
+        cursor.execute(f"UPDATE disaster_events SET {event_name} = ?, {event_type} = ?, {location} = ?, {start_date} = ?, {end_date} = ?, {description} = ? WHERE {event_id} = ?",(event_name, event_type, location, start_date, end_date, description, event_id))
         commit()
         print("UPDATED disaster_event")
     except Exception as e:
@@ -35,7 +35,7 @@ def update_disaster_event(event_id, event_name, event_type, location, start_date
 def update_resource(resource_id, resource_name, resource_type, quantity, availability_status, event_id):
     cursor = get_cursor()
     try:
-        cursor.execute("UPDATE resources SET resource_name = ?, resource_type = ?, quantity = ?, availability_status = ?, event_id = ? WHERE resource_id = ?",(resource_name, resource_type, quantity, availability_status, event_id, resource_id))
+        cursor.execute(f"UPDATE resources SET {resource_name} = ?, {resource_type} = ?, {quantity} = ?, {availability_status} = ?, {event_id} = ? WHERE {resource_id} = ?",(resource_name, resource_type, quantity, availability_status, event_id, resource_id))
         commit()
         print("UPDATED resource")
     except Exception as e:
@@ -45,7 +45,7 @@ def update_resource(resource_id, resource_name, resource_type, quantity, availab
 def update_incident_report(report_id, event_id, report_date, description, reported_by):
     cursor = get_cursor()
     try:
-        cursor.execute("UPDATE incident_reports SET event_id = ?, report_date = ?, description = ?, reported_by = ? WHERE report_id = ?",(event_id, report_date, description, reported_by, report_id))
+        cursor.execute(f"UPDATE incident_reports SET {event_id} = ?, {report_date} = ?, {description} = ?, {reported_by} = ? WHERE {report_id} = ?",(event_id, report_date, description, reported_by, report_id))
         commit()
         print("UPDATED incident_report")
     except Exception as e:
@@ -55,7 +55,7 @@ def update_incident_report(report_id, event_id, report_date, description, report
 def update_aid_distribution(distribution_id, event_id, resource_id, volunteer_id, quantity_distributed, distribution_date, location):
     cursor = get_cursor()
     try:
-        cursor.execute("UPDATE aid_distribution SET event_id = ?, resource_id = ?, volunteer_id = ?, quantity_distributed = ?, distribution_date = ?, location = ? WHERE distribution_id = ?",(event_id, resource_id, volunteer_id, quantity_distributed, distribution_date, location, distribution_id))
+        cursor.execute(f"UPDATE aid_distribution SET {event_id} = ?, {resource_id} = ?, {volunteer_id} = ?, {quantity_distributed} = ?, {distribution_date} = ?, {location} = ? WHERE {distribution_id} = ?",(event_id, resource_id, volunteer_id, quantity_distributed, distribution_date, location, distribution_id))
         commit()
         print("UPDATED aid_distribution")
     except Exception as e:
