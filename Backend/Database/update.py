@@ -2,10 +2,10 @@
 
 from .connect import get_cursor, commit;
 
-def update_record(table, column, value, record_id, condition_value):
+def update_record(table, column, value, record_id,condition_column):
     cursor = get_cursor()
     try:
-        cursor.execute(f"UPDATE {table} SET {column} = ? WHERE {record_id} = ?", (value, record_id))
+        cursor.execute(f"UPDATE {table} SET {column} = ? WHERE {condition_column} = ?", (value, record_id))
     except Exception as e:
         print(f"An error occurred: {e}")
     else:
