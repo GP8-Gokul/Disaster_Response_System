@@ -7,10 +7,9 @@ def update_interface(data):
 
         table = data["table"]
 
-        if "record_id" not in data or not data["record_id"]:
-            return {"status": "error", "message": "'record_id' key is missing or empty in the request data"}, 400
-
-        record_id = data["record_id"]
+         if "record_id" in data and data["record_id"]:
+            record_id = data["record_id"]
+            return update_record(table,data.get("column"),data.get("value"),record_id,data.get("condition_column"))
 
 
         if table == "disaster_events":
