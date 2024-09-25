@@ -8,7 +8,8 @@ def insert_interface(data):
 
        
         if table == 'users':
-            insert_user(data['username'], data['password_hash'],data['role'])
+            # insert_user(data['username'], data['password_hash'],data['role'])
+            pass
 
 
         elif table == 'disaster_events':

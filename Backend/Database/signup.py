@@ -6,13 +6,14 @@ def signup_interface(data):
         username = data['username']
         password = data['password']
         role = data['role']
+        email = data['email']
         cursor = get_cursor()
         cursor.execute("select count(*) from users where username = ?", (data['username'],))
         result=cursor.fetchone()
         if result[0]>0:
             return "User already exists"
         else:
-            cursor.execute("insert into users(username,password_hash,role) values(?,?,?)", (username, password, role))
+            cursor.execute("insert into users(username,password_hash,role,email) values(?,?,?,?)", (username, password, role,email))
             commit()
             return "User created successfully"
     except Exception as e:

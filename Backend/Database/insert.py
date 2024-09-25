@@ -33,10 +33,10 @@ def insert_aid_distribution(event_id, resource_id, volunteer_id, quantity_distri
  commit()
 
 
-def insert_user(username, password_hash, role):
- cursor=get_cursor()
- cursor.execute("insert into users(username,password_hash,role) values(?,?,?);",(username,password_hash,role))
- commit()
+# def insert_user(username, password_hash, role):
+#  cursor=get_cursor()
+#  cursor.execute("insert into users(username,password_hash,role) values(?,?,?);",(username,password_hash,role))
+#  commit()
 
 
 def insert_incident_report(event_id, report_date, description, reported_by):

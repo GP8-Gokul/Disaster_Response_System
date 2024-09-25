@@ -57,7 +57,8 @@ create_users = '''
     user_id INTEGER PRIMARY KEY AUTOINCREMENT,
     username VARCHAR NOT NULL,
     password_hash VARCHAR NOT NULL, 
-    role VARCHAR NOT NULL 
+    role VARCHAR NOT NULL,
+    email VARCHAR NOT NULL, 
     );
 '''
 
