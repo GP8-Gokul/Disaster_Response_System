@@ -9,4 +9,4 @@ def login_interface(data):
     if len(result)==0:
         return False
     else:
-        return True
+        return result

@@ -8,7 +8,7 @@ from update_fun_select import update_interface
 
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from flask_jwt_extended import JWTManager, jwt_required, create_access_token
+from flask_jwt_extended import JWTManager, get_jwt, jwt_required, create_access_token
 
 app = Flask(__name__)
 CORS(app)
@@ -20,6 +20,7 @@ jwt = JWTManager(app)
 @app.route('/', methods=['GET'])
 @jwt_required()
 def home():
+    print(get_jwt())
     return jsonify(message="Hello, World!")
 
 @app.route('/signup', methods=['POST'])
@@ -32,8 +33,10 @@ def signup():
 @app.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
-    if(login_interface(data)):
-        token = create_access_token(identity=data['username'])
+    result=login_interface(data)
+    if(result):
+        role=result[0][2]
+        token = create_access_token(identity=data['username'],additional_claims={"sub": role})
     else:
         token = "Invalid"
     return jsonify(token)
