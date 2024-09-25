@@ -37,9 +37,10 @@ def login():
     if(result):
         role=result[0][2]
         token = create_access_token(identity=data['username'],additional_claims={"sub": role})
+        return jsonify({"token": token}), 200
     else:
         token = "Invalid"
-    return jsonify(token)
+        return jsonify({"message": "Invalid credentials"}), 401
 
 @app.route('/insert', methods=['POST'])
 @jwt_required()
