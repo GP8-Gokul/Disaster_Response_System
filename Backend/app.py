@@ -1,3 +1,4 @@
+from Database.signup import signup_interface
 from Database.login import login_interface
 
 from delete_fun_select import delete_interface
@@ -20,6 +21,12 @@ jwt = JWTManager(app)
 @jwt_required()
 def home():
     return jsonify(message="Hello, World!")
+
+@app.route('/signup', methods=['POST'])
+def signup():
+    data = request.get_json()
+    result=signup_interface(data)
+    return jsonify(result)
 
 
 @app.route('/login', methods=['POST'])
