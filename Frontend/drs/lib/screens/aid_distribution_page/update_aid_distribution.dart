@@ -2,32 +2,32 @@ import 'package:drs/services/api/disaster_event_api.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
-Future<Map<String, String>?> updateDisasterEventsDialog(BuildContext context,
-    Function fetchDisasterEvents, Map<String, dynamic> event, response) async {
+Future<Map<String, String>?> updateAidDistributionDialog(BuildContext context,
+    Function fetchAidDistribution, Map<String, dynamic> rsc, response) async {
   Completer<Map<String, String>?> completer = Completer();
 
   showDialog(
     context: context,
     builder: (BuildContext context) {
-      TextEditingController disasterNameController =
-          TextEditingController(text: event['event_name']);
-      TextEditingController disasterTypeController =
-          TextEditingController(text: event['event_type']);
-      TextEditingController disasterLocationController =
-          TextEditingController(text: event['location']);
-      TextEditingController disasterStartDateController =
-          TextEditingController(text: event['start_date']);
-      TextEditingController disasterEndDateController =
-          TextEditingController(text: event['end_date']);
-      TextEditingController disasterDescriptionController =
-          TextEditingController(text: event['description']);
+      TextEditingController aidEventIdController =
+          TextEditingController(text: rsc['event_id']);
+      TextEditingController aidResourceIdController =
+          TextEditingController(text: rsc['resource_id']);
+      TextEditingController aidVolunteerIdController =
+          TextEditingController(text: rsc['volunteer_id']);
+      TextEditingController aidQuantityController =
+          TextEditingController(text: rsc['quantity_distributed']);
+      TextEditingController aidDistributionDateController =
+          TextEditingController(text: rsc['distribution_date']);
+      TextEditingController aidLocationController =
+          TextEditingController(text: rsc['location']);
 
       return AlertDialog(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15.0),
         ),
         title: const Text(
-          'Update Disaster Event',
+          'Update Aids',
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 20.0,
@@ -38,9 +38,9 @@ Future<Map<String, String>?> updateDisasterEventsDialog(BuildContext context,
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
-                controller: disasterNameController,
+                controller: aidEventIdController,
                 decoration: InputDecoration(
-                  labelText: 'Disaster Name',
+                  labelText: 'Event ID',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10.0),
                   ),
@@ -48,9 +48,9 @@ Future<Map<String, String>?> updateDisasterEventsDialog(BuildContext context,
               ),
               const SizedBox(height: 15),
               TextField(
-                controller: disasterTypeController,
+                controller: aidResourceIdController,
                 decoration: InputDecoration(
-                  labelText: 'Disaster Type',
+                  labelText: 'Resource ID',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10.0),
                   ),
@@ -58,9 +58,9 @@ Future<Map<String, String>?> updateDisasterEventsDialog(BuildContext context,
               ),
               const SizedBox(height: 15),
               TextField(
-                controller: disasterLocationController,
+                controller: aidVolunteerIdController,
                 decoration: InputDecoration(
-                  labelText: 'Location',
+                  labelText: 'Volunteer ID',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10.0),
                   ),
@@ -68,32 +68,21 @@ Future<Map<String, String>?> updateDisasterEventsDialog(BuildContext context,
               ),
               const SizedBox(height: 15),
               TextField(
-                controller: disasterStartDateController,
+                controller:
+aidQuantityController,
                 decoration: InputDecoration(
-                  labelText: 'Start Date',
+                  labelText: 'Quantity Distributed',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10.0),
                   ),
                 ),
-                readOnly: true,
-                onTap: () async {
-                  DateTime? pickedDate = await showDatePicker(
-                    context: context,
-                    initialDate: DateTime.now(),
-                    firstDate: DateTime(2000),
-                    lastDate: DateTime(2101),
-                  );
-                  if (pickedDate != null) {
-                    disasterStartDateController.text =
-                        pickedDate.toIso8601String().substring(0, 10);
-                  }
-                },
               ),
               const SizedBox(height: 15),
               TextField(
-                controller: disasterEndDateController,
+                controller: 
+aidDistributionDateController,
                 decoration: InputDecoration(
-                  labelText: 'End Date',
+                  labelText: 'Distribution Date',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10.0),
                   ),
@@ -107,17 +96,17 @@ Future<Map<String, String>?> updateDisasterEventsDialog(BuildContext context,
                     lastDate: DateTime(2101),
                   );
                   if (pickedDate != null) {
-                    disasterEndDateController.text =
+                    aidDistributionDateController.text =
                         pickedDate.toIso8601String().substring(0, 10);
                   }
                 },
               ),
               const SizedBox(height: 15),
               TextField(
-                controller: disasterDescriptionController,
+                controller: aidLocationController,
                 maxLines: 3,
                 decoration: InputDecoration(
-                  labelText: 'Description',
+                  labelText: 'Location',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10.0),
                   ),
@@ -136,26 +125,26 @@ Future<Map<String, String>?> updateDisasterEventsDialog(BuildContext context,
           ),
           ElevatedButton(
             onPressed: () async {
-              await updateDisasterEvents(
-                event['event_id'],
-                disasterNameController.text,
-                disasterTypeController.text,
-                disasterLocationController.text,
-                disasterStartDateController.text,
-                disasterEndDateController.text,
-                disasterDescriptionController.text,
+              await updateAids(
+                rsc['distribution_id'],
+                aidEventIdController.text,
+                aidResourceIdController.text,
+                aidVolunteerIdController.text,
+                aidQuantityController.text,
+                aidDistributionDateController.text,
+                aidLocationController.text,
               );
               if (context.mounted) {
                 Navigator.of(context).pop();
               }
               completer.complete({
-                'eventId': event['event_id'],
-                'disasterName': disasterNameController.text,
-                'disasterType': disasterTypeController.text,
-                'disasterLocation': disasterLocationController.text,
-                'disasterStartDate': disasterStartDateController.text,
-                'disasterEndDate': disasterEndDateController.text,
-                'disasterDescription': disasterDescriptionController.text,
+                'distributionId': rsc['distribution_id'],
+                'aidEventId': aidEventIdController.text,
+                'aidResourceId': aidResourceIdController.text,
+                'aidVolunteerId': aidVolunteerIdController.text,
+                'aidQuantity': aidQuantityController.text,
+                'aidDistributionDate': aidDistributionDateController.text,
+                'aidLocation': aidLocationController.text,
               });
             },
             style: ElevatedButton.styleFrom(
