@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-class DisplayDisasterEvents extends StatelessWidget {
-  final Map<String, dynamic> event;
+class DisplayAidDistribution extends StatelessWidget {
+  final Map<String, dynamic> rsc;
 
-  const DisplayDisasterEvents({super.key, required this.event});
+  const DisplayAidDistribution({super.key, required this.rsc});
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +23,24 @@ class DisplayDisasterEvents extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               const Text(
+                'Distribution ID',
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.white54,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                event['distribution_id'].toString(),
+                style: const TextStyle(
+                  fontSize: 20,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const Divider(color: Colors.white24, height: 24),
+              const Text(
                 'Event ID',
                 style: TextStyle(
                   fontSize: 16,
@@ -32,25 +50,7 @@ class DisplayDisasterEvents extends StatelessWidget {
               ),
               const SizedBox(height: 4),
               Text(
-                event['event_id'].toString(),
-                style: const TextStyle(
-                  fontSize: 20,
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              const Divider(color: Colors.white24, height: 24),
-              const Text(
-                'Event Name',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.white54,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                event['event_name'],
+                rsc['event_id'],
                 style: const TextStyle(
                   fontSize: 18,
                   color: Colors.white,
@@ -58,7 +58,7 @@ class DisplayDisasterEvents extends StatelessWidget {
               ),
               const Divider(color: Colors.white24, height: 24),
               const Text(
-                'Event Type',
+                'Resource ID',
                 style: TextStyle(
                   fontSize: 16,
                   color: Colors.white54,
@@ -67,7 +67,7 @@ class DisplayDisasterEvents extends StatelessWidget {
               ),
               const SizedBox(height: 4),
               Text(
-                event['event_type'],
+                rsc['resource_id'],
                 style: const TextStyle(
                   fontSize: 18,
                   color: Colors.white,
@@ -75,7 +75,7 @@ class DisplayDisasterEvents extends StatelessWidget {
               ),
               const Divider(color: Colors.white24, height: 24),
               const Text(
-                'Location',
+                'Volunteer ID',
                 style: TextStyle(
                   fontSize: 16,
                   color: Colors.white54,
@@ -84,7 +84,7 @@ class DisplayDisasterEvents extends StatelessWidget {
               ),
               const SizedBox(height: 4),
               Text(
-                event['location'],
+                event['volunteer_id'],
                 style: const TextStyle(
                   fontSize: 18,
                   color: Colors.white,
@@ -97,7 +97,7 @@ class DisplayDisasterEvents extends StatelessWidget {
                   Column(
                     children: [
                       const Text(
-                        'Start Date',
+                        'Quantity Distributed',
                         style: TextStyle(
                           fontSize: 16,
                           color: Colors.white54,
@@ -105,7 +105,7 @@ class DisplayDisasterEvents extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        event['start_date'],
+                        rsc['quantity_distributed'],
                         style: const TextStyle(
                           fontSize: 18,
                           color: Colors.white,
@@ -116,7 +116,7 @@ class DisplayDisasterEvents extends StatelessWidget {
                   Column(
                     children: [
                       const Text(
-                        'End Date',
+                        'Distribution Date',
                         style: TextStyle(
                           fontSize: 16,
                           color: Colors.white54,
@@ -124,7 +124,7 @@ class DisplayDisasterEvents extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        event['end_date'],
+                        rsc['distribution_date'],
                         style: const TextStyle(
                           fontSize: 18,
                           color: Colors.white,
@@ -136,7 +136,7 @@ class DisplayDisasterEvents extends StatelessWidget {
               ),
               const Divider(color: Colors.white24, height: 24),
               const Text(
-                'Description',
+                'Location',
                 style: TextStyle(
                   fontSize: 16,
                   color: Colors.white54,
@@ -145,7 +145,7 @@ class DisplayDisasterEvents extends StatelessWidget {
               ),
               const SizedBox(height: 4),
               Text(
-                event['description'] ?? 'No description available',
+                rsc['location'] ?? 'No description available',
                 style: const TextStyle(
                   fontSize: 16,
                   color: Colors.white70,
