@@ -18,15 +18,15 @@ class AidDistributionScreen extends StatefulWidget {
 class _AidDistributionScreenState extends State<AidDistributionScreen> {
   late Future<List<Map<String, dynamic>>> futureGetAidDistribution;
   dynamic response;
-  List<Map<String, dynamic>> allEvents = [];
+  List<Map<String, dynamic>> allAids = [];
 
   @override
   void initState() {
     super.initState();
     futureGetAidDistribution = fetchAidDistribution();
-    futureGetAidDistribution.then((events) {
+    futureGetAidDistribution.then((aids) {
       setState(() {
-        allEvents = events;
+        allAids = aids;
       });
     });
   }
@@ -63,9 +63,9 @@ class _AidDistributionScreenState extends State<AidDistributionScreen> {
             body: Column(
               children: [
                 ListView.builder(
-                  itemCount: allEvents.length,
+                  itemCount: allAids.length,
                   itemBuilder: (context, index) {
-                    final rsc = allEvents[index];
+                    final rsc = allAids[index];
                     return Padding(
                       padding: const EdgeInsets.symmetric(
                           vertical: 8.0, horizontal: 16.0),
@@ -79,7 +79,7 @@ class _AidDistributionScreenState extends State<AidDistributionScreen> {
                                 devtools.log('Slide action pressed');
                                 deleteAidDistribution(rsc['distribution_id']);
                                 setState(() {
-                                  allEvents.remove(rsc);
+                                  allAids.remove(rsc);
                                 });
                               },
                               backgroundColor:
@@ -149,7 +149,7 @@ class _AidDistributionScreenState extends State<AidDistributionScreen> {
                                             fetchAidDistribution();
                                         futureGetAidDistribution.then((events) {
                                           setState(() {
-                                            allEvents = events;
+                                            allAids = events;
                                           });
                                         });
                                       });
@@ -176,7 +176,7 @@ class _AidDistributionScreenState extends State<AidDistributionScreen> {
                     futureGetAidDistribution = fetchAidDistribution();
                     futureGetAidDistribution.then((events) {
                       setState(() {
-                        allEvents = events;
+                        allAids = events;
                       });
                     });
                   });
