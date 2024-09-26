@@ -9,11 +9,12 @@ String token = _box.get('token');
 String cleanedToken = token.replaceAll('"', '').trim();
 
 Future<List<Map<String, dynamic>>> fetchDisasterEvents() async {
+  devtools.log(cleanedToken);
   final response = await http.post(
     Uri.parse('${url}select'),
     headers: {
       'Content-Type': 'application/json',
-      'Authoriztion': 'Bearer $token',
+      'Authorization': 'Bearer $cleanedToken',
       },
     body: jsonEncode({'table': 'disaster_events'}),
   );
