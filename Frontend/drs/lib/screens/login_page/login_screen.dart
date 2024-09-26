@@ -1,3 +1,4 @@
+import 'package:drs/services/authorization/user.dart';
 import 'package:flutter/material.dart';
 import 'package:drs/services/api/login_api.dart';
 import 'package:drs/screens/main_menu_page/main_menu_screen.dart';
@@ -18,6 +19,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   bool _isLoading = false;
   String? _errorMessage;
+  userAuth user = userAuth();
 
   Future<void> login() async {
     setState(() {
@@ -32,6 +34,7 @@ class _LoginScreenState extends State<LoginScreen> {
       var response = await loginUser(username, password);
       devtools.log(response.statusCode.toString());
       if (response.statusCode == 200) {
+        user.setUser(username, password, 'admin', response.body);
         Navigator.pushReplacement(
           // ignore: use_build_context_synchronously
           context,

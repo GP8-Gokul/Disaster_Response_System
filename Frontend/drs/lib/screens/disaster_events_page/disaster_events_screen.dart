@@ -195,16 +195,11 @@ class _DisasterEventsScreenState extends State<DisasterEventsScreen> {
                                                     event,
                                                     response);
                                             if (result != null) {
+                                              final updatedEvents =
+                                                  await fetchDisasterEvents();
                                               setState(() {
-                                                futureGetDisasterEvents =
-                                                    fetchDisasterEvents();
-                                                futureGetDisasterEvents
-                                                    .then((events) {
-                                                  setState(() {
-                                                    allEvents = events;
-                                                    filteredEvents = events;
-                                                  });
-                                                });
+                                                allEvents = updatedEvents;
+                                                filteredEvents = updatedEvents;
                                               });
                                             }
                                           },

@@ -7,9 +7,9 @@ def update_interface(data):
 
         table = data["table"]
 
-        if data["condition_value"]:
-            result = update_record(table, data.get("column"), data.get("value"), data.get("condition_column"),data.get("condition_value"))
-            return result if result else {"status": "success", "message": "Record updated successfully"}, 200
+        # if data["condition_value"]:
+        #     result = update_record(table, data.get("column"), data.get("value"), data.get("condition_column"),data.get("condition_value"))
+        #     return result if result else {"status": "success", "message": "Record updated successfully"}, 200
 
         if table == "disaster_events":
             result = update_disaster_event(table, data.get("event_id"), data.get("event_name"), data.get("event_type"), data.get("location"), data.get("start_date"), data.get("end_date"), data.get("description"))
