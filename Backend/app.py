@@ -37,7 +37,7 @@ def login():
     if(result):
         role=result[0][2]
         token = create_access_token(identity=data['username'],additional_claims={"sub": role})
-        return jsonify({"token": token}), 200
+        return jsonify(token), 200
     else:
         token = "Invalid"
         return jsonify({"message": "Invalid credentials"}), 401
