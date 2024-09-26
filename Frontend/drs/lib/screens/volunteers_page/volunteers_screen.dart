@@ -1,7 +1,7 @@
 import 'package:drs/screens/hero_dialog_route.dart';
 import 'package:drs/screens/volunteers_page/display_volunteer.dart';
 import 'package:drs/screens/volunteers_page/insert_volunteer.dart';
-import 'package:drs/services/api/volunteer_api.dart';
+import 'package:drs/services/api/root_api.dart';
 import 'package:drs/widgets/background_image.dart';
 import 'package:drs/widgets/custom_appbar.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +23,7 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
   @override
   void initState() {
     super.initState();
-    futureGetVolunteers = fetchVolunteers();
+    futureGetVolunteers = fetchdata('volunteers');
   }
 
   @override
@@ -33,7 +33,7 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
         children: [
           const BackgroundImage(),
           Scaffold(
-            appBar: const CustomAppbar(),
+            appBar: const CustomAppbar(text: 'Volunteers'),
             body: buildFutureBuilder(),
             floatingActionButton: buildFloatingActionButton(),
             backgroundColor: Colors.transparent,
@@ -113,10 +113,10 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
   FloatingActionButton buildFloatingActionButton() {
     return FloatingActionButton(
       onPressed: () async {
-        final result = await showVolunteerDialog(context, fetchVolunteers, response);
+        final result = await showVolunteerDialog(context, () => fetchdata('volunteers'), response);
         if (result != null) {
           setState(() {
-            futureGetVolunteers = fetchVolunteers();
+            futureGetVolunteers = fetchdata('volunteers');
           });
         }
       },

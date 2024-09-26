@@ -1,5 +1,14 @@
 import 'dart:convert';
 
+
+List<Map<String, dynamic>> decodeTableSelect(String tableName, response){
+  if(tableName == 'volunteers'){
+    return decodeVolunteerdata(response);
+  }
+  throw Exception('Unsupported table name: $tableName');
+}
+
+
 List<Map<String, dynamic>> decodeVolunteerdata(response){
   List<dynamic> data = jsonDecode(response.body);
       return data.map((event) => {

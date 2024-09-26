@@ -1,12 +1,17 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 
 class CustomAppbar extends StatelessWidget implements PreferredSizeWidget {
-  const CustomAppbar({super.key});
+  final String text;
+  const CustomAppbar({
+    super.key,
+    required this.text,
+  });
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-    title: const Text('Volunteers'),
+    title: Text(text),
     centerTitle: true,
     backgroundColor: const Color.fromARGB(57, 0, 0, 0),
     titleTextStyle: const TextStyle(

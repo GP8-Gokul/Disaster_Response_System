@@ -1,24 +1,11 @@
 import 'dart:convert';
-import 'package:drs/services/api/json_decode.dart';
 import 'package:drs/services/api/root_api.dart';
 import 'dart:developer' as devtools show log;
 import 'package:http/http.dart' as http;
 
 
 
-Future<List<Map<String, dynamic>>> fetchVolunteers() async {
-  final response = await http.post(
-    Uri.parse('${url}select'),
-    headers: {'Content-Type': 'application/json'},
-    body: jsonEncode({'table': 'volunteers'}),
-  );
 
-  if (response.statusCode == 200) {
-    return decodeVolunteerdata(response);
-  } else {
-    throw Exception('Failed to load volunteers');
-  }
-}
 
 Future addVolunteer(volunteerName, volunteerContactInfo, volunteerSkills,
     volunteerAvailabilityStatus, eventId) async {
