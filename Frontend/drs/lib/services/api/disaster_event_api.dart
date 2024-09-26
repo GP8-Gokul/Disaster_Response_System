@@ -3,10 +3,15 @@ import 'package:drs/services/api/root_api.dart';
 import 'package:http/http.dart' as http;
 import 'dart:developer' as devtools show log;
 
+String? token;
+
 Future<List<Map<String, dynamic>>> fetchDisasterEvents() async {
   final response = await http.post(
     Uri.parse('${url}select'),
-    headers: {'Content-Type': 'application/json'},
+    headers: {
+      'Content-Type': 'application/json',
+      'Authoriztion': 'Bearer $token',
+      },
     body: jsonEncode({'table': 'disaster_events'}),
   );
 

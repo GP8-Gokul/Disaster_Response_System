@@ -43,19 +43,19 @@ def login():
         return jsonify({"message": "Invalid credentials"}), 401
 
 @app.route('/insert', methods=['POST'])
-@jwt_required()
+#@jwt_required()
 def insert():
     data = request.get_json()
     return jsonify(insert_interface(data))
 
 @app.route('/delete', methods=['POST'])
-@jwt_required()
+#@jwt_required()
 def delete():
     data = request.get_json()
     return jsonify(delete_interface(data))
 
 @app.route('/update', methods=['POST'])
-@jwt_required()
+#@jwt_required()
 def update():
     data = request.get_json()
     return jsonify(update_interface(data))
