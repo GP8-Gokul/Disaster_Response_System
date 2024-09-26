@@ -3,45 +3,45 @@ import 'package:drs/services/api/root_api.dart';
 import 'package:http/http.dart' as http;
 import 'dart:developer' as devtools show log;
 
-Future<List<Map<String, dynamic>>> fetchDisasterEvents() async {
+Future<List<Map<String, dynamic>>> fetchAidDistribution() async {
   final response = await http.post(
     Uri.parse('${url}select'),
     headers: {'Content-Type': 'application/json'},
-    body: jsonEncode({'table': 'disaster_events'}),
+    body: jsonEncode({'table': 'aid_distribution'}),
   );
 
   if (response.statusCode == 200) {
     List<dynamic> data = jsonDecode(response.body);
     return data
-        .map((event) => {
-              'event_id': event['event_id'],
-              'event_name': event['event_name'],
-              'event_type': event['event_type'],
-              'location': event['location'],
-              'start_date': event['start_date'],
-              'end_date': event['end_date'],
-              'description': event['description'],
+        .map((rsc) => {
+              'distribution_id': rsc['distribution_id'],
+              'event_id': rsc['event_id'],
+              'resource_id': rsc['resource_id'],
+              'volunteer_id': rsc['volunteer_id'],
+              'quantity_distributed': rsc['quantity_distributed'],
+              'distribution_date': rsc['distribution_date'],
+              'location': rsc['location'],
             })
         .toList();
   } else {
-    throw Exception('Failed to load disaster events');
+    throw Exception('Failed to load aid distribution');
   }
 }
 
-Future addDisasterEvents(disasterName, disasterType, disasterLocation,
-    disasterStartDate, disasterEndDate, disasterDescription) async {
-  devtools.log('addDisasterEvents');
+Future addAidDistribution(aidEventId, aidResourceId, aidVolunteerId,
+    aidQuantity, aidDistributionDate, aidLocation) async {
+  devtools.log('addAidDistribution');
   final response = await http.post(
     Uri.parse('${url}insert'),
     headers: {'Content-Type': 'application/json'},
     body: jsonEncode({
-      'table': 'disaster_events',
-      'event_name': disasterName,
-      'event_type': disasterType,
-      'location': disasterLocation,
-      'start_date': disasterStartDate,
-      'end_date': disasterEndDate,
-      'description': disasterDescription,
+      'table': 'aid_distribution',
+      'event_id': event_id,
+      'resource_id': resource_id,
+      'volunteer_id': volunteer_id,
+      'quantity_distributed': quantity_distributed,
+      'distribution_date': aidDistributionDate,
+      'location': aidLocation,
     }),
   );
   devtools.log(response.body);
@@ -53,51 +53,51 @@ Future addDisasterEvents(disasterName, disasterType, disasterLocation,
   }
 }
 
-Future deleteDisasterEvent(eventId) async {
+Future deleteAidDistribution(distributionId) async {
   final response = await http.post(
     Uri.parse('${url}delete'),
     headers: {'Content-Type': 'application/json'},
     body: jsonEncode({
-      'table': 'disaster_events',
-      'column': 'event_id',
-      'value': eventId,
+      'table': 'aid_distribution',
+      'column': 'distribution_id',
+      'value': distributionId,
     }),
   );
 
   if (response.statusCode == 200) {
     return response;
   } else {
-    throw Exception('Failed to delete disaster event');
+    throw Exception('Failed to delete aid distribution');
   }
 }
 
-Future updateDisasterEvents(
-    eventId,
-    disasterName,
-    disasterType,
-    disasterLocation,
-    disasterStartDate,
-    disasterEndDate,
-    disasterDescription) async {
-  devtools.log('updateDisasterEvents');
+Future updateAidDistribution(
+    distributionId,
+    aidEventId,
+    aidResourceId,
+    aidVolunteerId,
+    aidQuantity,
+    aidDistributionDate,
+    aidLocation) async {
+  devtools.log('updateAidDistribution');
   final response = await http.post(
     Uri.parse('${url}update'),
     headers: {'Content-Type': 'application/json'},
     body: jsonEncode({
-      'table': 'disaster_events',
-      'event_id': eventId,
-      'event_name': disasterName,
-      'event_type': disasterType,
-      'location': disasterLocation,
-      'start_date': disasterStartDate,
-      'end_date': disasterEndDate,
-      'description': disasterDescription,
+      'table': 'aid_distribution',
+      'distribution_id': distributionId,
+      'event_id': aidEventId,
+      'resource_id': aidResourceId,
+      'volunteer_id': aidVolunteerId,
+      'quantity_distributed': aidQuantity,
+      'distribution_date': aidDistributionDate,
+      'location': aidLocation,
     }),
   );
   devtools.log(response.body);
   if (response.statusCode == 200) {
     return response;
   } else {
-    throw Exception('Failed to update disaster event');
+    throw Exception('Failed to update aid distribution');
   }
 }
