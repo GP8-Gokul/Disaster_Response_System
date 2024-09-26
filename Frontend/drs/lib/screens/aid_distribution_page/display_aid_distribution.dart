@@ -50,7 +50,7 @@ class DisplayAidDistribution extends StatelessWidget {
               ),
               const SizedBox(height: 4),
               Text(
-                rsc['event_id'],
+                rsc['event_id'].toString(),
                 style: const TextStyle(
                   fontSize: 18,
                   color: Colors.white,
@@ -67,7 +67,7 @@ class DisplayAidDistribution extends StatelessWidget {
               ),
               const SizedBox(height: 4),
               Text(
-                rsc['resource_id'],
+                rsc['resource_id'].toString(),
                 style: const TextStyle(
                   fontSize: 18,
                   color: Colors.white,
@@ -84,7 +84,7 @@ class DisplayAidDistribution extends StatelessWidget {
               ),
               const SizedBox(height: 4),
               Text(
-                rsc['volunteer_id'],
+                rsc['volunteer_id'].toString(),
                 style: const TextStyle(
                   fontSize: 18,
                   color: Colors.white,
@@ -100,7 +100,7 @@ class DisplayAidDistribution extends StatelessWidget {
                 ),
               ),
               Text(
-                rsc['quantity_distributed'],
+                rsc['quantity_distributed'].toString(),
                 style: const TextStyle(
                   fontSize: 18,
                   color: Colors.white,

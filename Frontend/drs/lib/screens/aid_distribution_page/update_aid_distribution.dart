@@ -10,13 +10,13 @@ Future<Map<String, String>?> updateAidDistributionDialog(BuildContext context,
     context: context,
     builder: (BuildContext context) {
       TextEditingController aidEventIdController =
-          TextEditingController(text: rsc['event_id']);
+          TextEditingController(text: rsc['event_id'].toString());
       TextEditingController aidResourceIdController =
-          TextEditingController(text: rsc['resource_id']);
+          TextEditingController(text: rsc['resource_id'].toString());
       TextEditingController aidVolunteerIdController =
-          TextEditingController(text: rsc['volunteer_id']);
+          TextEditingController(text: rsc['volunteer_id'].toString());
       TextEditingController aidQuantityController =
-          TextEditingController(text: rsc['quantity_distributed']);
+          TextEditingController(text: rsc['quantity_distributed'].toString());
       TextEditingController aidDistributionDateController =
           TextEditingController(text: rsc['distribution_date']);
       TextEditingController aidLocationController =
