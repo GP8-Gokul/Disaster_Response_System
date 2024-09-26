@@ -62,107 +62,111 @@ class _AidDistributionScreenState extends State<AidDistributionScreen> {
             ),
             body: Column(
               children: [
-                ListView.builder(
-                  itemCount: allAids.length,
-                  itemBuilder: (context, index) {
-                    final rsc = allAids[index];
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 8.0, horizontal: 16.0),
-                      child: Slidable(
-                        endActionPane: ActionPane(
-                          motion: const StretchMotion(),
-                          children: [
-                            SlidableAction(
-                              borderRadius: BorderRadius.circular(25),
-                              onPressed: (context) {
-                                devtools.log('Slide action pressed');
-                                deleteAidDistribution(rsc['distribution_id']);
-                                setState(() {
-                                  allAids.remove(rsc);
-                                });
-                              },
-                              backgroundColor:
-                                  const Color.fromARGB(148, 226, 125, 125),
-                              icon: Icons.delete,
-                              foregroundColor:
-                                  const Color.fromARGB(255, 74, 71, 71),
-                            ),
-                          ],
-                        ),
-                        child: GestureDetector(
-                          onTap: () {
-                            devtools.log('Event tapped');
-                            Navigator.of(context).push(
-                              HeroDialogRoute(
-                                builder: (context) => DisplayAidDistribution(
-                                  rsc: rsc,
-                                ),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: allAids.length,
+                    itemBuilder: (context, index) {
+                      final rsc = allAids[index];
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 8.0, horizontal: 16.0),
+                        child: Slidable(
+                          endActionPane: ActionPane(
+                            motion: const StretchMotion(),
+                            children: [
+                              SlidableAction(
+                                borderRadius: BorderRadius.circular(25),
+                                onPressed: (context) {
+                                  devtools.log('Slide action pressed');
+                                  deleteAidDistribution(rsc['distribution_id']);
+                                  setState(() {
+                                    allAids.remove(rsc);
+                                  });
+                                },
+                                backgroundColor:
+                                    const Color.fromARGB(148, 226, 125, 125),
+                                icon: Icons.delete,
+                                foregroundColor:
+                                    const Color.fromARGB(255, 74, 71, 71),
                               ),
-                            );
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: const Color.fromARGB(255, 70, 70, 70)
-                                  .withOpacity(0.6),
-                              borderRadius: BorderRadius.circular(25.0),
-                            ),
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 16.0, horizontal: 24.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "Distribution ID: ${rsc['distribution_id']}",
-                                        style: const TextStyle(
-                                          fontSize: 20.0,
-                                          fontWeight: FontWeight.bold,
-                                          color:
-                                              Color.fromARGB(255, 41, 39, 39),
-                                        ),
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ],
+                            ],
+                          ),
+                          child: GestureDetector(
+                            onTap: () {
+                              devtools.log('Event tapped');
+                              Navigator.of(context).push(
+                                HeroDialogRoute(
+                                  builder: (context) => DisplayAidDistribution(
+                                    rsc: rsc,
                                   ),
                                 ),
-                                IconButton(
-                                  icon: const Icon(
-                                    Icons.edit,
-                                    color: Colors.white,
+                              );
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: const Color.fromARGB(255, 70, 70, 70)
+                                    .withOpacity(0.6),
+                                borderRadius: BorderRadius.circular(25.0),
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 16.0, horizontal: 24.0),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "Distribution ID: ${rsc['distribution_id']}",
+                                          style: const TextStyle(
+                                            fontSize: 20.0,
+                                            fontWeight: FontWeight.bold,
+                                            color:
+                                                Color.fromARGB(255, 41, 39, 39),
+                                          ),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                  onPressed: () async {
-                                    devtools.log('Edit button pressed');
-                                    final result =
-                                        await updateAidDistributionDialog(
-                                            context,
-                                            fetchAidDistribution,
-                                            rsc,
-                                            response);
-                                    if (result != null) {
-                                      setState(() {
-                                        futureGetAidDistribution =
-                                            fetchAidDistribution();
-                                        futureGetAidDistribution.then((events) {
-                                          setState(() {
-                                            allAids = events;
+                                  IconButton(
+                                    icon: const Icon(
+                                      Icons.edit,
+                                      color: Colors.white,
+                                    ),
+                                    onPressed: () async {
+                                      devtools.log('Edit button pressed');
+                                      final result =
+                                          await updateAidDistributionDialog(
+                                              context,
+                                              fetchAidDistribution,
+                                              rsc,
+                                              response);
+                                      if (result != null) {
+                                        setState(() {
+                                          futureGetAidDistribution =
+                                              fetchAidDistribution();
+                                          futureGetAidDistribution
+                                              .then((events) {
+                                            setState(() {
+                                              allAids = events;
+                                            });
                                           });
                                         });
-                                      });
-                                    }
-                                  },
-                                ),
-                              ],
+                                      }
+                                    },
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    );
-                  },
+                      );
+                    },
+                  ),
                 ),
               ],
             ),
@@ -174,9 +178,9 @@ class _AidDistributionScreenState extends State<AidDistributionScreen> {
                 if (result != null) {
                   setState(() {
                     futureGetAidDistribution = fetchAidDistribution();
-                    futureGetAidDistribution.then((events) {
+                    futureGetAidDistribution.then((aids) {
                       setState(() {
-                        allAids = events;
+                        allAids = aids;
                       });
                     });
                   });
