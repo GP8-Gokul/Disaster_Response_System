@@ -1,4 +1,4 @@
-import 'package:drs/services/api/disaster_event_api.dart';
+import 'package:drs/services/api/aid_distribution_api.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
@@ -11,13 +11,11 @@ Future<Map<String, String>?> insertAidDistributionDialog(
     builder: (BuildContext context) {
       TextEditingController aidEventIdController = TextEditingController();
       TextEditingController aidResourceIdController = TextEditingController();
-      TextEditingController aidVolunteerIdController =
+      TextEditingController aidVolunteerIdController = TextEditingController();
+      TextEditingController aidQuantityController = TextEditingController();
+      TextEditingController aidDistributionDateController =
           TextEditingController();
-      TextEditingController aidQuantityController =
-          TextEditingController();
-      TextEditingController aidDistributionDateController = TextEditingController();
-      TextEditingController aidLocationController =
-          TextEditingController();
+      TextEditingController aidLocationController = TextEditingController();
 
       return AlertDialog(
         shape: RoundedRectangleBorder(
@@ -65,8 +63,7 @@ Future<Map<String, String>?> insertAidDistributionDialog(
               ),
               const SizedBox(height: 15),
               TextField(
-                controller:
-aidQuantityController,
+                controller: aidQuantityController,
                 decoration: InputDecoration(
                   labelText: 'Quantity Distributed',
                   border: OutlineInputBorder(
@@ -121,7 +118,7 @@ aidQuantityController,
           ),
           ElevatedButton(
             onPressed: () async {
-              await addAids(
+              await addAidDistribution(
                 aidEventIdController.text,
                 aidResourceIdController.text,
                 aidVolunteerIdController.text,

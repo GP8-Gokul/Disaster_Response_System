@@ -1,4 +1,4 @@
-import 'package:drs/services/api/disaster_event_api.dart';
+import 'package:drs/services/api/aid_distribution_api.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
@@ -68,8 +68,7 @@ Future<Map<String, String>?> updateAidDistributionDialog(BuildContext context,
               ),
               const SizedBox(height: 15),
               TextField(
-                controller:
-aidQuantityController,
+                controller: aidQuantityController,
                 decoration: InputDecoration(
                   labelText: 'Quantity Distributed',
                   border: OutlineInputBorder(
@@ -79,8 +78,7 @@ aidQuantityController,
               ),
               const SizedBox(height: 15),
               TextField(
-                controller: 
-aidDistributionDateController,
+                controller: aidDistributionDateController,
                 decoration: InputDecoration(
                   labelText: 'Distribution Date',
                   border: OutlineInputBorder(
@@ -125,7 +123,7 @@ aidDistributionDateController,
           ),
           ElevatedButton(
             onPressed: () async {
-              await updateAids(
+              await updateAidDistribution(
                 rsc['distribution_id'],
                 aidEventIdController.text,
                 aidResourceIdController.text,

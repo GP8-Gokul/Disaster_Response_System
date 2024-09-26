@@ -32,7 +32,7 @@ class DisplayAidDistribution extends StatelessWidget {
               ),
               const SizedBox(height: 4),
               Text(
-                event['distribution_id'].toString(),
+                rsc['distribution_id'].toString(),
                 style: const TextStyle(
                   fontSize: 20,
                   color: Colors.white,
@@ -84,55 +84,43 @@ class DisplayAidDistribution extends StatelessWidget {
               ),
               const SizedBox(height: 4),
               Text(
-                event['volunteer_id'],
+                rsc['volunteer_id'],
                 style: const TextStyle(
                   fontSize: 18,
                   color: Colors.white,
                 ),
               ),
               const Divider(color: Colors.white24, height: 24),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    children: [
-                      const Text(
-                        'Quantity Distributed',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white54,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(
-                        rsc['quantity_distributed'],
-                        style: const TextStyle(
-                          fontSize: 18,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ],
-                  ),
-                  Column(
-                    children: [
-                      const Text(
-                        'Distribution Date',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white54,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(
-                        rsc['distribution_date'],
-                        style: const TextStyle(
-                          fontSize: 18,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+              const Text(
+                'Quantity Distributed',
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.white54,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Text(
+                rsc['quantity_distributed'],
+                style: const TextStyle(
+                  fontSize: 18,
+                  color: Colors.white,
+                ),
+              ),
+              const Divider(color: Colors.white24, height: 24),
+              const Text(
+                'Distribution Date',
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.white54,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Text(
+                rsc['distribution_date'],
+                style: const TextStyle(
+                  fontSize: 18,
+                  color: Colors.white,
+                ),
               ),
               const Divider(color: Colors.white24, height: 24),
               const Text(

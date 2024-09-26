@@ -1,7 +1,7 @@
-import 'package:drs/screens/disaster_events_page/display_disaster_events.dart';
-import 'package:drs/screens/disaster_events_page/insert_disaster_events.dart';
-import 'package:drs/screens/disaster_events_page/update_disaster_events.dart';
-import 'package:drs/services/api/disaster_event_api.dart';
+import 'package:drs/screens/aid_distribution_page/display_aid_distribution.dart';
+import 'package:drs/screens/aid_distribution_page/insert_aid_distribution.dart';
+import 'package:drs/screens/aid_distribution_page/update_aid_distribution.dart';
+import 'package:drs/services/api/aid_distribution_api.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer' as devtools show log;
 import 'package:drs/screens/hero_dialog_route.dart';
@@ -19,9 +19,6 @@ class _AidDistributionScreenState extends State<AidDistributionScreen> {
   late Future<List<Map<String, dynamic>>> futureGetAidDistribution;
   dynamic response;
   List<Map<String, dynamic>> allEvents = [];
-  List<Map<String, dynamic>> filteredEvents = [];
-
-  TextEditingController searchController = TextEditingController();
 
   @override
   void initState() {
@@ -30,25 +27,13 @@ class _AidDistributionScreenState extends State<AidDistributionScreen> {
     futureGetAidDistribution.then((events) {
       setState(() {
         allEvents = events;
-        filteredEvents = events;
       });
     });
-    searchController.addListener(_filterEvents);
   }
 
   @override
   void dispose() {
-    searchController.dispose();
     super.dispose();
-  }
-
-  void _filterEvents() {
-    final query = searchController.text.toLowerCase();
-    setState(() {
-      filteredEvents = allEvents
-          .where((rsc) => rsc['event_id'].toLowerCase().contains(query))
-          .toList();
-    });
   }
 
   @override
@@ -77,146 +62,107 @@ class _AidDistributionScreenState extends State<AidDistributionScreen> {
             ),
             body: Column(
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: TextField(
-                    controller: searchController,
-                    decoration: InputDecoration(
-                      labelText: 'Search Events',
-                      hintText: 'Enter event id',
-                      prefixIcon: const Icon(Icons.search),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: filteredEvents.isEmpty
-                      ? const Center(
-                          child: Text(
-                            'Record not present.',
-                            style: TextStyle(fontSize: 18.0),
-                          ),
-                        )
-                      : ListView.builder(
-                          itemCount: filteredEvents.length,
-                          itemBuilder: (context, index) {
-                            final rsc = filteredEvents[index];
-                            return Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 8.0, horizontal: 16.0),
-                              child: Slidable(
-                                endActionPane: ActionPane(
-                                  motion: const StretchMotion(),
-                                  children: [
-                                    SlidableAction(
-                                      borderRadius: BorderRadius.circular(25),
-                                      onPressed: (context) {
-                                        devtools.log('Slide action pressed');
-                                        deleteAidDistribution(rsc['distribution_id']);
-                                        setState(() {
-                                          allEvents.remove(rsc);
-                                          filteredEvents.remove(rsc);
-                                        });
-                                      },
-                                      backgroundColor: const Color.fromARGB(
-                                          148, 226, 125, 125),
-                                      icon: Icons.delete,
-                                      foregroundColor:
-                                          const Color.fromARGB(255, 74, 71, 71),
-                                    ),
-                                  ],
-                                ),
-                                child: GestureDetector(
-                                  onTap: () {
-                                    devtools.log('Event tapped');
-                                    Navigator.of(context).push(
-                                      HeroDialogRoute(
-                                        builder: (context) =>
-                                            DisplayAidDistribution(
-                                          rsc: rsc,
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color:
-                                          const Color.fromARGB(255, 70, 70, 70)
-                                              .withOpacity(0.6),
-                                      borderRadius: BorderRadius.circular(25.0),
-                                    ),
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 16.0, horizontal: 24.0),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Expanded(
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                "Event ID: ${rsc['event_id']}",
-                                                style: const TextStyle(
-                                                  fontSize: 20.0,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Color.fromARGB(
-                                                      255, 41, 39, 39),
-                                                ),
-                                                overflow: TextOverflow.ellipsis,
-                                              ),
-                                              const SizedBox(height: 6),
-                                              Text(
-                                                "Distribution ID: ${rsc['distribution_id']}",
-                                                style: const TextStyle(
-                                                  fontSize: 14.0,
-                                                  color: Color.fromARGB(
-                                                      179, 47, 45, 45),
-                                                ),
-                                                overflow: TextOverflow.ellipsis,
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        IconButton(
-                                          icon: const Icon(
-                                            Icons.edit,
-                                            color: Colors.white,
-                                          ),
-                                          onPressed: () async {
-                                            devtools.log('Edit button pressed');
-                                            final result =
-                                                await updateAidDistributionDialog(
-                                                    context,
-                                                    fetchAidDistribution,
-                                                    event,
-                                                    response);
-                                            if (result != null) {
-                                              setState(() {
-                                                futureGetAidDistribution =
-                                                    fetchAidDistribution();
-                                                futureGetAidDistribution
-                                                    .then((events) {
-                                                  setState(() {
-                                                    allEvents = events;
-                                                    filteredEvents = events;
-                                                  });
-                                                });
-                                              });
-                                            }
-                                          },
-                                        ),
-                                      ],
-                                    ),
-                                  ),
+                ListView.builder(
+                  itemCount: allEvents.length,
+                  itemBuilder: (context, index) {
+                    final rsc = allEvents[index];
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8.0, horizontal: 16.0),
+                      child: Slidable(
+                        endActionPane: ActionPane(
+                          motion: const StretchMotion(),
+                          children: [
+                            SlidableAction(
+                              borderRadius: BorderRadius.circular(25),
+                              onPressed: (context) {
+                                devtools.log('Slide action pressed');
+                                deleteAidDistribution(rsc['distribution_id']);
+                                setState(() {
+                                  allEvents.remove(rsc);
+                                });
+                              },
+                              backgroundColor:
+                                  const Color.fromARGB(148, 226, 125, 125),
+                              icon: Icons.delete,
+                              foregroundColor:
+                                  const Color.fromARGB(255, 74, 71, 71),
+                            ),
+                          ],
+                        ),
+                        child: GestureDetector(
+                          onTap: () {
+                            devtools.log('Event tapped');
+                            Navigator.of(context).push(
+                              HeroDialogRoute(
+                                builder: (context) => DisplayAidDistribution(
+                                  rsc: rsc,
                                 ),
                               ),
                             );
                           },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: const Color.fromARGB(255, 70, 70, 70)
+                                  .withOpacity(0.6),
+                              borderRadius: BorderRadius.circular(25.0),
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 16.0, horizontal: 24.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Distribution ID: ${rsc['distribution_id']}",
+                                        style: const TextStyle(
+                                          fontSize: 20.0,
+                                          fontWeight: FontWeight.bold,
+                                          color:
+                                              Color.fromARGB(255, 41, 39, 39),
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                IconButton(
+                                  icon: const Icon(
+                                    Icons.edit,
+                                    color: Colors.white,
+                                  ),
+                                  onPressed: () async {
+                                    devtools.log('Edit button pressed');
+                                    final result =
+                                        await updateAidDistributionDialog(
+                                            context,
+                                            fetchAidDistribution,
+                                            rsc,
+                                            response);
+                                    if (result != null) {
+                                      setState(() {
+                                        futureGetAidDistribution =
+                                            fetchAidDistribution();
+                                        futureGetAidDistribution.then((events) {
+                                          setState(() {
+                                            allEvents = events;
+                                          });
+                                        });
+                                      });
+                                    }
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
+                      ),
+                    );
+                  },
                 ),
               ],
             ),
@@ -231,7 +177,6 @@ class _AidDistributionScreenState extends State<AidDistributionScreen> {
                     futureGetAidDistribution.then((events) {
                       setState(() {
                         allEvents = events;
-                        filteredEvents = events;
                       });
                     });
                   });
