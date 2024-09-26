@@ -46,7 +46,7 @@ class _AidDistributionScreenState extends State<AidDistributionScreen> {
     final query = searchController.text.toLowerCase();
     setState(() {
       filteredEvents = allEvents
-          .where((event) => event['event_id'].toLowerCase().contains(query))
+          .where((rsc) => rsc['event_id'].toLowerCase().contains(query))
           .toList();
     });
   }
@@ -102,7 +102,7 @@ class _AidDistributionScreenState extends State<AidDistributionScreen> {
                       : ListView.builder(
                           itemCount: filteredEvents.length,
                           itemBuilder: (context, index) {
-                            final event = filteredEvents[index];
+                            final rsc = filteredEvents[index];
                             return Padding(
                               padding: const EdgeInsets.symmetric(
                                   vertical: 8.0, horizontal: 16.0),
@@ -114,10 +114,10 @@ class _AidDistributionScreenState extends State<AidDistributionScreen> {
                                       borderRadius: BorderRadius.circular(25),
                                       onPressed: (context) {
                                         devtools.log('Slide action pressed');
-                                        deleteAidDistribution(event['distribution_id']);
+                                        deleteAidDistribution(rsc['distribution_id']);
                                         setState(() {
-                                          allEvents.remove(event);
-                                          filteredEvents.remove(event);
+                                          allEvents.remove(rsc);
+                                          filteredEvents.remove(rsc);
                                         });
                                       },
                                       backgroundColor: const Color.fromARGB(
@@ -135,7 +135,7 @@ class _AidDistributionScreenState extends State<AidDistributionScreen> {
                                       HeroDialogRoute(
                                         builder: (context) =>
                                             DisplayAidDistribution(
-                                          event: event,
+                                          rsc: rsc,
                                         ),
                                       ),
                                     );
@@ -159,7 +159,7 @@ class _AidDistributionScreenState extends State<AidDistributionScreen> {
                                                 CrossAxisAlignment.start,
                                             children: [
                                               Text(
-                                                "Event ID: ${event['event_id']}",
+                                                "Event ID: ${rsc['event_id']}",
                                                 style: const TextStyle(
                                                   fontSize: 20.0,
                                                   fontWeight: FontWeight.bold,
@@ -170,7 +170,7 @@ class _AidDistributionScreenState extends State<AidDistributionScreen> {
                                               ),
                                               const SizedBox(height: 6),
                                               Text(
-                                                "Distribution ID: ${event['distribution_id']}",
+                                                "Distribution ID: ${rsc['distribution_id']}",
                                                 style: const TextStyle(
                                                   fontSize: 14.0,
                                                   color: Color.fromARGB(
