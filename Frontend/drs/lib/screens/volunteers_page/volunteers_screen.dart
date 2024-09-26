@@ -67,22 +67,17 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
           itemBuilder: (context, index) {
             final event = snapshot.data![index];
             return Padding(
-              padding: const EdgeInsets.only(
-                  top: 8.0, left: 8.0, right: 8.0),
+              padding: const EdgeInsets.all(8.0),
               child: ListTile(
                 title: Text("Name: ${event['volunteer_name']}"),
                 subtitle: Text("ID: ${event['volunteer_id']}"),
-                tileColor: const Color.fromARGB(255, 50, 48, 48)
-                    .withOpacity(0.4),
-                trailing: IconButton(
-                  icon: const Icon(Icons.edit,
-                      color: Color.fromARGB(255, 255, 255, 255)),
-                  onPressed: () {
+                tileColor: const Color.fromARGB(255, 50, 48, 48).withOpacity(0.4),
+                trailing: IconButton(icon: const Icon(Icons.edit,color: Color.fromARGB(255, 255, 255, 255)),
+                onPressed: () {
                     
                   },
                 ),
-                contentPadding: const EdgeInsets.symmetric(
-                    vertical: 1.0, horizontal: 16.0),
+                contentPadding: const EdgeInsets.symmetric(vertical: 1.0, horizontal: 16.0),
                 textColor: Colors.black,
                 titleTextStyle: const TextStyle(
                   fontSize: 20.0,
