@@ -14,7 +14,7 @@ Future<List<Map<String, dynamic>>> fetchVolunteers() async {
   );
 
   if (response.statusCode == 200) {
-    return insertVolunteers(response);
+    return decodeVolunteerdata(response);
   } else {
     throw Exception('Failed to load volunteers');
   }

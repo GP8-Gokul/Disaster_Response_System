@@ -35,7 +35,7 @@ class MyApp extends StatelessWidget {
         VolunteersScreen.routeName: (context) => const VolunteersScreen(),
         LoginScreen.routeName: (context) => const LoginScreen(),
       },
-      initialRoute: LoginScreen.routeName,
+      initialRoute: MainMenuScreen.routeName,
     );
   }
 }
