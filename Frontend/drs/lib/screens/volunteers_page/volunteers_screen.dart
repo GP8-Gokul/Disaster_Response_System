@@ -3,6 +3,7 @@ import 'package:drs/screens/volunteers_page/display_volunteer.dart';
 import 'package:drs/screens/volunteers_page/insert_volunteer.dart';
 import 'package:drs/services/api/volunteer_api.dart';
 import 'package:drs/widgets/background_image.dart';
+import 'package:drs/widgets/custom_appbar.dart';
 import 'package:flutter/material.dart';
 
 
@@ -32,7 +33,7 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
         children: [
           const BackgroundImage(),
           Scaffold(
-            appBar: buildAppBar(),
+            appBar: const CustomAppbar(),
             body: buildFutureBuilder(),
             floatingActionButton: buildFloatingActionButton(),
             backgroundColor: Colors.transparent,
@@ -125,15 +126,4 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
   }
 
 
-}
-AppBar buildAppBar() {
-  return AppBar(
-    title: const Text('Volunteers'),
-    centerTitle: true,
-    backgroundColor: const Color.fromARGB(57, 0, 0, 0),
-    titleTextStyle: const TextStyle(
-        fontSize: 24.0,
-        fontWeight: FontWeight.bold,
-        color: Colors.black),
-  );
 }

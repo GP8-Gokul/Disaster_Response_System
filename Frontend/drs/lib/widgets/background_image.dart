@@ -10,6 +10,6 @@ class BackgroundImage extends StatelessWidget {
       'assets/images/background.jpg',
       fit: BoxFit.cover,
     ),
-  );;
+  );
   }
 }
