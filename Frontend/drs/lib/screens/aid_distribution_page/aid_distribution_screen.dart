@@ -93,7 +93,7 @@ class _AidDistributionScreenState extends State<AidDistributionScreen> {
                           ),
                           child: GestureDetector(
                             onTap: () {
-                              devtools.log('Event tapped');
+                              devtools.log('Event for aid tapped');
                               Navigator.of(context).push(
                                 HeroDialogRoute(
                                   builder: (context) => DisplayAidDistribution(
