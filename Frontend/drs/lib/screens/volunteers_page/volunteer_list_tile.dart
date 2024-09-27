@@ -25,10 +25,6 @@ class VolunteerListTile extends StatelessWidget {
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25.0)),
                   onTap: () {
                   },
-                  trailing: IconButton(icon: const Icon(Icons.edit,color: Color.fromARGB(255, 255, 255, 255)),
-                  onPressed: () {
-                    },
-                  ),
                 ),
     );
   }
