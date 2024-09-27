@@ -1,9 +1,9 @@
-import 'package:drs/screens/hero_dialog_route.dart';
-import 'package:drs/screens/volunteers_page/display_volunteer.dart';
-import 'package:drs/screens/volunteers_page/insert_volunteer.dart';
 import 'package:drs/services/api/root_api.dart';
+import 'package:drs/screens/volunteers_page/volunteer_api.dart';
 import 'package:drs/widgets/background_image.dart';
 import 'package:drs/widgets/custom_appbar.dart';
+import 'package:drs/screens/volunteers_page/volunteer_list_tile.dart';
+import 'package:drs/widgets/custom_text_field.dart';
 import 'package:flutter/material.dart';
 
 
@@ -68,38 +68,7 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
             final event = snapshot.data![index];
             return Padding(
               padding: const EdgeInsets.all(8.0),
-              child: ListTile(
-                title: Text("Name: ${event['volunteer_name']}"),
-                subtitle: Text("ID: ${event['volunteer_id']}"),
-                tileColor: const Color.fromARGB(255, 50, 48, 48).withOpacity(0.4),
-                trailing: IconButton(icon: const Icon(Icons.edit,color: Color.fromARGB(255, 255, 255, 255)),
-                onPressed: () {
-                    
-                  },
-                ),
-                contentPadding: const EdgeInsets.symmetric(vertical: 1.0, horizontal: 16.0),
-                textColor: Colors.black,
-                titleTextStyle: const TextStyle(
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.bold,
-                ),
-                subtitleTextStyle: const TextStyle(
-                  fontSize: 14.0,
-                  fontWeight: FontWeight.w500,
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(25.0),
-                ),
-                onTap: () {
-                  Navigator.of(context).push(
-                    HeroDialogRoute(
-                      builder: (context) => Dialog(
-                        child: DisplayVolunteer(volunteer: event),
-                      ),
-                    ),
-                  );
-                },
-              ),
+              child: VolunteerListTile(event: event),
             );
           },
         );
@@ -107,18 +76,69 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
 
   FloatingActionButton buildFloatingActionButton() {
     return FloatingActionButton(
-      onPressed: () async {
-        final result = await showVolunteerDialog(context, () => fetchdata('volunteers'), response);
-        if (result != null) {
-          setState(() {
-            futureGetVolunteers = fetchdata('volunteers');
-          });
-        }
-      },
-      backgroundColor: const Color.fromARGB(255, 50, 48, 48).withOpacity(0.4),
+      backgroundColor: Colors.green.withOpacity(0.7),
       child: const Icon(Icons.add),
+      onPressed: () {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            TextEditingController volunteerNameController = TextEditingController();
+            TextEditingController volunteerContactInfoController = TextEditingController();
+            TextEditingController volunteerSkillsController = TextEditingController();
+            TextEditingController volunteerAvailabilityStatusController = TextEditingController();
+            TextEditingController eventIdController = TextEditingController();
+
+            return AlertDialog(
+              title: const Text('Add New Volunteer'),
+              titleTextStyle: const TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
+              backgroundColor: Colors.grey[900],
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
+                side: const BorderSide(color: Colors.white, width: 2.0),
+                ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  CustomTextField(labelText: 'Volunteer Name', controller: volunteerNameController),
+                  CustomTextField(labelText: 'Contact Info', controller: volunteerContactInfoController),
+                  CustomTextField(labelText: 'Skills', controller: volunteerSkillsController),
+                  CustomTextField(labelText: 'Availability Status', controller: volunteerAvailabilityStatusController),
+                  CustomTextField(labelText: 'Event ID', controller: eventIdController),
+                ],
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text('Cancel'),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  
+                ),
+                TextButton(
+                  child: const Text('Submit'),
+                  onPressed: () async {
+                    response = await addVolunteer(
+                      volunteerNameController.text,
+                      volunteerContactInfoController.text,
+                      volunteerSkillsController.text,
+                      volunteerAvailabilityStatusController.text,
+                      eventIdController.text,
+                    );
+                    if (response != null) {
+                      setState(() {
+                        futureGetVolunteers = fetchdata('volunteers');
+                      });
+                    }
+                    if (context.mounted) {
+                      Navigator.pop(context);
+                    }
+                  }, 
+                ),
+              ],
+            );
+          },
+        ); 
+      },
     );
   }
-
-
 }

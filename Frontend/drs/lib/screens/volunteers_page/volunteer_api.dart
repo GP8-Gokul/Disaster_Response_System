@@ -3,10 +3,6 @@ import 'package:drs/services/api/root_api.dart';
 import 'dart:developer' as devtools show log;
 import 'package:http/http.dart' as http;
 
-
-
-
-
 Future addVolunteer(volunteerName, volunteerContactInfo, volunteerSkills,
     volunteerAvailabilityStatus, eventId) async {
   devtools.log('addVolunteer');

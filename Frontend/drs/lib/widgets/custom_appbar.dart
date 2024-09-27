@@ -13,11 +13,17 @@ class CustomAppbar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
     title: Text(text),
     centerTitle: true,
-    backgroundColor: const Color.fromARGB(57, 0, 0, 0),
+    backgroundColor: Colors.amberAccent.withOpacity(0.5),
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(
+        bottom: Radius.circular(16.0),
+      ),
+    ),
     titleTextStyle: const TextStyle(
         fontSize: 24.0,
         fontWeight: FontWeight.bold,
-        color: Colors.black),
+        color: Colors.black
+        ),
   );
   }
   @override
