@@ -5,6 +5,8 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'dart:developer' as devtools show log;
 
 final _box = Hive.box('DBMSBox');
+String token = _box.get('token');
+String cleanedToken = token.replaceAll('"', '').trim();
 
 Future<List<Map<String, dynamic>>> fetchAidDistribution() async {
   final response = await http.post(
@@ -39,7 +41,7 @@ Future addAidDistribution(aidEventId, aidResourceId, aidVolunteerId,
       Uri.parse('${url}insert'),
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ${_box.get('token')}'
+        'Authorization': 'Bearer $cleanedToken'
       },
       body: jsonEncode({
         'table': 'aid_distribution',
@@ -70,7 +72,7 @@ Future deleteAidDistribution(distributionId) async {
       Uri.parse('${url}delete'),
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ${_box.get('token')}'
+        'Authorization': 'Bearer $cleanedToken'
       },
       body: jsonEncode({
         'table': 'aid_distribution',
@@ -92,32 +94,37 @@ Future deleteAidDistribution(distributionId) async {
 Future updateAidDistribution(distributionId, aidEventId, aidResourceId,
     aidVolunteerId, aidQuantity, aidDistributionDate, aidLocation) async {
   devtools.log('updateAidDistribution');
-  devtools.log(_box.get('token'));
-  if (_box.get('role' == 'admin')) {
-    final response = await http.post(
-      Uri.parse('${url}update'),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ${_box.get('token')}'
-      },
-      body: jsonEncode({
-        'table': 'aid_distribution',
-        'distribution_id': distributionId,
-        'event_id': aidEventId,
-        'resource_id': aidResourceId,
-        'volunteer_id': aidVolunteerId,
-        'quantity_distributed': aidQuantity,
-        'distribution_date': aidDistributionDate,
-        'location': aidLocation,
-      }),
-    );
-    devtools.log(response.body);
-    if (response.statusCode == 200) {
-      return response;
+  devtools.log(cleanedToken);
+  try {
+    if (_box.get('role') == 'admin') {
+      final response = await http.post(
+        Uri.parse('${url}update'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $cleanedToken'
+        },
+        body: jsonEncode({
+          'table': 'aid_distribution',
+          'distribution_id': distributionId,
+          'event_id': aidEventId,
+          'resource_id': aidResourceId,
+          'volunteer_id': aidVolunteerId,
+          'quantity_distributed': aidQuantity,
+          'distribution_date': aidDistributionDate,
+          'location': aidLocation,
+        }),
+      );
+      devtools.log(response.body);
+      if (response.statusCode == 200) {
+        devtools.log('Aid distribution updated');
+        return response;
+      } else {
+        devtools.log('Failed to update aid distribution');
+      }
     } else {
-      throw Exception('Failed to update aid distribution');
+      devtools.log('You are not authorized to update aid distribution');
     }
-  } else {
-    throw Exception('You are not authorized to update aid distribution');
+  } catch (e) {
+    devtools.log(e.toString());
   }
 }

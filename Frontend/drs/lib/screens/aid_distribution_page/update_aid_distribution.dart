@@ -136,7 +136,7 @@ Future<Map<String, String>?> updateAidDistributionDialog(BuildContext context,
                 Navigator.of(context).pop();
               }
               completer.complete({
-                'distributionId': rsc['distribution_id'],
+                'distributionId': rsc['distribution_id'].toString(),
                 'aidEventId': aidEventIdController.text,
                 'aidResourceId': aidResourceIdController.text,
                 'aidVolunteerId': aidVolunteerIdController.text,
