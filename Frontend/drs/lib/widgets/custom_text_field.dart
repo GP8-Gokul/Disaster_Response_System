@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 class CustomTextField extends StatelessWidget {
   final String labelText;
   final TextEditingController controller;
+  final bool readOnly;
   const CustomTextField({
     super.key,
     required this.labelText,
     required this.controller,
+    required this.readOnly,
   });
 
   @override
@@ -15,6 +17,7 @@ class CustomTextField extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: TextField(
+                readOnly: readOnly,
                 controller: controller,
                 style: const TextStyle(color: Colors.white),
                 decoration: InputDecoration(

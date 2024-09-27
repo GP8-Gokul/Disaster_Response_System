@@ -7,7 +7,7 @@ import 'package:drs/widgets/custom_text_field.dart';
 import 'package:flutter/material.dart';
 
 
-
+bool changeInState = false;
 class VolunteersScreen extends StatefulWidget {
   const VolunteersScreen({super.key});
   static String routeName = 'volunteers';
@@ -65,13 +65,28 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
     return ListView.builder(
           itemCount: snapshot.data!.length,
           itemBuilder: (context, index) {
-            final event = snapshot.data![index];
+            final content = snapshot.data![index];
             return Padding(
               padding: const EdgeInsets.all(8.0),
-              child: VolunteerListTile(event: event),
+              child: GestureDetector(
+                onTap: () async {
+                  changeInState = await showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return VolunteerListTile(content: content);
+                    },
+                  ) ?? false; // Ensure changeInState is not null
+                  if (changeInState) {
+                    setState(() {
+                      futureGetVolunteers = fetchdata('volunteers');
+                    });
+                  }
+                },
+                child: VolunteerListTile(content: content),
+              ),
             );
-          },
-        );
+  },
+    );
   }
 
   FloatingActionButton buildFloatingActionButton() {
@@ -99,23 +114,29 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  CustomTextField(labelText: 'Volunteer Name', controller: volunteerNameController),
-                  CustomTextField(labelText: 'Contact Info', controller: volunteerContactInfoController),
-                  CustomTextField(labelText: 'Skills', controller: volunteerSkillsController),
-                  CustomTextField(labelText: 'Availability Status', controller: volunteerAvailabilityStatusController),
-                  CustomTextField(labelText: 'Event ID', controller: eventIdController),
+                  CustomTextField(labelText: 'Volunteer Name', controller: volunteerNameController, readOnly: false),
+                  CustomTextField(labelText: 'Contact Info', controller: volunteerContactInfoController, readOnly: false),
+                  CustomTextField(labelText: 'Skills', controller: volunteerSkillsController, readOnly: false),
+                  CustomTextField(labelText: 'Availability Status', controller: volunteerAvailabilityStatusController, readOnly: false),
+                  CustomTextField(labelText: 'Event ID', controller: eventIdController, readOnly: false),
                 ],
               ),
               actions: <Widget>[
                 TextButton(
-                  child: const Text('Cancel'),
+                  style: TextButton.styleFrom(
+                    backgroundColor: Colors.white,
+                  ),
+                  child: const Text('Cancel', style: TextStyle(color: Colors.black)),
                   onPressed: () {
                     Navigator.pop(context);
                   },
                   
                 ),
                 TextButton(
-                  child: const Text('Submit'),
+                  style: TextButton.styleFrom(
+                    backgroundColor: Colors.white,
+                  ),
+                  child: const Text('Submit', style: TextStyle(color: Colors.black)),
                   onPressed: () async {
                     response = await addVolunteer(
                       volunteerNameController.text,
