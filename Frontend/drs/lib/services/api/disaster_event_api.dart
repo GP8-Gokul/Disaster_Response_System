@@ -14,7 +14,6 @@ Future<List<Map<String, dynamic>>> fetchDisasterEvents() async {
     Uri.parse('${url}select'),
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer $cleanedToken',
       },
     body: jsonEncode({'table': 'disaster_events'}),
   );

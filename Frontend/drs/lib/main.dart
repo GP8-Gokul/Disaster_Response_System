@@ -29,12 +29,9 @@ class MyApp extends StatelessWidget {
       ),
       routes: {
         MainMenuScreen.routeName: (context) => const MainMenuScreen(),
-        AidDistributionScreen.routeName: (context) =>
-            const AidDistributionScreen(),
-        DisasterEventsScreen.routeName: (context) =>
-            const DisasterEventsScreen(),
-        IncidentReportsScreen.routeName: (context) =>
-            const IncidentReportsScreen(),
+        AidDistributionScreen.routeName: (context) => const AidDistributionScreen(),
+        DisasterEventsScreen.routeName: (context) => const DisasterEventsScreen(),
+        IncidentReportsScreen.routeName: (context) => const IncidentReportsScreen(),
         ResourcesScreen.routeName: (context) => const ResourcesScreen(),
         VolunteersScreen.routeName: (context) => const VolunteersScreen(),
         LoginScreen.routeName: (context) => const LoginScreen(),
