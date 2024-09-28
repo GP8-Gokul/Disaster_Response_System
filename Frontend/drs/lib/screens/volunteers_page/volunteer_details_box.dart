@@ -6,9 +6,11 @@ import 'package:flutter/material.dart';
 dynamic response;
 class VolunteerListTile extends StatefulWidget {
   final dynamic content;
+  final VoidCallback onChange;
   const VolunteerListTile({
     super.key,
     required this.content,
+    required this.onChange,
   });
 
   @override
@@ -98,7 +100,8 @@ class VolunteerListTileState extends State<VolunteerListTile> {
                                   onPressed: () async {
                                     response = await deleteData('volunteers','volunteer_id',widget.content['volunteer_id']);
                                     if (response != null && context.mounted) {
-                                        Navigator.pop(context,true);
+                                        widget.onChange();
+                                        Navigator.pop(context);
                                     }
                                   },
                                 ),
@@ -131,7 +134,8 @@ class VolunteerListTileState extends State<VolunteerListTile> {
                                       },
                                     );
                                     if (response != null && context.mounted) {
-                                      Navigator.pop(context,true);
+                                      widget.onChange();
+                                      Navigator.pop(context);
                                     }
                                   }, 
                                 ),

@@ -1,8 +1,7 @@
 import 'package:drs/services/api/root_api.dart';
-import 'package:drs/screens/volunteers_page/volunteer_api.dart';
 import 'package:drs/widgets/background_image.dart';
 import 'package:drs/widgets/custom_appbar.dart';
-import 'package:drs/screens/volunteers_page/volunteer_list_tile.dart';
+import 'package:drs/screens/volunteers_page/volunteer_details_box.dart';
 import 'package:drs/widgets/custom_text_field.dart';
 import 'package:flutter/material.dart';
 
@@ -68,22 +67,14 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
             final content = snapshot.data![index];
             return Padding(
               padding: const EdgeInsets.all(8.0),
-              child: GestureDetector(
-                onTap: () async {
-                  changeInState = await showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return VolunteerListTile(content: content);
-                    },
-                  ) ?? false; // Ensure changeInState is not null
-                  if (changeInState) {
+              child: VolunteerListTile(
+                content: content,
+                onChange: () {
                     setState(() {
                       futureGetVolunteers = fetchdata('volunteers');
                     });
-                  }
-                },
-                child: VolunteerListTile(content: content),
-              ),
+                 },
+                ),
             );
   },
     );
@@ -163,12 +154,15 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
                   ),
                   child: const Text('Submit', style: TextStyle(color: Colors.black)),
                   onPressed: () async {
-                    response = await addVolunteer(
-                      volunteerNameController.text,
-                      volunteerContactInfoController.text,
-                      volunteerSkillsController.text,
-                      volunteerAvailabilityStatusController.text,
-                      eventIdController.text,
+                    response = await insertData(
+                      {
+                        'table': 'volunteers',
+                        'name': volunteerNameController.text,
+                        'contact_info': volunteerContactInfoController.text,
+                        'skills': volunteerSkillsController.text,
+                        'availability_status': volunteerAvailabilityStatusController.text,
+                        'event_id': eventIdController.text,
+                      }
                     );
                     if (response != null) {
                       setState(() {

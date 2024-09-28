@@ -56,3 +56,19 @@ Future updateData(data) async{
     devtools.log('Failed to update data');
   }
 }
+
+Future insertData(data) async {
+  final response = await http.post(
+    Uri.parse('${url}insert'),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: dataEncode(data),
+  );
+  if(response.statusCode == 200){
+    devtools.log('Data inserted');
+    return response;
+  } else {
+    devtools.log('Failed to insert data');
+  }
+}
