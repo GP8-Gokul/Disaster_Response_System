@@ -19,11 +19,33 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
   late Future<List<Map<String, dynamic>>> futureGetVolunteers;
   dynamic response;
   
+  TextEditingController searchController = TextEditingController();
+  List<Map<String, dynamic>> allData = [];
+  List<Map<String, dynamic>> filteredData = [];
+
   @override
   void initState() {
     super.initState();
     futureGetVolunteers = fetchdata('volunteers');
+    futureGetVolunteers.then((events) {
+      setState(() {
+        allData = events;
+        filteredData = events;
+      });
+    });
+    searchController.addListener(_filterData);
   }
+
+  void _filterData() {
+  final query = searchController.text.toLowerCase();
+  setState(() {
+    filteredData = allData.where((element) {
+      final volunteerName = element['volunteer_name'].toString().toLowerCase();
+      return volunteerName.contains(query);
+    }).toList();
+  });
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +55,7 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
           const BackgroundImage(),
           Scaffold(
             appBar: const CustomAppbar(text: 'Volunteers'),
-            body: buildFutureBuilder(),
+            body: bodyColumn(),
             floatingActionButton: buildFloatingActionButton(),
             backgroundColor: Colors.transparent,
           ),
@@ -42,6 +64,50 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
     );
   }
 
+  Column bodyColumn(){
+    return Column(
+      children: [
+        Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.black, width: 2.0),
+                color: Colors.white.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              child: TextField(
+                controller: searchController,
+                decoration: const InputDecoration(
+                  contentPadding: EdgeInsets.symmetric(vertical: 10.0),
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                  labelText: 'Search Volunteers',
+                  labelStyle: TextStyle(
+                      color: Color.fromARGB(255, 47, 15, 189),
+                      shadows: [
+                      Shadow(
+                        blurRadius: 10.0,
+                        color: Colors.yellow,
+                        offset: Offset(0, 0),
+                      ),
+                      ],
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20.0,
+                    ),
+                  hintText: 'Enter volunteer name',
+                  prefixIcon: Icon(Icons.search),
+                  border: InputBorder.none,
+                ),
+              ),
+            ),
+        ),
+        Expanded(
+          child: filteredData.isEmpty 
+          ? const Center(child: Text('No volunteers found.')) 
+          :buildFutureBuilder(),
+        ),
+      ],
+    );
+  }
 
   FutureBuilder buildFutureBuilder(){
     return FutureBuilder(
@@ -62,9 +128,9 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
 
   Widget buildListview(snapshot){
     return ListView.builder(
-          itemCount: snapshot.data!.length,
+          itemCount: filteredData.length,
           itemBuilder: (context, index) {
-            final content = snapshot.data![index];
+            final content = filteredData[index];
             return Padding(
               padding: const EdgeInsets.all(8.0),
               child: VolunteerListTile(
