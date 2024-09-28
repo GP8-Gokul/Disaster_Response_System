@@ -4,7 +4,7 @@ import 'package:drs/screens/disaster_events_page/update_disaster_events.dart';
 import 'package:drs/services/api/disaster_event_api.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer' as devtools show log;
-import 'package:drs/screens/hero_dialog_route.dart';
+import 'package:drs/services/hero_dialog_route.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 class DisasterEventsScreen extends StatefulWidget {
