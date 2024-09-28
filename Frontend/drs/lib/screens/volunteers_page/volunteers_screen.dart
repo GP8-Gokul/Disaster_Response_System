@@ -114,11 +114,36 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  CustomTextField(labelText: 'Volunteer Name', controller: volunteerNameController, readOnly: false),
-                  CustomTextField(labelText: 'Contact Info', controller: volunteerContactInfoController, readOnly: false),
-                  CustomTextField(labelText: 'Skills', controller: volunteerSkillsController, readOnly: false),
-                  CustomTextField(labelText: 'Availability Status', controller: volunteerAvailabilityStatusController, readOnly: false),
-                  CustomTextField(labelText: 'Event ID', controller: eventIdController, readOnly: false),
+                  CustomTextField(
+                    hintText: 'Volunteer Name',
+                    labelText: 'Volunteer Name',
+                    controller: volunteerNameController,
+                    readOnly: false
+                    ),
+                  CustomTextField(
+                    hintText: 'Contact Info',
+                    labelText: 'Contact Info',
+                    controller: volunteerContactInfoController,
+                    readOnly: false
+                    ),
+                  CustomTextField(
+                    hintText: 'Skills',
+                    labelText: 'Skills',
+                    controller: volunteerSkillsController,
+                    readOnly: false
+                    ),
+                  CustomTextField(
+                    hintText: 'Availability Status',
+                    labelText: 'Availability Status',
+                    controller: volunteerAvailabilityStatusController,
+                    readOnly: false
+                    ),
+                  CustomTextField(
+                    hintText: 'Event ID',
+                    labelText: 'Event ID',
+                    controller: eventIdController,
+                    readOnly: false
+                    ),
                 ],
               ),
               actions: <Widget>[

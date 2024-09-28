@@ -18,7 +18,7 @@ def update_interface(data):
             result = update_resource(table, data.get("resource_id"), data.get("resource_name"), data.get("resource_type"), data.get("quantity"), data.get("availability_status"), data.get("event_id"))
 
         elif table == "volunteers":
-            result = update_volunteer(table, data.get("volunteer_id"), data.get("name"), data.get("contact_info"), data.get("skills"), data.get("availability_status"), data.get("event_id"))
+            result = update_volunteer(table, data.get("volunteer_id"), data.get("volunteer_name"), data.get("volunteer_contact_info"), data.get("volunteer_skills"), data.get("volunteer_availability_status"), data.get("event_id"))
             
         elif table == "incident_reports":
             result = update_incident_report(table, data.get("report_id"), data.get("event_id"), data.get("report_date"), data.get("description"), data.get("reported_by"))

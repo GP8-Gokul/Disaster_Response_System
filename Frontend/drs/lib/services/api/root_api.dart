@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:drs/services/api/json_decode.dart';
+import 'package:drs/services/api/json_encode.dart';
 import 'package:http/http.dart' as http;
 import 'dart:developer' as devtools;
 
@@ -37,5 +38,22 @@ Future deleteData(tableName,columnName,value) async {
     return response;
   } else {
     devtools.log('Failed to delete disaster event');
+  }
+}
+
+Future updateData(data) async{
+  final response = await http.post(
+    Uri.parse('${url}update'),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: updateDataEncode(data),
+  );
+  devtools.log(updateDataEncode(data));
+  if(response.statusCode == 200){
+    devtools.log('Disaster event updated');
+    return response;
+  } else {
+    devtools.log('Failed to update disaster event');
   }
 }
