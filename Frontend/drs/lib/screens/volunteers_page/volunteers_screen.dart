@@ -142,11 +142,17 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
 
             return AlertDialog(
               title: const Text('Add New Volunteer'),
-              titleTextStyle: const TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
+              titleTextStyle: const TextStyle(
+                color: Colors.white, fontSize: 24, 
+                fontWeight: FontWeight.bold
+                ),
               backgroundColor: Colors.grey[900],
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10.0),
-                side: const BorderSide(color: Colors.white, width: 2.0),
+                side: const BorderSide(
+                  color: Colors.white,
+                  width: 2.0
+                  ),
                 ),
 
               content: Column(
