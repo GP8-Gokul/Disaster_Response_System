@@ -111,8 +111,15 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
                 onChange: () {
                     setState(() {
                       futureGetVolunteers = fetchdata('volunteers');
+                      futureGetVolunteers.then((events) {
+                        setState(() {
+                          allData = events;
+                          filteredData = events;
+                        });
+                      });
+                      searchController.addListener(_filterData);
                     });
-                 },
+                },
                 ),
             );
   },
