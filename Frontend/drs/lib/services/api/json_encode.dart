@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-String updateDataEncode(data){
+String dataEncode(data){
   if(data['table'] == 'volunteers'){
     return encodeVolunteer(data);
   }

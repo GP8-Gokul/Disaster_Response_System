@@ -47,9 +47,8 @@ Future updateData(data) async{
     headers: {
       'Content-Type': 'application/json',
     },
-    body: updateDataEncode(data),
+    body: dataEncode(data),
   );
-  devtools.log(updateDataEncode(data));
   if(response.statusCode == 200){
     devtools.log('Disaster event updated');
     return response;
