@@ -3,6 +3,7 @@ import 'package:drs/widgets/background_image.dart';
 import 'package:drs/widgets/custom_appbar.dart';
 import 'package:drs/screens/volunteers_page/volunteer_details_box.dart';
 import 'package:drs/widgets/custom_text_field.dart';
+import 'package:drs/widgets/search_text_field.dart';
 import 'package:flutter/material.dart';
 
 
@@ -54,7 +55,7 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
         children: [
           const BackgroundImage(),
           Scaffold(
-            appBar: const CustomAppbar(text: 'Volunteers'),
+            appBar: const CustomAppbar(text: 'Volunteer Details'),
             body: bodyColumn(),
             floatingActionButton: buildFloatingActionButton(),
             backgroundColor: Colors.transparent,
@@ -67,39 +68,11 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
   Column bodyColumn(){
     return Column(
       children: [
-        Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.black, width: 2.0),
-                color: Colors.white.withOpacity(0.2),
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              child: TextField(
-                controller: searchController,
-                decoration: const InputDecoration(
-                  contentPadding: EdgeInsets.symmetric(vertical: 10.0),
-                  floatingLabelBehavior: FloatingLabelBehavior.always,
-                  labelText: 'Search Volunteers',
-                  labelStyle: TextStyle(
-                      color: Color.fromARGB(255, 47, 15, 189),
-                      shadows: [
-                      Shadow(
-                        blurRadius: 10.0,
-                        color: Colors.yellow,
-                        offset: Offset(0, 0),
-                      ),
-                      ],
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20.0,
-                    ),
-                  hintText: 'Enter volunteer name',
-                  prefixIcon: Icon(Icons.search),
-                  border: InputBorder.none,
-                ),
-              ),
-            ),
-        ),
+        SearchTextField(
+          labelText: 'Search Volunteers', 
+          hintText: 'Enter Volunteer Name', 
+          searchController: searchController
+          ),
         Expanded(
           child: filteredData.isEmpty 
           ? const Center(child: Text('No volunteers found.')) 
@@ -148,7 +121,7 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
 
   FloatingActionButton buildFloatingActionButton() {
     return FloatingActionButton(
-      backgroundColor: Colors.green.withOpacity(0.7),
+      backgroundColor: Colors.white.withOpacity(0.7),
       child: const Icon(Icons.add),
       onPressed: () {
         showDialog(

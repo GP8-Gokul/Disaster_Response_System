@@ -29,9 +29,9 @@ class VolunteerListTileState extends State<VolunteerListTile> {
       child: ListTile(
                   title: Text("Name: ${widget.content['volunteer_name']}"),
                   subtitle: Text("ID: ${widget.content['volunteer_id']}"),
-                  tileColor: const Color.fromARGB(255, 204, 194, 194).withOpacity(0.2),
+                  tileColor: const Color.fromARGB(255, 255, 255, 255).withOpacity(0.05),
                   contentPadding: const EdgeInsets.symmetric(vertical: 1.0, horizontal: 16.0),
-                  textColor: const Color.fromARGB(255, 0, 0, 0),
+                  textColor: const Color.fromARGB(255, 255, 255, 255),
                   titleTextStyle: const TextStyle(fontSize: 20.0,fontWeight: FontWeight.bold),
                   subtitleTextStyle: const TextStyle(fontSize: 14.0,fontWeight: FontWeight.w500),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25.0)),
