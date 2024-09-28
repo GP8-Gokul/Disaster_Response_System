@@ -35,7 +35,7 @@ def login():
     data = request.get_json()
     result=login_interface(data)
     if(result):
-        role=result[0][2]
+        role=result[0][3]
         token = create_access_token(identity=data['username'],additional_claims={"sub": role})
         return jsonify(token), 200
     else:
