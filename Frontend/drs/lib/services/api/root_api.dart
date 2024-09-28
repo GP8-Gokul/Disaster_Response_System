@@ -34,10 +34,10 @@ Future deleteData(tableName,columnName,value) async {
   );
 
   if (response.statusCode == 200) {
-    devtools.log('Disaster event deleted');
+    devtools.log('Data deleted');
     return response;
   } else {
-    devtools.log('Failed to delete disaster event');
+    devtools.log('Failed to delete data');
   }
 }
 
@@ -50,9 +50,9 @@ Future updateData(data) async{
     body: dataEncode(data),
   );
   if(response.statusCode == 200){
-    devtools.log('Disaster event updated');
+    devtools.log('Data updated');
     return response;
   } else {
-    devtools.log('Failed to update disaster event');
+    devtools.log('Failed to update data');
   }
 }
