@@ -141,6 +141,7 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
                 borderRadius: BorderRadius.circular(10.0),
                 side: const BorderSide(color: Colors.white, width: 2.0),
                 ),
+
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -176,22 +177,31 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
                     ),
                 ],
               ),
+
               actions: <Widget>[
                 TextButton(
                   style: TextButton.styleFrom(
                     backgroundColor: Colors.white,
                   ),
-                  child: const Text('Cancel', style: TextStyle(color: Colors.black)),
+                  child: const Text(
+                    'Cancel', 
+                    style: TextStyle(color: Colors.black)
+                    ),
+
                   onPressed: () {
                     Navigator.pop(context);
-                  },
-                  
+                  }, 
                 ),
+
                 TextButton(
                   style: TextButton.styleFrom(
                     backgroundColor: Colors.white,
                   ),
-                  child: const Text('Submit', style: TextStyle(color: Colors.black)),
+                  child: const Text(
+                    'Submit', 
+                    style: TextStyle(color: Colors.black)
+                    ),
+                    
                   onPressed: () async {
                     response = await insertData(
                       {

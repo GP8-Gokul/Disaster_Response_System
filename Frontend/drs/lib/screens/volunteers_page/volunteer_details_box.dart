@@ -21,11 +21,16 @@ class VolunteerListTileState extends State<VolunteerListTile> {
   
   @override
   Widget build(BuildContext context) {
+
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(color: const Color.fromARGB(255, 153, 153, 43), width: 2.0),
-        borderRadius: BorderRadius.circular(25.0),
+        border: Border.all(
+          color: const Color.fromARGB(255, 153, 153, 43), 
+          width: 2.0
+          ),
+        borderRadius:  BorderRadius.circular(25.0),
       ),
+
       child: ListTile(
                   title: Text("Name: ${widget.content['volunteer_name']}"),
                   subtitle: Text("ID: ${widget.content['volunteer_id']}"),
@@ -35,16 +40,23 @@ class VolunteerListTileState extends State<VolunteerListTile> {
                   titleTextStyle: const TextStyle(fontSize: 20.0,fontWeight: FontWeight.bold),
                   subtitleTextStyle: const TextStyle(fontSize: 14.0,fontWeight: FontWeight.w500),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25.0)),
+
                   onTap: () {
                     bool readonly = true;
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {
-                        TextEditingController volunteerNameController = TextEditingController(text: widget.content['volunteer_name'].toString());
-                        TextEditingController volunteerContactInfoController = TextEditingController(text: widget.content['volunteer_contact_info'].toString());
-                        TextEditingController volunteerSkillsController = TextEditingController(text: widget.content['volunteer_skills'].toString());
-                        TextEditingController volunteerAvailabilityStatusController = TextEditingController(text: widget.content['volunteer_availability_status'].toString());
-                        TextEditingController eventIdController = TextEditingController(text: widget.content['event_id'].toString());
+                        TextEditingController volunteerNameController = 
+                          TextEditingController(text: widget.content['volunteer_name'].toString());
+                        TextEditingController volunteerContactInfoController = 
+                          TextEditingController(text: widget.content['volunteer_contact_info'].toString());
+                        TextEditingController volunteerSkillsController = 
+                          TextEditingController(text: widget.content['volunteer_skills'].toString());
+                        TextEditingController volunteerAvailabilityStatusController = 
+                          TextEditingController(text: widget.content['volunteer_availability_status'].toString());
+                        TextEditingController eventIdController = 
+                          TextEditingController(text: widget.content['event_id'].toString());
+
                         return StatefulBuilder(
                           builder: (BuildContext context, StateSetter setState) {
                             return AlertDialog(
@@ -52,8 +64,12 @@ class VolunteerListTileState extends State<VolunteerListTile> {
                               backgroundColor: const Color.fromARGB(255, 0, 0, 0),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10.0),
-                                side: const BorderSide(color: Color.fromARGB(255, 255, 255, 255), width: 3.0),
+                                side: const BorderSide(
+                                  color: Color.fromARGB(255, 255, 255, 255), 
+                                  width: 3.0
+                                  ),
                               ),
+
                               content: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisSize: MainAxisSize.min,
@@ -91,12 +107,14 @@ class VolunteerListTileState extends State<VolunteerListTile> {
                                   ),                            
                                 ],
                               ),
+
                           actions: <Widget>[
                                 TextButton(
                                   style: TextButton.styleFrom(
                                     backgroundColor: Colors.white,
                                   ),
-                                    child: const Icon(Icons.delete, color: Colors.red),
+                                  child: const Icon(Icons.delete, color: Colors.red),
+                                  
                                   onPressed: () async {
                                     response = await deleteData('volunteers','volunteer_id',widget.content['volunteer_id']);
                                     if (response != null && context.mounted) {
@@ -105,17 +123,20 @@ class VolunteerListTileState extends State<VolunteerListTile> {
                                     }
                                   },
                                 ),
+
                                 TextButton(
                                   style: TextButton.styleFrom(
                                     backgroundColor: Colors.white,
                                   ),
                                   child: const Icon(Icons.edit, color: Colors.blue),
+
                                   onPressed: () {
                                     setState(() {
                                       readonly = !readonly;
                                     });
                                   }, 
                                 ),
+
                                 TextButton(
                                  style: TextButton.styleFrom(
                                     backgroundColor: Colors.white,
