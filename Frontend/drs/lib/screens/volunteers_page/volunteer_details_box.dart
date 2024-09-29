@@ -3,6 +3,7 @@ import 'package:drs/services/api/root_api.dart';
 import 'package:drs/widgets/custom_text.dart';
 import 'package:drs/widgets/custom_text_field.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 dynamic response;
 class VolunteerListTile extends StatefulWidget {
@@ -71,42 +72,77 @@ class VolunteerListTileState extends State<VolunteerListTile> {
                                   ),
                               ),
 
-                              content: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  CustomText(text: 'Volunteer ID: ${widget.content['volunteer_id']}'),
-                                  const SizedBox(height: 12),
-                                  CustomTextField(
-                                    hintText:'${widget.content['volunteer_name']}',
-                                    labelText: 'Volunteer Name', 
-                                    controller: volunteerNameController, 
-                                    readOnly: readonly),
-                                  CustomTextField(
-                                    hintText: '${widget.content['volunteer_contact_info']}',
-                                    labelText: 'Contact Info',
-                                    controller: volunteerContactInfoController,
-                                    readOnly: readonly,
-                                  ),
-                                  CustomTextField(
-                                    hintText: '${widget.content['volunteer_skills']}',
-                                    labelText: 'Skills',
-                                    controller: volunteerSkillsController,
-                                    readOnly: readonly,
-                                  ),
-                                  CustomTextField(
-                                    hintText: '${widget.content['volunteer_availability_status']}',
-                                    labelText: 'Availability Status',
-                                    controller: volunteerAvailabilityStatusController,
-                                    readOnly: readonly,
-                                  ),
-                                  CustomTextField(
-                                    hintText: '${widget.content['event_id']}',
-                                    labelText: 'Event ID',
-                                    controller: eventIdController,
-                                    readOnly: readonly,
-                                  ),                            
-                                ],
+                              content: SingleChildScrollView(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        CustomText(text: 'Volunteer ID: ${widget.content['volunteer_id']}'),
+                                        Spacer(),
+                                        Container(
+                                          height: 40,
+                                          width: 80,
+                                            decoration: BoxDecoration(
+                                            color: Colors.green,
+                                            shape: BoxShape.circle,
+                                            ),
+                                          child: FloatingActionButton(
+                                            backgroundColor: const Color.fromARGB(255, 1, 255, 9),
+                                            mini: true,
+                                            child: const Icon(Icons.call),
+                                            onPressed: () async {
+                                            final Uri launchUri = Uri(
+                                              scheme: 'tel',
+                                              path: widget.content['volunteer_contact_info'],
+                                            );
+                                            if (await canLaunchUrl(launchUri)) {
+                                              await launchUrl(launchUri);
+                                            } else {
+                                              if (context.mounted) {
+                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                const SnackBar(content: Text('Could not launch phone dialer')),
+                                              );
+                                              }
+                                            }
+                                            },
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 12),
+                                    CustomTextField(
+                                      hintText:'${widget.content['volunteer_name']}',
+                                      labelText: 'Volunteer Name', 
+                                      controller: volunteerNameController, 
+                                      readOnly: readonly),
+                                    CustomTextField(
+                                      hintText: '${widget.content['volunteer_contact_info']}',
+                                      labelText: 'Contact Info',
+                                      controller: volunteerContactInfoController,
+                                      readOnly: readonly,
+                                    ),
+                                    CustomTextField(
+                                      hintText: '${widget.content['volunteer_skills']}',
+                                      labelText: 'Skills',
+                                      controller: volunteerSkillsController,
+                                      readOnly: readonly,
+                                    ),
+                                    CustomTextField(
+                                      hintText: '${widget.content['volunteer_availability_status']}',
+                                      labelText: 'Availability Status',
+                                      controller: volunteerAvailabilityStatusController,
+                                      readOnly: readonly,
+                                    ),
+                                    CustomTextField(
+                                      hintText: '${widget.content['event_id']}',
+                                      labelText: 'Event ID',
+                                      controller: eventIdController,
+                                      readOnly: readonly,
+                                    ),
+                                  ],
+                                ),
                               ),
 
                           actions: <Widget>[
