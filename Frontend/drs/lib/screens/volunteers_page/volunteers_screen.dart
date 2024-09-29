@@ -1,7 +1,9 @@
+import 'package:drs/services/AuthoriztionDemo/check_access.dart';
 import 'package:drs/services/api/root_api.dart';
 import 'package:drs/widgets/background_image.dart';
 import 'package:drs/widgets/custom_appbar.dart';
 import 'package:drs/screens/volunteers_page/volunteer_details_box.dart';
+import 'package:drs/widgets/custom_text.dart';
 import 'package:drs/widgets/custom_text_field.dart';
 import 'package:drs/widgets/search_text_field.dart';
 import 'package:flutter/material.dart';
@@ -216,7 +218,8 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
                     ),
                     
                   onPressed: () async {
-                    response = await insertData(
+                    if(checkAcess('volunteers', '')){
+                      response = await insertData(
                       {
                         'table': 'volunteers',
                         'name': volunteerNameController.text,
@@ -233,6 +236,44 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
                     }
                     if (context.mounted) {
                       Navigator.pop(context);
+                    }
+                    }
+                    else{
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text('Access Denied'),
+                            titleTextStyle: const TextStyle(
+                              color: Colors.white, fontSize: 24, 
+                              fontWeight: FontWeight.bold
+                              ),
+                            backgroundColor: Colors.grey[900],
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                              side: const BorderSide(
+                                color: Colors.white,
+                                width: 2.0
+                                ),
+                              ),
+                            content:  const CustomText(text: 'You do not have access to add new volunteers.'),
+                            actions: <Widget>[
+                              TextButton(
+                                style: TextButton.styleFrom(
+                                  backgroundColor: Colors.white,
+                                ),
+                                child: const Text(
+                                  'OK', 
+                                  style: TextStyle(color: Colors.black)
+                                  ),
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                }, 
+                              ),
+                            ],
+                          );
+                        },
+                      );
                     }
                   }, 
                 ),

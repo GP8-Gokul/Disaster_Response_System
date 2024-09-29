@@ -5,6 +5,9 @@ import 'package:http/http.dart' as http;
 import 'dart:developer' as devtools;
 
 const url = 'http://10.0.2.2:5000/';
+dynamic userRole;
+dynamic userName;
+dynamic authenticationToken;
 
 Future<List<Map<String, dynamic>>> fetchdata(tableName) async {
   final response = await http.post(
@@ -25,6 +28,7 @@ Future deleteData(tableName,columnName,value) async {
     Uri.parse('${url}delete'),
     headers: {
       'Content-Type': 'application/json',
+      'Authorization': 'Bearer $authenticationToken',
     },
     body: jsonEncode({
       'table': tableName,
@@ -46,6 +50,7 @@ Future updateData(data) async{
     Uri.parse('${url}update'),
     headers: {
       'Content-Type': 'application/json',
+      'Authorization': 'Bearer $authenticationToken',
     },
     body: dataEncode(data),
   );
@@ -62,6 +67,7 @@ Future insertData(data) async {
     Uri.parse('${url}insert'),
     headers: {
       'Content-Type': 'application/json',
+      'Authorization': 'Bearer $authenticationToken',
     },
     body: dataEncode(data),
   );

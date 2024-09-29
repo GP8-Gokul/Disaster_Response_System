@@ -4,9 +4,6 @@ import 'package:drs/services/api/root_api.dart';
 import 'package:http/http.dart' as http;
 import 'dart:developer' as devtools show log;
 
-dynamic userRole;
-dynamic userName;
-
 Future loginUser(String username, String password) async {
   devtools.log('loginUser');
   final response = await http.post(
@@ -21,6 +18,7 @@ Future loginUser(String username, String password) async {
     devtools.log('Login successful');
     String jwt = response.body;
     userName = username;
+    authenticationToken = jwt;
     userRole = retrieveRole(jwt);
     devtools.log('User role: $userRole');
     devtools.log('User name: $userName');
@@ -39,7 +37,9 @@ dynamic retrieveRole(String jwt) {
     return jwtDecoded.payload['sub'] ?? 'Unknown role';
   } catch (e) {
     devtools.log('Error decoding JWT: $e');
+
     return 'Error decoding token';
+
   }
 }
 
