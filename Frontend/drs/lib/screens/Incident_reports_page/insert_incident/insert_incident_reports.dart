@@ -1,4 +1,4 @@
-import 'package:drs/services/api/incident_report_api.dart'; // Ensure you have this API ready
+import 'package:drs/services/api/incident_report_api.dart'; 
 import 'package:flutter/material.dart';
 import 'dart:async';
 
@@ -9,7 +9,7 @@ Future<Map<String, String>?> insertIncidentReportDialog(
   showDialog(
     context: context,
     builder: (BuildContext context) {
-      TextEditingController reportNameController = TextEditingController();  // Added for report_name
+      TextEditingController reportNameController = TextEditingController();  
       TextEditingController reportDateController = TextEditingController();
       TextEditingController descriptionController = TextEditingController();
       TextEditingController reportedByController = TextEditingController();
@@ -31,7 +31,7 @@ Future<Map<String, String>?> insertIncidentReportDialog(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
-                controller: reportNameController,  // Field for report_name
+                controller: reportNameController,  
                 decoration: InputDecoration(
                   labelText: 'Report Name',
                   border: OutlineInputBorder(
@@ -112,7 +112,7 @@ Future<Map<String, String>?> insertIncidentReportDialog(
                   descriptionController.text.isNotEmpty &&
                   reportedByController.text.isNotEmpty) {
                 final response = await addIncidentReport(
-                  reportNameController.text,  // Added report_name in the API call
+                  reportNameController.text,  
                   eventIdController.text,
                   reportDateController.text,
                   descriptionController.text,
@@ -130,7 +130,7 @@ Future<Map<String, String>?> insertIncidentReportDialog(
                   Navigator.of(context).pop();
                 }
                 completer.complete({
-                  'reportName': reportNameController.text,  // Added report_name in the result map
+                  'reportName': reportNameController.text,  
                   'eventId': eventIdController.text,
                   'reportDate': reportDateController.text,
                   'description': descriptionController.text,
