@@ -121,7 +121,7 @@ class _IncidentReportsScreenState extends State<IncidentReportsScreen> {
                                         borderRadius: BorderRadius.circular(25),
                                         onPressed: (context) async {
                                           devtools.log('Slide action pressed');
-                                          final result = await deleteIncidentReport(
+                                          final result = await deleteData('incident_reports','report_id',
                                               report['report_id']);
                                           if (result != 0) {
                                             setState(() {
@@ -155,7 +155,7 @@ class _IncidentReportsScreenState extends State<IncidentReportsScreen> {
                                           builder: (context) =>
                                               UpdateIncidentReportsDialog(
                                             fetchIncidentReports:
-                                                fetchIncidentReports,
+                                                fetchData('incident_reports'),
                                             report: report,
                                             response: response,
                                           ),
@@ -221,11 +221,19 @@ class _IncidentReportsScreenState extends State<IncidentReportsScreen> {
             floatingActionButton: FloatingActionButton(
               onPressed: () async {
                 devtools.log('Floating action button pressed');
-                final result = await insertIncidentReportsDialog(
-                    context, fetchIncidentReports, response);
+                final result = await insertData(
+                  {
+                    'table':'incident_reports',
+                    'report_id':'report_id',
+                    'event_id':'event_id',
+                    'report_data':'report_data',
+                    'description':'description',
+                    'reported_by':'reported_by',
+                    'report_name':'report_name'
+                );
                 if (result != 0) {
                   setState(() {
-                    futureGetIncidentReports = fetchIncidentReports();
+                    futureGetIncidentReports = fetchData('incident_reports');
                     futureGetIncidentReports.then((reports) {
                       setState(() {
                         allReports = reports;
