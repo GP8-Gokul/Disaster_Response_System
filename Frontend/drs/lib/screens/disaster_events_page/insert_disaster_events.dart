@@ -133,28 +133,43 @@ Future<Map<String, String>?> insertDisasterEventsDialog(
           ),
           ElevatedButton(
             onPressed: () async {
-              await addDisasterEvents(
-                disasterNameController.text,
-                disasterTypeController.text,
-                disasterLocationController.text,
-                disasterStartDateController.text,
-                disasterEndDateController.text,
-                disasterDescriptionController.text,
-              );
-              if (context.mounted) {
+              if (disasterNameController.text.isNotEmpty &&
+                  disasterTypeController.text.isNotEmpty &&
+                  disasterLocationController.text.isNotEmpty &&
+                  disasterStartDateController.text.isNotEmpty &&
+                  disasterEndDateController.text.isNotEmpty &&
+                  disasterDescriptionController.text.isNotEmpty) {
+                final response = await addDisasterEvents(
+                  disasterNameController.text,
+                  disasterTypeController.text,
+                  disasterLocationController.text,
+                  disasterStartDateController.text,
+                  disasterEndDateController.text,
+                  disasterDescriptionController.text,
+                );
+                if (response != null) {
+                  Navigator.of(context).pop();
+                }
+                completer.complete({
+                  'disasterName': disasterNameController.text,
+                  'disasterType': disasterTypeController.text,
+                  'disasterLocation': disasterLocationController.text,
+                  'disasterStartDate': disasterStartDateController.text,
+                  'disasterEndDate': disasterEndDateController.text,
+                  'disasterDescription': disasterDescriptionController.text,
+                });
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Please fill all the fields'),
+                    backgroundColor: Colors.red,
+                  ),
+                );
                 Navigator.of(context).pop();
               }
-              completer.complete({
-                'disasterName': disasterNameController.text,
-                'disasterType': disasterTypeController.text,
-                'disasterLocation': disasterLocationController.text,
-                'disasterStartDate': disasterStartDateController.text,
-                'disasterEndDate': disasterEndDateController.text,
-                'disasterDescription': disasterDescriptionController.text,
-              });
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.blue, // Highlight the submit button
+              backgroundColor: const Color.fromARGB(255, 3, 39, 68),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10.0),
               ),

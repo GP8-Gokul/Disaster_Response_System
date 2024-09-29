@@ -5,6 +5,8 @@ import 'dart:developer' as devtools show log;
 
 Future loginUser(username, password) async {
   devtools.log('loginUser');
+  devtools.log(username);
+  devtools.log(password);
   final response = await http.post(
     Uri.parse('${url}login'),
     body: jsonEncode({'username': username, 'password': password}),

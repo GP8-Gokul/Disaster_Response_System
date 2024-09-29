@@ -58,7 +58,7 @@ class _DisasterEventsScreenState extends State<DisasterEventsScreen> {
         children: [
           Positioned.fill(
             child: Image.asset(
-              'assets/images/background.jpg',
+              'assets/images/6114100.jpg',
               fit: BoxFit.cover,
             ),
           ),
@@ -66,7 +66,7 @@ class _DisasterEventsScreenState extends State<DisasterEventsScreen> {
             appBar: AppBar(
               title: const Text('Disaster Events'),
               centerTitle: true,
-              backgroundColor: const Color.fromARGB(100, 0, 0, 0),
+              backgroundColor: const Color.fromARGB(244, 250, 174, 68),
               titleTextStyle: const TextStyle(
                 fontSize: 24.0,
                 fontWeight: FontWeight.bold,
@@ -81,10 +81,18 @@ class _DisasterEventsScreenState extends State<DisasterEventsScreen> {
                   padding: const EdgeInsets.all(16.0),
                   child: TextField(
                     controller: searchController,
+                    style: const TextStyle(
+                        color: Colors.white), // Set text color to white
                     decoration: InputDecoration(
                       labelText: 'Search Events',
                       hintText: 'Enter event name',
-                      prefixIcon: const Icon(Icons.search),
+                      hintStyle: const TextStyle(
+                          color: Colors.white), // Set hint text color to white
+                      labelStyle: const TextStyle(
+                          color: Colors.white), // Set label text color to white
+                      iconColor: const Color.fromARGB(255, 240, 235, 235),
+                      prefixIcon: const Icon(Icons.search,
+                          color: Colors.white), // Set icon color to white
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10.0),
                       ),
@@ -92,131 +100,116 @@ class _DisasterEventsScreenState extends State<DisasterEventsScreen> {
                   ),
                 ),
                 Expanded(
-                  child: filteredEvents.isEmpty
-                      ? const Center(
-                          child: Text(
-                            'Record not present.',
-                            style: TextStyle(fontSize: 18.0),
-                          ),
-                        )
-                      : ListView.builder(
-                          itemCount: filteredEvents.length,
-                          itemBuilder: (context, index) {
-                            final event = filteredEvents[index];
-                            return Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 8.0, horizontal: 16.0),
-                              child: Slidable(
-                                endActionPane: ActionPane(
-                                  motion: const StretchMotion(),
-                                  children: [
-                                    SlidableAction(
-                                      borderRadius: BorderRadius.circular(25),
-                                      onPressed: (context) {
-                                        devtools.log('Slide action pressed');
-                                        deleteDisasterEvent(event['event_id']);
-                                        setState(() {
-                                          allEvents.remove(event);
-                                          filteredEvents.remove(event);
-                                        });
-                                      },
-                                      backgroundColor: const Color.fromARGB(
-                                          148, 226, 125, 125),
-                                      icon: Icons.delete,
-                                      foregroundColor:
-                                          const Color.fromARGB(255, 74, 71, 71),
-                                    ),
-                                  ],
-                                ),
-                                child: GestureDetector(
-                                  onTap: () {
-                                    devtools.log('Event tapped');
-                                    Navigator.of(context).push(
-                                      HeroDialogRoute(
-                                        builder: (context) =>
-                                            DisplayDisasterEvents(
-                                          event: event,
-                                        ),
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 85.0),
+                    child: filteredEvents.isEmpty
+                        ? const Center(
+                            child: Text(
+                              'Record not present.',
+                              style: TextStyle(
+                                fontSize: 18.0,
+                                color: Color.fromARGB(255, 222, 211, 211),
+                              ),
+                            ),
+                          )
+                        : ListView.builder(
+                            itemCount: filteredEvents.length,
+                            itemBuilder: (context, index) {
+                              final event = filteredEvents[index];
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 8.0, horizontal: 16.0),
+                                child: Slidable(
+                                  endActionPane: ActionPane(
+                                    motion: const StretchMotion(),
+                                    children: [
+                                      SlidableAction(
+                                        borderRadius: BorderRadius.circular(25),
+                                        onPressed: (context) {
+                                          devtools.log('Slide action pressed');
+                                          deleteDisasterEvent(
+                                              event['event_id']);
+                                          setState(() {
+                                            allEvents.remove(event);
+                                            filteredEvents.remove(event);
+                                          });
+                                        },
+                                        backgroundColor: const Color.fromARGB(
+                                            138, 236, 70, 70),
+                                        icon: Icons.delete,
+                                        foregroundColor: const Color.fromARGB(
+                                            255, 238, 230, 230),
                                       ),
-                                    );
-                                  },
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color:
-                                          const Color.fromARGB(255, 70, 70, 70)
-                                              .withOpacity(0.6),
-                                      borderRadius: BorderRadius.circular(25.0),
-                                    ),
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 16.0, horizontal: 24.0),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Expanded(
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                "Name: ${event['event_name']}",
-                                                style: const TextStyle(
-                                                  fontSize: 20.0,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Color.fromARGB(
-                                                      255, 41, 39, 39),
-                                                ),
-                                                overflow: TextOverflow.ellipsis,
-                                              ),
-                                              const SizedBox(height: 6),
-                                              Text(
-                                                "ID: ${event['event_id']}",
-                                                style: const TextStyle(
-                                                  fontSize: 14.0,
-                                                  color: Color.fromARGB(
-                                                      179, 47, 45, 45),
-                                                ),
-                                                overflow: TextOverflow.ellipsis,
-                                              ),
-                                            ],
+                                    ],
+                                  ),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      devtools.log('Event tapped');
+                                      Navigator.of(context).push(
+                                        HeroDialogRoute(
+                                          builder: (context) =>
+                                              UpdateDisasterEventsDialog(
+                                            fetchDisasterEvents:
+                                                fetchDisasterEvents,
+                                            event: event,
+                                            response: response,
                                           ),
                                         ),
-                                        IconButton(
-                                          icon: const Icon(
-                                            Icons.edit,
-                                            color: Colors.white,
+                                      );
+                                    },
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: const Color.fromARGB(
+                                                255, 227, 217, 217)
+                                            .withOpacity(0.6),
+                                        borderRadius:
+                                            BorderRadius.circular(25.0),
+                                      ),
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 16.0, horizontal: 24.0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  "Name: ${event['event_name']}",
+                                                  style: const TextStyle(
+                                                    fontSize: 20.0,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Color.fromARGB(
+                                                        255, 23, 22, 22),
+                                                  ),
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
+                                                const SizedBox(height: 6),
+                                                Text(
+                                                  "ID: ${event['event_id']}",
+                                                  style: const TextStyle(
+                                                    fontSize: 14.0,
+                                                    color: Color.fromARGB(
+                                                        209, 31, 30, 30),
+                                                  ),
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
+                                              ],
+                                            ),
                                           ),
-                                          onPressed: () async {
-                                            devtools.log('Edit button pressed');
-                                            final result =
-                                                await updateDisasterEventsDialog(
-                                                    context,
-                                                    fetchDisasterEvents,
-                                                    event,
-                                                    response);
-                                            if (result != null) {
-                                              setState(() {
-                                                futureGetDisasterEvents =
-                                                    fetchDisasterEvents();
-                                                futureGetDisasterEvents
-                                                    .then((events) {
-                                                  setState(() {
-                                                    allEvents = events;
-                                                    filteredEvents = events;
-                                                  });
-                                                });
-                                              });
-                                            }
-                                          },
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            );
-                          },
-                        ),
+                              );
+                            },
+                          ),
+                  ),
                 ),
               ],
             ),
