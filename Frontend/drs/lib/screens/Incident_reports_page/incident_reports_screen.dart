@@ -11,10 +11,10 @@ class IncidentReportsScreen extends StatefulWidget {
   static String routeName = 'incident-reports';
 
   @override
-  State<IncidentReportsScreen> createState() => _IncidentReportsScreenState();
+  State<IncidentReportsScreen> createState() => IncidentReportsScreenState();
 }
 
-class _IncidentReportsScreenState extends State<IncidentReportsScreen> {
+class IncidentReportsScreenState extends State<IncidentReportsScreen> {
   late Future<List<Map<String, dynamic>>> futureGetIncidentReports;
   dynamic response;
   List<Map<String, dynamic>> allReports = [];
@@ -129,6 +129,8 @@ class _IncidentReportsScreenState extends State<IncidentReportsScreen> {
                                               filteredReports.remove(report);
                                             });
                                           } else {
+                                            if(mounted)
+                                            {
                                             ScaffoldMessenger.of(context)
                                                 .showSnackBar(
                                               const SnackBar(
@@ -137,6 +139,7 @@ class _IncidentReportsScreenState extends State<IncidentReportsScreen> {
                                                 backgroundColor: Colors.red,
                                               ),
                                             );
+                                          }
                                           }
                                         },
                                         backgroundColor: const Color.fromARGB(
@@ -230,9 +233,10 @@ class _IncidentReportsScreenState extends State<IncidentReportsScreen> {
                     'description':'description',
                     'reported_by':'reported_by',
                     'report_name':'report_name'
+                  }
                 );
                 if (result != 0) {
-                  setState(() {
+                  setState(( {
                     futureGetIncidentReports = fetchData('incident_reports');
                     futureGetIncidentReports.then((reports) {
                       setState(() {
@@ -242,6 +246,8 @@ class _IncidentReportsScreenState extends State<IncidentReportsScreen> {
                     });
                   });
                 } else {
+                  if(mounted)
+                  {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
                       content: Text('Please fill all the fields'),
@@ -249,6 +255,7 @@ class _IncidentReportsScreenState extends State<IncidentReportsScreen> {
                     ),
                   );
                   Navigator.of(context).pop();
+                }
                 }
               },
               backgroundColor: const Color.fromARGB(255, 23, 22, 22),
