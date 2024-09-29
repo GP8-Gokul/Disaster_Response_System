@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 
 Future<List<Map<String, dynamic>>> fetchEventNameId() async {
   final response = await http.get(
-    Uri.parse('${url}select'),
+    Uri.parse('${url}others'),
     headers: {'Content-Type': 'application/json'},
   
   );
