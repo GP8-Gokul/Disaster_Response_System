@@ -1,6 +1,8 @@
 import 'package:drs/screens/disaster_events_page/insert_disaster_events.dart';
 import 'package:drs/screens/disaster_events_page/update_disaster_events.dart';
 import 'package:drs/services/api/disaster_event_api.dart';
+import 'package:drs/widgets/background_image.dart';
+import 'package:drs/widgets/custom_appbar.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer' as devtools show log;
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -54,25 +56,9 @@ class _DisasterEventsScreenState extends State<DisasterEventsScreen> {
     return SafeArea(
       child: Stack(
         children: [
-          Positioned.fill(
-            child: Image.asset(
-              'assets/images/6114100.jpg',
-              fit: BoxFit.cover,
-            ),
-          ),
+          BackgroundImage(),
           Scaffold(
-            appBar: AppBar(
-              title: const Text('Disaster Events'),
-              centerTitle: true,
-              backgroundColor: const Color.fromARGB(244, 250, 174, 68),
-              titleTextStyle: const TextStyle(
-                fontSize: 24.0,
-                fontWeight: FontWeight.bold,
-                color: Color.fromARGB(255, 31, 29, 29),
-              ),
-              elevation: 5,
-              shadowColor: Colors.black.withOpacity(0.3),
-            ),
+            appBar: CustomAppbar(text: 'Disaster Events'),
             body: Column(
               children: [
                 Padding(

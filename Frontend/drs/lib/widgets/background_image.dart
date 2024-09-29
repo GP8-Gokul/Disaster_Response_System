@@ -7,7 +7,7 @@ class BackgroundImage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Positioned.fill(
     child: Image.asset(
-      'assets/images/dark_sky.jpg',
+      'assets/images/6114100.jpg',
       fit: BoxFit.cover,
     ),
   );

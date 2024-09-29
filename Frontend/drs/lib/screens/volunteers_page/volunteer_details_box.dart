@@ -150,63 +150,6 @@ class VolunteerListTileState extends State<VolunteerListTile> {
                                   style: TextButton.styleFrom(
                                     backgroundColor: Colors.white,
                                   ),
-                                  child: const Icon(Icons.delete, color: Colors.red),
-                                  
-                                  onPressed: () async {
-                                    if(checkAcess('volunteers', volunteerNameController.text)){
-                                      response = await deleteData('volunteers','volunteer_id',widget.content['volunteer_id']);
-                                      if (response != null && context.mounted) {
-                                          widget.onChange();
-                                          Navigator.pop(context);
-                                      }
-                                    }
-                                    else{
-                                        showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return AlertDialog(
-                                            title: const Text('Access Denied',style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
-                                            backgroundColor: const Color.fromARGB(255, 0, 0, 0),
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(10.0),
-                                              side: const BorderSide(
-                                                color: Color.fromARGB(255, 255, 255, 255), 
-                                                width: 3.0
-                                                ),
-                                            ),
-                                            content: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                CustomText(text: 'You do not have access to update this data'),
-                                                const SizedBox(height: 12),
-                                              ],
-                                            ),
-                                            actions: <Widget>[
-                                              TextButton(
-                                                style: TextButton.styleFrom(
-                                                  backgroundColor: Colors.white,
-                                                ),
-                                                child: const Text(
-                                                  'OK', 
-                                                  style: TextStyle(color: Colors.black)
-                                                  ),
-                                                onPressed: () {
-                                                  Navigator.pop(context);
-                                                }, 
-                                              ),
-                                            ],
-                                          );
-                                        },
-                                      );
-                                      }
-                                  },
-                                ),
-
-                                TextButton(
-                                  style: TextButton.styleFrom(
-                                    backgroundColor: Colors.white,
-                                  ),
                                   child: const Icon(Icons.edit, color: Colors.blue),
 
                                   onPressed: () {

@@ -116,7 +116,19 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
                   onPressed: (context) async {
                     if (checkAcess('volunteers', content['volunteer_name'])) {
                       response = await deleteData('volunteers', 'volunteer_id',
-                          content['volunteer_id']);
+                          content['volunteer_id'].toString());
+                      if (response != null) {
+                            setState(() {
+                  futureGetVolunteers = fetchdata('volunteers');
+                  futureGetVolunteers.then((events) {
+                    setState(() {
+                      allData = events;
+                      filteredData = events;
+                    });
+                  });
+                  searchController.addListener(_filterData);
+                });
+                      }
                     } else {
                       showDialog(
                         context: context,
@@ -126,7 +138,9 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
                                 style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 24,
-                                    fontWeight: FontWeight.bold)),
+                                    fontWeight: FontWeight.bold
+                                    )
+                                    ),
                             backgroundColor: const Color.fromARGB(255, 0, 0, 0),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10.0),
@@ -140,7 +154,7 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
                               children: [
                                 CustomText(
                                     text:
-                                        'You do not have access to update this data'),
+                                        'You do not have access to delete this data'),
                                 const SizedBox(height: 12),
                               ],
                             ),
