@@ -14,6 +14,33 @@ class MainMenuScreen extends StatelessWidget {
     Navigator.pushNamed(context, routeName);
   }
 
+  void Logout(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Log Out'),
+          content: const Text('Do you actually want to log out?'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('No'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Yes'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.pushNamed(context, LoginScreen.routeName);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -29,32 +56,22 @@ class MainMenuScreen extends StatelessWidget {
           appBar: AppBar(
             backgroundColor: Colors.transparent,
             automaticallyImplyLeading: false,
-            title: Row(
-              children: [
-                const Text(
-                    'Disaster Response',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    decoration: TextDecoration.underline,
-                    decorationThickness: 2.0,
-                  ),
-                ),
-                const SizedBox(width: 50),
-                FloatingActionButton(
-                  
-                  backgroundColor: Colors.transparent,
-                  elevation: 0,
-                  child: const Icon(Icons.logout),
-                  onPressed: () {
-                    Navigator.pushNamed(context, LoginScreen.routeName);
-                  },
-                ),
-              ],
-                
-            ),
             centerTitle: true,
-            
+            title: Text(
+              'Disaster Response',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                decoration: TextDecoration.underline,
+                decorationThickness: 2.0,
+              ),
+            ),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.logout),
+                onPressed: () => Logout(context),
+              ),
+            ],
           ),
           body: SafeArea(
             child: Padding(

@@ -149,8 +149,16 @@ class _UpdateDisasterEventsDialogState
                           disasterEndDateController.text,
                           disasterDescriptionController.text,
                         );
-                        if (response != null) {
+                        if (response != 0) {
                           widget.fetchDisasterEvents();
+                          Navigator.of(context).pop();
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Failed to update event'),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
                           Navigator.of(context).pop();
                         }
                         completer.complete({

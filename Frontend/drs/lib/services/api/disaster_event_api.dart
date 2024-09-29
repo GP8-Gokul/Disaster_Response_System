@@ -1,20 +1,15 @@
 import 'dart:convert';
 import 'package:drs/services/api/root_api.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:http/http.dart' as http;
+import 'package:drs/services/AuthoriztionDemo/check_access.dart';
 import 'dart:developer' as devtools show log;
 
-final _box = Hive.box('DBMSBox');
-String token = _box.get('token');
-String cleanedToken = token.replaceAll('"', '').trim();
-
 Future<List<Map<String, dynamic>>> fetchDisasterEvents() async {
-  devtools.log(cleanedToken);
   final response = await http.post(
     Uri.parse('${url}select'),
     headers: {
       'Content-Type': 'application/json',
-      },
+    },
     body: jsonEncode({'table': 'disaster_events'}),
   );
 
@@ -38,13 +33,12 @@ Future<List<Map<String, dynamic>>> fetchDisasterEvents() async {
 
 Future addDisasterEvents(disasterName, disasterType, disasterLocation,
     disasterStartDate, disasterEndDate, disasterDescription) async {
-  devtools.log(cleanedToken);
-  if (_box.get('role') == 'admin') {
+  if (checkAcess('disaster_events', userName)) {
     final response = await http.post(
       Uri.parse('${url}insert'),
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': "Bearer $cleanedToken",
+        'Authorization': "Bearer $authenticationToken",
       },
       body: jsonEncode({
         'table': 'disaster_events',
@@ -65,17 +59,17 @@ Future addDisasterEvents(disasterName, disasterType, disasterLocation,
     }
   } else {
     devtools.log('You are not authorized to add disaster event');
+    return 0;
   }
 }
 
 Future deleteDisasterEvent(eventId) async {
-  devtools.log(cleanedToken);
-  if (_box.get('role') == 'admin') {
+  if (checkAcess('disaster_events', userName)) {
     final response = await http.post(
       Uri.parse('${url}delete'),
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer $cleanedToken',
+        'Authorization': 'Bearer $authenticationToken',
       },
       body: jsonEncode({
         'table': 'disaster_events',
@@ -92,6 +86,7 @@ Future deleteDisasterEvent(eventId) async {
     }
   } else {
     devtools.log('You are not authorized to delete disaster event');
+    return 0;
   }
 }
 
@@ -103,13 +98,12 @@ Future updateDisasterEvents(
     disasterStartDate,
     disasterEndDate,
     disasterDescription) async {
-  devtools.log(cleanedToken);
-  if (_box.get('role') == 'admin') {
+  if (checkAcess('disaster_events', userName)) {
     final response = await http.post(
       Uri.parse('${url}update'),
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer $cleanedToken',
+        'Authorization': 'Bearer $authenticationToken',
       },
       body: jsonEncode({
         'table': 'disaster_events',
@@ -131,5 +125,6 @@ Future updateDisasterEvents(
     }
   } else {
     devtools.log('You are not authorized to update disaster event');
+    return 0;
   }
 }
