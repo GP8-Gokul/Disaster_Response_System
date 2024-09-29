@@ -49,7 +49,7 @@ def insert():
     return jsonify(insert_interface(data))
 
 @app.route('/delete', methods=['POST'])
-@jwt_required()
+#@jwt_required()
 def delete():
     data = request.get_json()
     return jsonify(delete_interface(data))

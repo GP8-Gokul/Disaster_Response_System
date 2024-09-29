@@ -35,7 +35,8 @@ create_incident_report = '''
     event_id INTEGER NOT NULL,
     report_date DATE NOT NULL,
     description TEXT,
-    reported_by VARCHAR,
+    reported_by VARCHAR,,
+    report_name TEXT,
     FOREIGN KEY(event_id) REFERENCES disaster_events(event_id)
  );
 '''

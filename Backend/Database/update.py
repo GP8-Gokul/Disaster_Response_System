@@ -39,10 +39,10 @@ def update_resource(table, resource_id, resource_name, resource_type, quantity, 
         return {"status": "error", "message": f"An error occurred while updating resource: {e}"}
 
 
-def update_incident_report(table, report_id, event_id, report_date, description, reported_by):
+def update_incident_report(table, report_id, event_id, report_date, description, reported_by, report_name):
     cursor = get_cursor()
     try:
-        cursor.execute(f"UPDATE {table} SET event_id = ?, report_date = ?, description = ?, reported_by = ? WHERE report_id = ?", (event_id, report_date, description, reported_by, report_id))
+        cursor.execute(f"UPDATE {table} SET event_id = ?, report_date = ?, description = ?, reported_by = ?, report_name = ? WHERE report_id = ?", (event_id, report_date, description, reported_by, report_name, report_id))
         commit()
         return {"status": "success", "message": "Incident report updated successfully"}
     except Exception as e:

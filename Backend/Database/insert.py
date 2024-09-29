@@ -39,8 +39,8 @@ def insert_aid_distribution(event_id, resource_id, volunteer_id, quantity_distri
 #  commit()
 
 
-def insert_incident_report(event_id, report_date, description, reported_by):
+def insert_incident_report(event_id, report_date, description, reported_by,report_name):
  cursor=get_cursor()
- cursor.execute("insert into incident_reports(event_id,report_date,description,reported_by) values(?,?,?,?);",(event_id,report_date,description,reported_by))
+ cursor.execute("insert into incident_reports(event_id,report_date,description,reported_by,report_name) values(?,?,?,?,?);",(event_id,report_date,description,reported_by,report_name))
  commit()
 

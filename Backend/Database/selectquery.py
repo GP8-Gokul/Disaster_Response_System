@@ -78,7 +78,7 @@ def get_incident_reports():
         cursor.execute("SELECT * FROM incident_reports")
         rows = cursor.fetchall()
 
-        column_names = ['report_id', 'event_id', 'report_date', 'report_description', 'reported_by']
+        column_names = ['report_id', 'event_id', 'report_date', 'report_description', 'reported_by', 'report_name']
 
         incident_reports = [dict(zip(column_names, row)) for row in rows]
 
@@ -111,7 +111,7 @@ def get_record_by_id(table, record_id):
         elif(table == 'incident_reports'):
             cursor.execute(f"SELECT * FROM {table} WHERE report_id = ?",(record_id,))
             row = cursor.fetchone()
-            column_names = ['report_id', 'event_id', 'report_date', 'report_description', 'reported_by']
+            column_names = ['report_id', 'event_id', 'report_date', 'report_description', 'reported_by', 'report_name']
         
         row = dict(zip(column_names, row))
 
