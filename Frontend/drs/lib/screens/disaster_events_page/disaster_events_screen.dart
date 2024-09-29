@@ -1,10 +1,8 @@
-import 'package:drs/screens/disaster_events_page/display_disaster_events.dart';
 import 'package:drs/screens/disaster_events_page/insert_disaster_events.dart';
 import 'package:drs/screens/disaster_events_page/update_disaster_events.dart';
 import 'package:drs/services/api/disaster_event_api.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer' as devtools show log;
-import 'package:drs/services/hero_dialog_route.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 class DisasterEventsScreen extends StatefulWidget {
@@ -136,6 +134,7 @@ class _DisasterEventsScreenState extends State<DisasterEventsScreen> {
                                               filteredEvents.remove(event);
                                             });
                                           } else {
+                                            // ignore: use_build_context_synchronously
                                             ScaffoldMessenger.of(context)
                                                 .showSnackBar(
                                               SnackBar(
@@ -155,19 +154,35 @@ class _DisasterEventsScreenState extends State<DisasterEventsScreen> {
                                     ],
                                   ),
                                   child: GestureDetector(
-                                    onTap: () {
+                                    onTap: () async {
                                       devtools.log('Event tapped');
-                                      Navigator.of(context).push(
-                                        HeroDialogRoute(
-                                          builder: (context) =>
-                                              UpdateDisasterEventsDialog(
-                                            fetchDisasterEvents:
-                                                fetchDisasterEvents,
-                                            event: event,
-                                            response: response,
-                                          ),
+                                      final updatedEvent = await showDialog<
+                                          Map<String, dynamic>>(
+                                        context: context,
+                                        builder: (context) =>
+                                            UpdateDisasterEventsDialog(
+                                          fetchDisasterEvents:
+                                              fetchDisasterEvents,
+                                          event: event,
+                                          response:
+                                              null, // Pass any additional data you need
                                         ),
                                       );
+                                      devtools.log(updatedEvent.toString());
+                                      if (updatedEvent != null) {
+                                        devtools.log('change reflected');
+                                        setState(() {
+                                          futureGetDisasterEvents =
+                                              fetchDisasterEvents();
+                                          futureGetDisasterEvents
+                                              .then((events) {
+                                            setState(() {
+                                              allEvents = events;
+                                              filteredEvents = events;
+                                            });
+                                          });
+                                        });
+                                      }
                                     },
                                     child: Container(
                                       decoration: BoxDecoration(
@@ -242,12 +257,14 @@ class _DisasterEventsScreenState extends State<DisasterEventsScreen> {
                     });
                   });
                 } else {
+                  // ignore: use_build_context_synchronously
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text('Please fill all the fields'),
                       backgroundColor: Colors.red,
                     ),
                   );
+                  // ignore: use_build_context_synchronously
                   Navigator.of(context).pop();
                 }
               },

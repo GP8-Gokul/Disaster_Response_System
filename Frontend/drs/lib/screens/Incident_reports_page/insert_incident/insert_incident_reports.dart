@@ -1,30 +1,26 @@
-import 'package:drs/services/api/disaster_event_api.dart';
+import 'package:drs/services/api/incident_report_api.dart'; 
 import 'package:flutter/material.dart';
 import 'dart:async';
 
-Future<Map<String, String>?> insertDisasterEventsDialog(
-    BuildContext context, Function fetchDisasterEvents, response) async {
+Future<Map<String, String>?> insertIncidentReportDialog(
+    BuildContext context, Function fetchIncidentReports, response) async {
   Completer<Map<String, String>?> completer = Completer();
 
   showDialog(
     context: context,
     builder: (BuildContext context) {
-      TextEditingController disasterNameController = TextEditingController();
-      TextEditingController disasterTypeController = TextEditingController();
-      TextEditingController disasterLocationController =
-          TextEditingController();
-      TextEditingController disasterStartDateController =
-          TextEditingController();
-      TextEditingController disasterEndDateController = TextEditingController();
-      TextEditingController disasterDescriptionController =
-          TextEditingController();
+      TextEditingController reportNameController = TextEditingController();  
+      TextEditingController reportDateController = TextEditingController();
+      TextEditingController descriptionController = TextEditingController();
+      TextEditingController reportedByController = TextEditingController();
+      TextEditingController eventIdController = TextEditingController();
 
       return AlertDialog(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15.0),
         ),
         title: const Text(
-          'Add Disaster Event',
+          'Add Incident Report',
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 20.0,
@@ -35,9 +31,9 @@ Future<Map<String, String>?> insertDisasterEventsDialog(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
-                controller: disasterNameController,
+                controller: reportNameController,  
                 decoration: InputDecoration(
-                  labelText: 'Disaster Name',
+                  labelText: 'Report Name',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10.0),
                   ),
@@ -45,9 +41,9 @@ Future<Map<String, String>?> insertDisasterEventsDialog(
               ),
               const SizedBox(height: 15),
               TextField(
-                controller: disasterTypeController,
+                controller: eventIdController,
                 decoration: InputDecoration(
-                  labelText: 'Disaster Type',
+                  labelText: 'Event ID',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10.0),
                   ),
@@ -55,19 +51,9 @@ Future<Map<String, String>?> insertDisasterEventsDialog(
               ),
               const SizedBox(height: 15),
               TextField(
-                controller: disasterLocationController,
+                controller: reportDateController,
                 decoration: InputDecoration(
-                  labelText: 'Location',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 15),
-              TextField(
-                controller: disasterStartDateController,
-                decoration: InputDecoration(
-                  labelText: 'Start Date',
+                  labelText: 'Report Date',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10.0),
                   ),
@@ -81,40 +67,27 @@ Future<Map<String, String>?> insertDisasterEventsDialog(
                     lastDate: DateTime(2101),
                   );
                   if (pickedDate != null) {
-                    disasterStartDateController.text =
+                    reportDateController.text =
                         pickedDate.toIso8601String().substring(0, 10);
                   }
                 },
               ),
               const SizedBox(height: 15),
               TextField(
-                controller: disasterEndDateController,
-                decoration: InputDecoration(
-                  labelText: 'End Date',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                ),
-                readOnly: true,
-                onTap: () async {
-                  DateTime? pickedDate = await showDatePicker(
-                    context: context,
-                    initialDate: DateTime.now(),
-                    firstDate: DateTime(2000),
-                    lastDate: DateTime(2101),
-                  );
-                  if (pickedDate != null) {
-                    disasterEndDateController.text =
-                        pickedDate.toIso8601String().substring(0, 10);
-                  }
-                },
-              ),
-              const SizedBox(height: 15),
-              TextField(
-                controller: disasterDescriptionController,
+                controller: descriptionController,
                 maxLines: 3,
                 decoration: InputDecoration(
                   labelText: 'Description',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 15),
+              TextField(
+                controller: reportedByController,
+                decoration: InputDecoration(
+                  labelText: 'Reported By',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10.0),
                   ),
@@ -133,41 +106,35 @@ Future<Map<String, String>?> insertDisasterEventsDialog(
           ),
           ElevatedButton(
             onPressed: () async {
-              if (disasterNameController.text.isNotEmpty &&
-                  disasterTypeController.text.isNotEmpty &&
-                  disasterLocationController.text.isNotEmpty &&
-                  disasterStartDateController.text.isNotEmpty &&
-                  disasterEndDateController.text.isNotEmpty &&
-                  disasterDescriptionController.text.isNotEmpty) {
-                final response = await addDisasterEvents(
-                  disasterNameController.text,
-                  disasterTypeController.text,
-                  disasterLocationController.text,
-                  disasterStartDateController.text,
-                  disasterEndDateController.text,
-                  disasterDescriptionController.text,
+              if (reportNameController.text.isNotEmpty &&
+                  eventIdController.text.isNotEmpty &&
+                  reportDateController.text.isNotEmpty &&
+                  descriptionController.text.isNotEmpty &&
+                  reportedByController.text.isNotEmpty) {
+                final response = await addIncidentReport(
+                  reportNameController.text,  
+                  eventIdController.text,
+                  reportDateController.text,
+                  descriptionController.text,
+                  reportedByController.text,
                 );
                 if (response != 0) {
-                  // ignore: use_build_context_synchronously
                   Navigator.of(context).pop();
                 } else {
-                  // ignore: use_build_context_synchronously
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text('Failed to add disaster event'),
+                      content: Text('Failed to add incident report'),
                       backgroundColor: Colors.red,
                     ),
                   );
-                  // ignore: use_build_context_synchronously
                   Navigator.of(context).pop();
                 }
                 completer.complete({
-                  'disasterName': disasterNameController.text,
-                  'disasterType': disasterTypeController.text,
-                  'disasterLocation': disasterLocationController.text,
-                  'disasterStartDate': disasterStartDateController.text,
-                  'disasterEndDate': disasterEndDateController.text,
-                  'disasterDescription': disasterDescriptionController.text,
+                  'reportName': reportNameController.text,  
+                  'eventId': eventIdController.text,
+                  'reportDate': reportDateController.text,
+                  'description': descriptionController.text,
+                  'reportedBy': reportedByController.text,
                 });
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(

@@ -1,77 +1,73 @@
-import 'package:drs/services/api/disaster_event_api.dart';
+import 'package:drs/screens/incident_reports_page/incident_reports_screen.dart';
+import 'package:drs/services/api/incident_report_api.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
-class UpdateDisasterEventsDialog extends StatefulWidget {
-  final Function fetchDisasterEvents;
-  final Map<String, dynamic> event;
+class UpdateIncidentReportsDialog extends StatefulWidget {
+  final Function fetchIncidentReports;
+  final Map<String, dynamic> report;
   final dynamic response;
 
-  const UpdateDisasterEventsDialog({
+  const UpdateIncidentReportsDialog({
     super.key,
-    required this.fetchDisasterEvents,
-    required this.event,
+    required this.fetchIncidentReports,
+    required this.report,
     required this.response,
   });
 
   @override
-  // ignore: library_private_types_in_public_api
-  _UpdateDisasterEventsDialogState createState() =>
-      _UpdateDisasterEventsDialogState();
+  _UpdateIncidentReportsDialogState createState() =>
+      _UpdateIncidentReportsDialogState();
 }
 
-class _UpdateDisasterEventsDialogState
-    extends State<UpdateDisasterEventsDialog> {
-  late TextEditingController disasterNameController;
-  late TextEditingController disasterTypeController;
-  late TextEditingController disasterLocationController;
-  late TextEditingController disasterStartDateController;
-  late TextEditingController disasterEndDateController;
-  late TextEditingController disasterDescriptionController;
+class _UpdateIncidentReportsDialogState
+    extends State<UpdateIncidentReportsDialog> {
+  late TextEditingController reportNameController; 
+  late TextEditingController reportDateController;
+  late TextEditingController descriptionController;
+  late TextEditingController reportedByController;
+  late TextEditingController eventIdController;
   bool readOnly = true;
   final Completer<Map<String, String>?> completer = Completer();
 
   @override
   void initState() {
     super.initState();
-    disasterNameController =
-        TextEditingController(text: widget.event['event_name']);
-    disasterTypeController =
-        TextEditingController(text: widget.event['event_type']);
-    disasterLocationController =
-        TextEditingController(text: widget.event['location']);
-    disasterStartDateController =
-        TextEditingController(text: widget.event['start_date']);
-    disasterEndDateController =
-        TextEditingController(text: widget.event['end_date']);
-    disasterDescriptionController =
-        TextEditingController(text: widget.event['description']);
+    reportNameController =
+        TextEditingController(text: widget.report['report_name']); 
+    reportDateController =
+        TextEditingController(text: widget.report['report_date']);
+    descriptionController =
+        TextEditingController(text: widget.report['description']);
+    reportedByController =
+        TextEditingController(text: widget.report['reported_by']);
+    eventIdController =
+        TextEditingController(text: widget.report['event_id']);
   }
 
   @override
   void dispose() {
-    disasterNameController.dispose();
-    disasterTypeController.dispose();
-    disasterLocationController.dispose();
-    disasterStartDateController.dispose();
-    disasterEndDateController.dispose();
-    disasterDescriptionController.dispose();
+    reportNameController.dispose();
+    reportDateController.dispose();
+    descriptionController.dispose();
+    reportedByController.dispose();
+    eventIdController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: const Color.fromARGB(255, 250, 250, 250),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20.0),
       ),
       title: Text(
-        'Update Disaster Event',
+        'Update Incident Report',
         style: TextStyle(
           fontWeight: FontWeight.bold,
           fontSize: 22.0,
-          color: Colors.grey[800],
+          color: const Color.fromARGB(255, 17, 17, 17),
         ),
       ),
       content: SingleChildScrollView(
@@ -81,42 +77,35 @@ class _UpdateDisasterEventsDialogState
             mainAxisSize: MainAxisSize.min,
             children: [
               _buildTextField(
-                controller: disasterNameController,
-                label: 'Disaster Name',
+                controller: reportNameController, 
+                label: 'Report Name',
                 readOnly: readOnly,
               ),
               const SizedBox(height: 15),
               _buildTextField(
-                controller: disasterTypeController,
-                label: 'Disaster Type',
-                readOnly: readOnly,
-              ),
-              const SizedBox(height: 15),
-              _buildTextField(
-                controller: disasterLocationController,
-                label: 'Location',
+                controller: eventIdController,
+                label: 'Event ID',
                 readOnly: readOnly,
               ),
               const SizedBox(height: 15),
               _buildDateField(
-                controller: disasterStartDateController,
-                label: 'Start Date',
-                context: context,
-                readOnly: readOnly,
-              ),
-              const SizedBox(height: 15),
-              _buildDateField(
-                controller: disasterEndDateController,
-                label: 'End Date',
+                controller: reportDateController,
+                label: 'Report Date',
                 context: context,
                 readOnly: readOnly,
               ),
               const SizedBox(height: 15),
               _buildTextField(
-                controller: disasterDescriptionController,
+                controller: descriptionController,
                 label: 'Description',
                 readOnly: readOnly,
                 maxLines: 3,
+              ),
+              const SizedBox(height: 15),
+              _buildTextField(
+                controller: reportedByController,
+                label: 'Reported By',
+                readOnly: readOnly,
               ),
               const SizedBox(height: 20),
               Row(
@@ -135,30 +124,50 @@ class _UpdateDisasterEventsDialogState
                     icon: Icons.update,
                     color: Colors.blueAccent,
                     onPressed: () async {
-                      // Update the event and return data to the parent
-                      await updateDisasterEvents(
-                        widget.event['event_id'],
-                        disasterNameController.text,
-                        disasterTypeController.text,
-                        disasterLocationController.text,
-                        disasterStartDateController.text,
-                        disasterEndDateController.text,
-                        disasterDescriptionController.text,
-                      );
-
-                      // ignore: use_build_context_synchronously
-                      Navigator.of(context).pop({
-                        'eventId': widget.event['event_id'],
-                        'disasterName': disasterNameController.text,
-                        'disasterType': disasterTypeController.text,
-                        'disasterLocation': disasterLocationController.text,
-                        'disasterStartDate': disasterStartDateController.text,
-                        'disasterEndDate': disasterEndDateController.text,
-                        'disasterDescription':
-                            disasterDescriptionController.text,
-                      });
-
-                      widget.fetchDisasterEvents();
+                      if (reportNameController.text.isNotEmpty &&
+                          eventIdController.text.isNotEmpty &&
+                          reportDateController.text.isNotEmpty &&
+                          descriptionController.text.isNotEmpty &&
+                          reportedByController.text.isNotEmpty) {
+                        final response = await updateIncidentReport(
+                          widget.report['report_id'],
+                          reportNameController.text, 
+                          eventIdController.text,
+                          reportDateController.text,
+                          descriptionController.text,
+                          reportedByController.text,
+                        );
+                        if (response != 0) {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => IncidentReportsScreen(),
+                            ),
+                          );
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Failed to update incident report'),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                          Navigator.of(context).pop();
+                        }
+                        completer.complete({
+                          'reportId': widget.report['report_id'],
+                          'reportName': reportNameController.text, 
+                          'eventId': eventIdController.text,
+                          'reportDate': reportDateController.text,
+                          'description': descriptionController.text,
+                          'reportedBy': reportedByController.text,
+                        });
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Please fill all the fields'),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
+                      }
                     },
                   ),
                 ],
