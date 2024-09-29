@@ -1,3 +1,4 @@
+import 'package:drs/screens/disaster_events_page/disaster_events_screen.dart';
 import 'package:drs/services/api/disaster_event_api.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
@@ -15,6 +16,7 @@ class UpdateDisasterEventsDialog extends StatefulWidget {
   });
 
   @override
+  // ignore: library_private_types_in_public_api
   _UpdateDisasterEventsDialogState createState() =>
       _UpdateDisasterEventsDialogState();
 }
@@ -150,15 +152,21 @@ class _UpdateDisasterEventsDialogState
                           disasterDescriptionController.text,
                         );
                         if (response != 0) {
-                          widget.fetchDisasterEvents();
-                          Navigator.of(context).pop();
+                          // ignore: use_build_context_synchronously
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => DisasterEventsScreen(),
+                            ),
+                          );
                         } else {
+                          // ignore: use_build_context_synchronously
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text('Failed to update event'),
                               backgroundColor: Colors.red,
                             ),
                           );
+                          // ignore: use_build_context_synchronously
                           Navigator.of(context).pop();
                         }
                         completer.complete({

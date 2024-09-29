@@ -1,4 +1,3 @@
-import 'package:drs/screens/disaster_events_page/display_disaster_events.dart';
 import 'package:drs/screens/disaster_events_page/insert_disaster_events.dart';
 import 'package:drs/screens/disaster_events_page/update_disaster_events.dart';
 import 'package:drs/services/api/disaster_event_api.dart';
@@ -136,6 +135,7 @@ class _DisasterEventsScreenState extends State<DisasterEventsScreen> {
                                               filteredEvents.remove(event);
                                             });
                                           } else {
+                                            // ignore: use_build_context_synchronously
                                             ScaffoldMessenger.of(context)
                                                 .showSnackBar(
                                               SnackBar(
@@ -242,12 +242,14 @@ class _DisasterEventsScreenState extends State<DisasterEventsScreen> {
                     });
                   });
                 } else {
+                  // ignore: use_build_context_synchronously
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text('Please fill all the fields'),
                       backgroundColor: Colors.red,
                     ),
                   );
+                  // ignore: use_build_context_synchronously
                   Navigator.of(context).pop();
                 }
               },
