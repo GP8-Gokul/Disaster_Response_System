@@ -232,6 +232,13 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
                     if (response != null) {
                       setState(() {
                         futureGetVolunteers = fetchdata('volunteers');
+                        futureGetVolunteers.then((events) {
+                          setState(() {
+                            allData = events;
+                            filteredData = events;
+                          });
+                        });
+    searchController.addListener(_filterData);
                       });
                     }
                     if (context.mounted) {
