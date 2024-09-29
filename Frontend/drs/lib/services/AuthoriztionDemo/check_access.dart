@@ -3,7 +3,7 @@ import 'dart:developer' as devtools show log;
 
 bool checkAcess(tableName, conditionName) {
   devtools.log(userRole);
-  if (userRole.toString().toLowerCase() == 'administrator') {
+  if (userRole.toString().toLowerCase() == 'admin') {
     return true;
   } else if (userRole == 'volunteer') {
     if (tableName == 'volunteers' && conditionName == userName) {
