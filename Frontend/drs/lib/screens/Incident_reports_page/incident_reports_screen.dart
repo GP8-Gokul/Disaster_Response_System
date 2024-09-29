@@ -1,6 +1,6 @@
 import 'package:drs/screens/incident_reports_page/insert_incident_reports.dart';
 import 'package:drs/screens/incident_reports_page/update_incident_reports.dart';
-import 'package:drs/services/api/incident_reports_api.dart';
+import 'package:drs/services/api/incident_reports_root_api.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer' as devtools show log;
 import 'package:drs/services/hero_dialog_route.dart';
@@ -25,7 +25,7 @@ class _IncidentReportsScreenState extends State<IncidentReportsScreen> {
   @override
   void initState() {
     super.initState();
-    futureGetIncidentReports = fetchIncidentReports();
+    futureGetIncidentReports = fetchdata('incident_reports');
     futureGetIncidentReports.then((reports) {
       setState(() {
         allReports = reports;
