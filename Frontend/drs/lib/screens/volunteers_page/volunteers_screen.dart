@@ -80,6 +80,9 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
               ? const Center(child: Text('No volunteers found.'))
               : buildFutureBuilder(),
         ),
+        SizedBox(
+          height: 70,
+        )
       ],
     );
   }
