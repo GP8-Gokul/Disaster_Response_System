@@ -45,7 +45,7 @@ class _IncidentReportsScreenState extends State<IncidentReportsScreen> {
     final query = searchController.text.toLowerCase();
     setState(() {
       filteredReports = allReports
-          .where((report) => report['reported_by'].toLowerCase().contains(query))
+          .where((report) => report['report_name'].toLowerCase().contains(query))
           .toList();
     });
   }
@@ -57,7 +57,7 @@ class _IncidentReportsScreenState extends State<IncidentReportsScreen> {
         children: [
           Positioned.fill(
             child: Image.asset(
-              'assets/images/background.jpg', // replace with actual background image
+              'assets/images/background.jpg', // background image
               fit: BoxFit.cover,
             ),
           ),
@@ -83,7 +83,7 @@ class _IncidentReportsScreenState extends State<IncidentReportsScreen> {
                     style: const TextStyle(color: Colors.white),
                     decoration: InputDecoration(
                       labelText: 'Search Reports',
-                      hintText: 'Enter reporter\'s name',
+                      hintText: 'Enter report name',
                       hintStyle: const TextStyle(color: Colors.white),
                       labelStyle: const TextStyle(color: Colors.white),
                       prefixIcon: const Icon(Icons.search, color: Colors.white),
@@ -182,7 +182,7 @@ class _IncidentReportsScreenState extends State<IncidentReportsScreen> {
                                                   CrossAxisAlignment.start,
                                               children: [
                                                 Text(
-                                                  "Reported By: ${report['reported_by']}",
+                                                  "Report Name: ${report['report_name']}",
                                                   style: const TextStyle(
                                                     fontSize: 20.0,
                                                     fontWeight: FontWeight.bold,
@@ -223,7 +223,6 @@ class _IncidentReportsScreenState extends State<IncidentReportsScreen> {
                 devtools.log('Floating action button pressed');
                 final result = await insertIncidentReportsDialog(
                     context, fetchIncidentReports, response);
-                // ignore: unrelated_type_equality_checks
                 if (result != 0) {
                   setState(() {
                     futureGetIncidentReports = fetchIncidentReports();
@@ -254,3 +253,4 @@ class _IncidentReportsScreenState extends State<IncidentReportsScreen> {
     );
   }
 }
+
