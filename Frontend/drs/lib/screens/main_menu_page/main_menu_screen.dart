@@ -1,6 +1,7 @@
 import 'package:drs/screens/aid_distribution_page/aid_distribution_screen.dart';
 import 'package:drs/screens/disaster_events_page/disaster_events_screen.dart';
 import 'package:drs/screens/Incident_reports_page/incident_reports_screen.dart';
+import 'package:drs/screens/login_page/login_screen.dart';
 import 'package:drs/screens/resources_page/resources_screen.dart';
 import 'package:drs/screens/volunteers_page/volunteers_screen.dart';
 import 'package:flutter/material.dart';
@@ -27,15 +28,33 @@ class MainMenuScreen extends StatelessWidget {
           backgroundColor: Colors.transparent,
           appBar: AppBar(
             backgroundColor: Colors.transparent,
-            title: const Text(
-              'Disaster Response',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                decoration: TextDecoration.underline,
-                decorationThickness: 2.0,
-              ),
+            automaticallyImplyLeading: false,
+            title: Row(
+              children: [
+                const Text(
+                    'Disaster Response',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    decoration: TextDecoration.underline,
+                    decorationThickness: 2.0,
+                  ),
+                ),
+                const SizedBox(width: 50),
+                FloatingActionButton(
+                  
+                  backgroundColor: Colors.transparent,
+                  elevation: 0,
+                  child: const Icon(Icons.logout),
+                  onPressed: () {
+                    Navigator.pushNamed(context, LoginScreen.routeName);
+                  },
+                ),
+              ],
+                
             ),
             centerTitle: true,
+            
           ),
           body: SafeArea(
             child: Padding(
