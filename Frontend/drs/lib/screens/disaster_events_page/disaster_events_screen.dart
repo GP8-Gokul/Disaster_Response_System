@@ -125,14 +125,26 @@ class _DisasterEventsScreenState extends State<DisasterEventsScreen> {
                                     children: [
                                       SlidableAction(
                                         borderRadius: BorderRadius.circular(25),
-                                        onPressed: (context) {
+                                        onPressed: (context) async {
                                           devtools.log('Slide action pressed');
-                                          deleteDisasterEvent(
-                                              event['event_id']);
-                                          setState(() {
-                                            allEvents.remove(event);
-                                            filteredEvents.remove(event);
-                                          });
+                                          final result =
+                                              await deleteDisasterEvent(
+                                                  event['event_id']);
+                                          if (result != 0) {
+                                            setState(() {
+                                              allEvents.remove(event);
+                                              filteredEvents.remove(event);
+                                            });
+                                          } else {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              SnackBar(
+                                                content: Text(
+                                                    'Failed to delete event'),
+                                                backgroundColor: Colors.red,
+                                              ),
+                                            );
+                                          }
                                         },
                                         backgroundColor: const Color.fromARGB(
                                             138, 236, 70, 70),
@@ -218,7 +230,8 @@ class _DisasterEventsScreenState extends State<DisasterEventsScreen> {
                 devtools.log('Floating action button pressed');
                 final result = await insertDisasterEventsDialog(
                     context, fetchDisasterEvents, response);
-                if (result != null) {
+                // ignore: unrelated_type_equality_checks
+                if (result != 0) {
                   setState(() {
                     futureGetDisasterEvents = fetchDisasterEvents();
                     futureGetDisasterEvents.then((events) {
@@ -228,6 +241,14 @@ class _DisasterEventsScreenState extends State<DisasterEventsScreen> {
                       });
                     });
                   });
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Please fill all the fields'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                  Navigator.of(context).pop();
                 }
               },
               backgroundColor: const Color.fromARGB(255, 23, 22, 22),
