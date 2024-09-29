@@ -148,14 +148,17 @@ Future<Map<String, String>?> insertDisasterEventsDialog(
                   disasterDescriptionController.text,
                 );
                 if (response != 0) {
+                  // ignore: use_build_context_synchronously
                   Navigator.of(context).pop();
                 } else {
+                  // ignore: use_build_context_synchronously
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text('Failed to add disaster event'),
                       backgroundColor: Colors.red,
                     ),
                   );
+                  // ignore: use_build_context_synchronously
                   Navigator.of(context).pop();
                 }
                 completer.complete({

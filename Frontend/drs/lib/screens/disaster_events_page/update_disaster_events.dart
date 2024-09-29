@@ -1,4 +1,3 @@
-import 'package:drs/screens/disaster_events_page/disaster_events_screen.dart';
 import 'package:drs/services/api/disaster_event_api.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
@@ -63,7 +62,7 @@ class _UpdateDisasterEventsDialogState
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      backgroundColor: const Color.fromARGB(255, 250, 250, 250),
+      backgroundColor: Colors.grey[50],
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20.0),
       ),
@@ -72,7 +71,7 @@ class _UpdateDisasterEventsDialogState
         style: TextStyle(
           fontWeight: FontWeight.bold,
           fontSize: 22.0,
-          color: const Color.fromARGB(255, 17, 17, 17),
+          color: Colors.grey[800],
         ),
       ),
       content: SingleChildScrollView(
@@ -136,57 +135,30 @@ class _UpdateDisasterEventsDialogState
                     icon: Icons.update,
                     color: Colors.blueAccent,
                     onPressed: () async {
-                      if (disasterNameController.text.isNotEmpty &&
-                          disasterTypeController.text.isNotEmpty &&
-                          disasterLocationController.text.isNotEmpty &&
-                          disasterStartDateController.text.isNotEmpty &&
-                          disasterEndDateController.text.isNotEmpty &&
-                          disasterDescriptionController.text.isNotEmpty) {
-                        final response = await updateDisasterEvents(
-                          widget.event['event_id'],
-                          disasterNameController.text,
-                          disasterTypeController.text,
-                          disasterLocationController.text,
-                          disasterStartDateController.text,
-                          disasterEndDateController.text,
-                          disasterDescriptionController.text,
-                        );
-                        if (response != 0) {
-                          // ignore: use_build_context_synchronously
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => DisasterEventsScreen(),
-                            ),
-                          );
-                        } else {
-                          // ignore: use_build_context_synchronously
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('Failed to update event'),
-                              backgroundColor: Colors.red,
-                            ),
-                          );
-                          // ignore: use_build_context_synchronously
-                          Navigator.of(context).pop();
-                        }
-                        completer.complete({
-                          'eventId': widget.event['event_id'],
-                          'disasterName': disasterNameController.text,
-                          'disasterType': disasterTypeController.text,
-                          'disasterLocation': disasterLocationController.text,
-                          'disasterStartDate': disasterStartDateController.text,
-                          'disasterEndDate': disasterEndDateController.text,
-                          'disasterDescription':
-                              disasterDescriptionController.text,
-                        });
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('Please fill all the fields'),
-                            backgroundColor: Colors.red,
-                          ),
-                        );
-                      }
+                      // Update the event and return data to the parent
+                      await updateDisasterEvents(
+                        widget.event['event_id'],
+                        disasterNameController.text,
+                        disasterTypeController.text,
+                        disasterLocationController.text,
+                        disasterStartDateController.text,
+                        disasterEndDateController.text,
+                        disasterDescriptionController.text,
+                      );
+
+                      // ignore: use_build_context_synchronously
+                      Navigator.of(context).pop({
+                        'eventId': widget.event['event_id'],
+                        'disasterName': disasterNameController.text,
+                        'disasterType': disasterTypeController.text,
+                        'disasterLocation': disasterLocationController.text,
+                        'disasterStartDate': disasterStartDateController.text,
+                        'disasterEndDate': disasterEndDateController.text,
+                        'disasterDescription':
+                            disasterDescriptionController.text,
+                      });
+
+                      widget.fetchDisasterEvents();
                     },
                   ),
                 ],

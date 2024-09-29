@@ -14,6 +14,7 @@ class MainMenuScreen extends StatelessWidget {
     Navigator.pushNamed(context, routeName);
   }
 
+  // ignore: non_constant_identifier_names
   void Logout(BuildContext context) {
     showDialog(
       context: context,
