@@ -2,7 +2,7 @@ import 'package:drs/services/AuthoriztionDemo/check_access.dart';
 import 'package:drs/services/api/root_api.dart';
 import 'package:drs/widgets/background_image.dart';
 import 'package:drs/widgets/custom_appbar.dart';
-import 'package:drs/screens/volunteers_page/volunteer_details_box.dart';
+import 'package:drs/screens/volunteers_page/volunteer_list_tile.dart';
 import 'package:drs/widgets/custom_text.dart';
 import 'package:drs/widgets/custom_text_field.dart';
 import 'package:drs/widgets/search_text_field.dart';
