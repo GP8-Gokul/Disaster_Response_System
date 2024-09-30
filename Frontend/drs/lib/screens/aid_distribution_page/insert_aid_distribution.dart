@@ -2,6 +2,9 @@ import 'package:drs/services/api/aid_distribution_api.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
+// Assuming eventIds are imported from another package
+import 'package:drs/services/api/event_data.dart'; // Example import
+
 Future<Map<String, String>?> insertAidDistributionDialog(
     BuildContext context, Function fetchAidDistribution, response) async {
   Completer<Map<String, String>?> completer = Completer();
@@ -9,13 +12,16 @@ Future<Map<String, String>?> insertAidDistributionDialog(
   showDialog(
     context: context,
     builder: (BuildContext context) {
-      TextEditingController aidEventIdController = TextEditingController();
       TextEditingController aidResourceIdController = TextEditingController();
       TextEditingController aidVolunteerIdController = TextEditingController();
       TextEditingController aidQuantityController = TextEditingController();
       TextEditingController aidDistributionDateController =
           TextEditingController();
       TextEditingController aidLocationController = TextEditingController();
+
+      // Mock event IDs; replace with actual data from your package
+      List<String> eventIds = getEventIds(); // Assume this is imported
+      String? selectedEventId; // Selected event ID
 
       return AlertDialog(
         shape: RoundedRectangleBorder(
@@ -32,14 +38,24 @@ Future<Map<String, String>?> insertAidDistributionDialog(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              TextField(
-                controller: aidEventIdController,
+              // Dropdown for Event ID
+              DropdownButtonFormField<String>(
                 decoration: InputDecoration(
                   labelText: 'Event ID',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10.0),
                   ),
                 ),
+                value: selectedEventId,
+                items: eventIds.map((String eventId) {
+                  return DropdownMenuItem<String>(
+                    value: eventId,
+                    child: Text(eventId),
+                  );
+                }).toList(),
+                onChanged: (String? newValue) {
+                  selectedEventId = newValue;
+                },
               ),
               const SizedBox(height: 15),
               TextField(
@@ -118,8 +134,17 @@ Future<Map<String, String>?> insertAidDistributionDialog(
           ),
           ElevatedButton(
             onPressed: () async {
+              if (selectedEventId == null) {
+                // If no event ID is selected, show a warning
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                  content: Text('Please select an event ID'),
+                  backgroundColor: Colors.red,
+                ));
+                return;
+              }
+
               await addAidDistribution(
-                aidEventIdController.text,
+                selectedEventId!, // Pass the selected event ID
                 aidResourceIdController.text,
                 aidVolunteerIdController.text,
                 aidQuantityController.text,
@@ -130,7 +155,7 @@ Future<Map<String, String>?> insertAidDistributionDialog(
                 Navigator.of(context).pop();
               }
               completer.complete({
-                'aidEventId': aidEventIdController.text,
+                'aidEventId': selectedEventId!,
                 'aidResourceId': aidResourceIdController.text,
                 'aidVolunteerId': aidVolunteerIdController.text,
                 'aidQuantity': aidQuantityController.text,
