@@ -1,9 +1,21 @@
 import 'package:drs/services/api/aid_distribution_api.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
+import 'package:drs/services/api/disaster_event_api.dart';
+import 'dart:developer' as devtools show log;
 
-// Assuming eventIds are imported from another package
-import 'package:drs/services/api/event_data.dart'; // Example import
+var events = {};
+
+void getEventIds() {
+  late Future<List<Map<String, dynamic>>> futureGetDisasterEvents;
+  futureGetDisasterEvents = fetchDisasterEvents();
+  futureGetDisasterEvents.then((value) {
+    for (var event in value) {
+      events[event['event_id']] = event['event_name'];
+    }
+  });
+  devtools.log(events.toString());
+}
 
 Future<Map<String, String>?> insertAidDistributionDialog(
     BuildContext context, Function fetchAidDistribution, response) async {
@@ -19,8 +31,7 @@ Future<Map<String, String>?> insertAidDistributionDialog(
           TextEditingController();
       TextEditingController aidLocationController = TextEditingController();
 
-      // Mock event IDs; replace with actual data from your package
-      List<String> eventIds = getEventIds(); // Assume this is imported
+      getEventIds();
       String? selectedEventId; // Selected event ID
 
       return AlertDialog(
@@ -41,16 +52,16 @@ Future<Map<String, String>?> insertAidDistributionDialog(
               // Dropdown for Event ID
               DropdownButtonFormField<String>(
                 decoration: InputDecoration(
-                  labelText: 'Event ID',
+                  labelText: 'Event',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10.0),
                   ),
                 ),
                 value: selectedEventId,
-                items: eventIds.map((String eventId) {
+                items: events.keys.map((key) {
                   return DropdownMenuItem<String>(
-                    value: eventId,
-                    child: Text(eventId),
+                    value: key.toString(), // Convert key to String
+                    child: Text(events[key]!),
                   );
                 }).toList(),
                 onChanged: (String? newValue) {
@@ -135,7 +146,6 @@ Future<Map<String, String>?> insertAidDistributionDialog(
           ElevatedButton(
             onPressed: () async {
               if (selectedEventId == null) {
-                // If no event ID is selected, show a warning
                 ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                   content: Text('Please select an event ID'),
                   backgroundColor: Colors.red,
@@ -144,7 +154,7 @@ Future<Map<String, String>?> insertAidDistributionDialog(
               }
 
               await addAidDistribution(
-                selectedEventId!, // Pass the selected event ID
+                selectedEventId!,
                 aidResourceIdController.text,
                 aidVolunteerIdController.text,
                 aidQuantityController.text,
