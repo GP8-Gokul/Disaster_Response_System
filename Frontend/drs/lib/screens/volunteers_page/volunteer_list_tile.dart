@@ -1,4 +1,5 @@
 import 'package:drs/services/AuthoriztionDemo/check_access.dart';
+import 'package:drs/services/api/disaster_event_api.dart';
 import 'package:drs/services/api/root_api.dart';
 import 'package:drs/widgets/custom_text.dart';
 import 'package:drs/widgets/custom_text_field.dart';
@@ -6,6 +7,18 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 dynamic response;
+
+var events = {};
+
+void getEventIds() {
+  late Future<List<Map<String, dynamic>>> futureGetDisasterEvents;
+  futureGetDisasterEvents = fetchDisasterEvents();
+  futureGetDisasterEvents.then((value) {
+    for (var event in value) {
+      events[event['event_id']] = event['event_name'];
+    }
+  });
+}
 class VolunteerListTile extends StatefulWidget {
   final dynamic content;
   final VoidCallback onChange;
@@ -56,8 +69,9 @@ class VolunteerListTileState extends State<VolunteerListTile> {
                           TextEditingController(text: widget.content['volunteer_skills'].toString());
                         TextEditingController volunteerAvailabilityStatusController = 
                           TextEditingController(text: widget.content['volunteer_availability_status'].toString());
-                        TextEditingController eventIdController = 
-                          TextEditingController(text: widget.content['event_id'].toString());
+
+                        getEventIds();
+                        String? selectedEventId; 
 
                         return StatefulBuilder(
                           builder: (BuildContext context, StateSetter setState) {
@@ -135,11 +149,41 @@ class VolunteerListTileState extends State<VolunteerListTile> {
                                       controller: volunteerAvailabilityStatusController,
                                       readOnly: readonly,
                                     ),
-                                    CustomTextField(
-                                      hintText: '${widget.content['event_id']}',
-                                      labelText: 'Event ID',
-                                      controller: eventIdController,
-                                      readOnly: readonly,
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        border: Border.all(
+                                          color: Colors.lime.withOpacity(0.5),
+                                          width: 2.0,
+                                        ),
+                                        borderRadius: BorderRadius.circular(10.0),
+                                      ),
+                                      child: DropdownButtonFormField<String>(
+                                        decoration: InputDecoration(
+                                        labelText: 'Event Name',
+                                        enabled: !readonly,
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(10.0),
+                                          borderSide: const BorderSide(color: Colors.lime, width: 2.0),
+                                        ),
+                                        ),
+                                        value: selectedEventId ?? widget.content['event_id'].toString(),
+                                        style: const TextStyle(color: Colors.white),
+                                        dropdownColor: Colors.black,
+                                        
+                                        items: events.keys.map((key) {
+                                        return DropdownMenuItem<String>(
+                                          value: key.toString(),
+                                          child: Container(
+
+                                          color: Colors.black.withOpacity(0.5),
+                                          child: Text(events[key]!),
+                                          ),
+                                        );
+                                        }).toList(),
+                                        onChanged: (String? newValue) {
+                                        selectedEventId = newValue;
+                                        },
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -165,6 +209,13 @@ class VolunteerListTileState extends State<VolunteerListTile> {
                                   ),
                                   child: const Icon(Icons.update, color: Colors.blue),
                                   onPressed: () async {
+                                    if (selectedEventId == null) {
+                                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                        content: Text('Please select an event ID'),
+                                        backgroundColor: Colors.red,
+                                      ));
+                                      return;
+                                    }
                                     if(checkAcess('volunteers', volunteerNameController.text)){
                                       response = await updateData(
                                       {
@@ -174,7 +225,7 @@ class VolunteerListTileState extends State<VolunteerListTile> {
                                       'volunteer_contact_info': volunteerContactInfoController.text,
                                       'volunteer_skills': volunteerSkillsController.text,
                                       'volunteer_availability_status': volunteerAvailabilityStatusController.text,
-                                      'event_id': eventIdController.text,
+                                      'event_id': selectedEventId!,
                                       },
                                     );
                                     if (response != null && context.mounted) {

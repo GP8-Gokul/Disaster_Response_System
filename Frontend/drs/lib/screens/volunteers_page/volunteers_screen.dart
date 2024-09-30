@@ -1,4 +1,5 @@
 import 'package:drs/services/AuthoriztionDemo/check_access.dart';
+import 'package:drs/services/api/disaster_event_api.dart';
 import 'package:drs/services/api/root_api.dart';
 import 'package:drs/widgets/background_image.dart';
 import 'package:drs/widgets/custom_appbar.dart';
@@ -10,6 +11,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 bool changeInState = false;
+var events = {};
+
+void getEventIds() {
+  late Future<List<Map<String, dynamic>>> futureGetDisasterEvents;
+  futureGetDisasterEvents = fetchDisasterEvents();
+  futureGetDisasterEvents.then((value) {
+    for (var event in value) {
+      events[event['event_id']] = event['event_name'];
+    }
+  });
+}
 
 class VolunteersScreen extends StatefulWidget {
   const VolunteersScreen({super.key});
@@ -221,7 +233,8 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
                 TextEditingController();
             TextEditingController volunteerAvailabilityStatusController =
                 TextEditingController();
-            TextEditingController eventIdController = TextEditingController();
+            getEventIds();
+            String? selectedEventId; 
 
             return AlertDialog(
               title: const Text('Add New Volunteer'),
@@ -257,11 +270,34 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
                       labelText: 'Availability Status',
                       controller: volunteerAvailabilityStatusController,
                       readOnly: false),
-                  CustomTextField(
-                      hintText: 'Event ID',
-                      labelText: 'Event ID',
-                      controller: eventIdController,
-                      readOnly: false),
+                  DropdownButtonFormField<String>(
+                    decoration: InputDecoration(
+                      labelText: 'Event Name',
+                      labelStyle: const TextStyle(color: Colors.white),
+                      enabled: true,
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                        borderSide: const BorderSide(color: Colors.lime),
+                      ),
+                    ),
+                    value: selectedEventId,
+                    style: const TextStyle(color: Colors.white),
+                    dropdownColor: Colors.black,
+                    
+                    items: events.keys.map((key) {
+                    return DropdownMenuItem<String>(
+                      value: key.toString(),
+                      child: Container(
+                  
+                      color: Colors.black.withOpacity(0.5),
+                      child: Text(events[key]!),
+                      ),
+                    );
+                    }).toList(),
+                    onChanged: (String? newValue) {
+                    selectedEventId = newValue;
+                    },
+                  ),
                 ],
               ),
               actions: <Widget>[
@@ -290,7 +326,7 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
                         'skills': volunteerSkillsController.text,
                         'availability_status':
                             volunteerAvailabilityStatusController.text,
-                        'event_id': eventIdController.text,
+                        'event_id': selectedEventId,
                       });
                       if (response != null) {
                         setState(() {
