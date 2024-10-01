@@ -1,10 +1,8 @@
-import 'package:drs/screens/aid_distribution_page/display_aid_distribution.dart';
 import 'package:drs/screens/aid_distribution_page/insert_aid_distribution.dart';
 import 'package:drs/screens/aid_distribution_page/update_aid_distribution.dart';
 import 'package:drs/services/api/aid_distribution_api.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer' as devtools show log;
-import 'package:drs/services/unused_hero_dialog_route.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 class AidDistributionScreen extends StatefulWidget {
@@ -93,14 +91,14 @@ class _AidDistributionScreenState extends State<AidDistributionScreen> {
                           ),
                           child: GestureDetector(
                             onTap: () {
-                              devtools.log('Event for aid tapped');
-                              Navigator.of(context).push(
-                                HeroDialogRoute(
-                                  builder: (context) => DisplayAidDistribution(
-                                    rsc: rsc,
-                                  ),
-                                ),
-                              );
+                              // devtools.log('Event for aid tapped');
+                              // Navigator.of(context).push(
+                              //   HeroDialogRoute(
+                              //     builder: (context) => DisplayAidDistribution(
+                              //       rsc: rsc,
+                              //     ),
+                              //   ),
+                              // );
                             },
                             child: Container(
                               decoration: BoxDecoration(

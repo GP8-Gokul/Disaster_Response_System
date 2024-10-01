@@ -1,4 +1,5 @@
 import 'package:drs/services/api/root_api.dart';
+import 'package:drs/services/authorization/check_access.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
@@ -126,9 +127,20 @@ class _UpdateDisasterEventsDialogState
                     icon: Icons.edit,
                     color: Colors.blueGrey[700],
                     onPressed: () {
-                      setState(() {
-                        readOnly = !readOnly;
-                      });
+                      if (checkAcess('disaster_events', userName)) {
+                        setState(() {
+                          readOnly = !readOnly;
+                        });
+                      } else {
+                        Navigator.of(context).pop();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content:
+                                Text('You do not have access to add events'),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
+                      }
                     },
                   ),
                   _buildActionButton(
@@ -136,30 +148,41 @@ class _UpdateDisasterEventsDialogState
                     color: Colors.blueAccent,
                     onPressed: () async {
                       // Update the event and return data to the parent
-                      await updateData({
-                        'table': 'disaster_events',
-                        'event_id': widget.event['event_id'],
-                        'event_name': disasterNameController.text,
-                        'event_type': disasterTypeController.text,
-                        'location': disasterLocationController.text,
-                        'start_date': disasterStartDateController.text,
-                        'end_date': disasterEndDateController.text,
-                        'description': disasterDescriptionController.text,
-                      });
+                      if (checkAcess('disaster_events', userName)) {
+                        await updateData({
+                          'table': 'disaster_events',
+                          'event_id': widget.event['event_id'],
+                          'event_name': disasterNameController.text,
+                          'event_type': disasterTypeController.text,
+                          'location': disasterLocationController.text,
+                          'start_date': disasterStartDateController.text,
+                          'end_date': disasterEndDateController.text,
+                          'description': disasterDescriptionController.text,
+                        });
 
-                      // ignore: use_build_context_synchronously
-                      Navigator.of(context).pop({
-                        'eventId': widget.event['event_id'],
-                        'disasterName': disasterNameController.text,
-                        'disasterType': disasterTypeController.text,
-                        'disasterLocation': disasterLocationController.text,
-                        'disasterStartDate': disasterStartDateController.text,
-                        'disasterEndDate': disasterEndDateController.text,
-                        'disasterDescription':
-                            disasterDescriptionController.text,
-                      });
+                        // ignore: use_build_context_synchronously
+                        Navigator.of(context).pop({
+                          'eventId': widget.event['event_id'],
+                          'disasterName': disasterNameController.text,
+                          'disasterType': disasterTypeController.text,
+                          'disasterLocation': disasterLocationController.text,
+                          'disasterStartDate': disasterStartDateController.text,
+                          'disasterEndDate': disasterEndDateController.text,
+                          'disasterDescription':
+                              disasterDescriptionController.text,
+                        });
 
-                      widget.fetchDisasterEvents();
+                        widget.fetchDisasterEvents();
+                      } else {
+                        Navigator.of(context).pop();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content:
+                                Text('You do not have access to update events'),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
+                      }
                     },
                   ),
                 ],

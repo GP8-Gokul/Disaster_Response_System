@@ -23,7 +23,7 @@ Future<List<Map<String, dynamic>>> fetchdata(tableName) async {
   }
 }
 
-Future deleteData(tableName,columnName,value) async {
+Future deleteData(tableName, columnName, value) async {
   final response = await http.post(
     Uri.parse('${url}delete'),
     headers: {
@@ -45,7 +45,7 @@ Future deleteData(tableName,columnName,value) async {
   }
 }
 
-Future updateData(data) async{
+Future updateData(data) async {
   final response = await http.post(
     Uri.parse('${url}update'),
     headers: {
@@ -54,7 +54,7 @@ Future updateData(data) async{
     },
     body: dataEncode(data),
   );
-  if(response.statusCode == 200){
+  if (response.statusCode == 200) {
     devtools.log('Data updated');
     return response;
   } else {
@@ -71,7 +71,7 @@ Future insertData(data) async {
     },
     body: dataEncode(data),
   );
-  if(response.statusCode == 200){
+  if (response.statusCode == 200) {
     devtools.log('Data inserted');
     return response;
   } else {

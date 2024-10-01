@@ -48,7 +48,7 @@ class MainMenuScreen extends StatelessWidget {
       children: [
         Positioned.fill(
           child: Image.asset(
-            'assets/images/background.jpg',
+            'assets/images/6113267.jpg',
             fit: BoxFit.cover,
           ),
         ),
@@ -59,17 +59,19 @@ class MainMenuScreen extends StatelessWidget {
             automaticallyImplyLeading: false,
             centerTitle: true,
             title: Text(
-              'Disaster Response',
+              'DISASTER RESPONSE',
               textAlign: TextAlign.center,
               style: TextStyle(
+                color: Colors.white,
                 fontWeight: FontWeight.bold,
-                decoration: TextDecoration.underline,
+                fontSize: 24.0,
                 decorationThickness: 2.0,
               ),
             ),
             actions: [
               IconButton(
                 icon: const Icon(Icons.logout),
+                color: Colors.white,
                 onPressed: () => Logout(context),
               ),
             ],
@@ -82,7 +84,7 @@ class MainMenuScreen extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(8.0),
                     decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.7),
+                      color: Colors.black.withOpacity(0.5),
                       borderRadius: BorderRadius.circular(10.0),
                     ),
                     child: const Text(

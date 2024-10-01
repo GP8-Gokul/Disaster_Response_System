@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:drs/services/api/root_api.dart';
 import 'package:http/http.dart' as http;
-import 'package:drs/services/authorization/check_access.dart';
 import 'dart:developer' as devtools show log;
 
 Future<List<Map<String, dynamic>>> fetchDisasterEvents() async {
@@ -33,60 +32,50 @@ Future<List<Map<String, dynamic>>> fetchDisasterEvents() async {
 
 Future addDisasterEvents(disasterName, disasterType, disasterLocation,
     disasterStartDate, disasterEndDate, disasterDescription) async {
-  if (checkAcess('disaster_events', userName)) {
-    final response = await http.post(
-      Uri.parse('${url}insert'),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': "Bearer $authenticationToken",
-      },
-      body: jsonEncode({
-        'table': 'disaster_events',
-        'event_name': disasterName,
-        'event_type': disasterType,
-        'location': disasterLocation,
-        'start_date': disasterStartDate,
-        'end_date': disasterEndDate,
-        'description': disasterDescription,
-      }),
-    );
-    devtools.log(response.body);
-    if (response.statusCode == 200) {
-      devtools.log('Event added');
-      return response;
-    } else {
-      devtools.log('Failed to add event');
-    }
+  final response = await http.post(
+    Uri.parse('${url}insert'),
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': "Bearer $authenticationToken",
+    },
+    body: jsonEncode({
+      'table': 'disaster_events',
+      'event_name': disasterName,
+      'event_type': disasterType,
+      'location': disasterLocation,
+      'start_date': disasterStartDate,
+      'end_date': disasterEndDate,
+      'description': disasterDescription,
+    }),
+  );
+  devtools.log(response.body);
+  if (response.statusCode == 200) {
+    devtools.log('Event added');
+    return response;
   } else {
-    devtools.log('You are not authorized to add disaster event');
-    return 0;
+    devtools.log('Failed to add event');
   }
 }
 
 Future deleteDisasterEvent(eventId) async {
-  if (checkAcess('disaster_events', userName)) {
-    final response = await http.post(
-      Uri.parse('${url}delete'),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $authenticationToken',
-      },
-      body: jsonEncode({
-        'table': 'disaster_events',
-        'column': 'event_id',
-        'value': eventId,
-      }),
-    );
+  final response = await http.post(
+    Uri.parse('${url}delete'),
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $authenticationToken',
+    },
+    body: jsonEncode({
+      'table': 'disaster_events',
+      'column': 'event_id',
+      'value': eventId,
+    }),
+  );
 
-    if (response.statusCode == 200) {
-      devtools.log('Disaster event deleted');
-      return response;
-    } else {
-      devtools.log('Failed to delete disaster event');
-    }
+  if (response.statusCode == 200) {
+    devtools.log('Disaster event deleted');
+    return response;
   } else {
-    devtools.log('You are not authorized to delete disaster event');
-    return 0;
+    devtools.log('Failed to delete disaster event');
   }
 }
 
@@ -98,33 +87,28 @@ Future updateDisasterEvents(
     disasterStartDate,
     disasterEndDate,
     disasterDescription) async {
-  if (checkAcess('disaster_events', userName)) {
-    final response = await http.post(
-      Uri.parse('${url}update'),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $authenticationToken',
-      },
-      body: jsonEncode({
-        'table': 'disaster_events',
-        'event_id': eventId,
-        'event_name': disasterName,
-        'event_type': disasterType,
-        'location': disasterLocation,
-        'start_date': disasterStartDate,
-        'end_date': disasterEndDate,
-        'description': disasterDescription,
-      }),
-    );
-    devtools.log(response.body);
-    if (response.statusCode == 200) {
-      devtools.log('Event updated');
-      return response;
-    } else {
-      devtools.log('Failed to update event');
-    }
+  final response = await http.post(
+    Uri.parse('${url}update'),
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $authenticationToken',
+    },
+    body: jsonEncode({
+      'table': 'disaster_events',
+      'event_id': eventId,
+      'event_name': disasterName,
+      'event_type': disasterType,
+      'location': disasterLocation,
+      'start_date': disasterStartDate,
+      'end_date': disasterEndDate,
+      'description': disasterDescription,
+    }),
+  );
+  devtools.log(response.body);
+  if (response.statusCode == 200) {
+    devtools.log('Event updated');
+    return response;
   } else {
-    devtools.log('You are not authorized to update disaster event');
-    return 0;
+    devtools.log('Failed to update event');
   }
 }
