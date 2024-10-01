@@ -1,5 +1,5 @@
-import 'package:drs/services/AuthoriztionDemo/check_access.dart';
-import 'package:drs/services/api/disaster_event_api.dart';
+import 'package:drs/services/authorization/check_access.dart';
+import 'package:drs/services/api/unused_disaster_event_api.dart';
 import 'package:drs/services/api/root_api.dart';
 import 'package:drs/widgets/custom_snack_bar.dart';
 import 'package:drs/widgets/custom_text.dart';

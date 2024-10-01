@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:drs/services/api/root_api.dart';
 import 'package:http/http.dart' as http;
-import 'package:drs/services/AuthoriztionDemo/check_access.dart';
+import 'package:drs/services/authorization/check_access.dart';
 import 'dart:developer' as devtools show log;
 
 Future<List<Map<String, dynamic>>> fetchDisasterEvents() async {

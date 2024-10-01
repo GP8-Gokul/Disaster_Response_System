@@ -4,7 +4,7 @@ import 'package:drs/screens/aid_distribution_page/update_aid_distribution.dart';
 import 'package:drs/services/api/aid_distribution_api.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer' as devtools show log;
-import 'package:drs/services/hero_dialog_route.dart';
+import 'package:drs/services/unused_hero_dialog_route.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 class AidDistributionScreen extends StatefulWidget {

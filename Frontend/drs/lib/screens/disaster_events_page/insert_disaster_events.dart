@@ -1,4 +1,4 @@
-import 'package:drs/services/api/disaster_event_api.dart';
+import 'package:drs/services/api/root_api.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
@@ -139,14 +139,15 @@ Future<Map<String, String>?> insertDisasterEventsDialog(
                   disasterStartDateController.text.isNotEmpty &&
                   disasterEndDateController.text.isNotEmpty &&
                   disasterDescriptionController.text.isNotEmpty) {
-                final response = await addDisasterEvents(
-                  disasterNameController.text,
-                  disasterTypeController.text,
-                  disasterLocationController.text,
-                  disasterStartDateController.text,
-                  disasterEndDateController.text,
-                  disasterDescriptionController.text,
-                );
+                final response = await insertData({
+                  'table': 'disaster_events',
+                  'event_name': disasterNameController.text,
+                  'event_type':disasterTypeController.text,
+                  'location': disasterLocationController.text,
+                  'start_date': disasterStartDateController.text,
+                  'end_date': disasterEndDateController.text,
+                  'description': disasterDescriptionController.text,
+                });
                 if (response != 0) {
                   // ignore: use_build_context_synchronously
                   Navigator.of(context).pop();

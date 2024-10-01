@@ -1,4 +1,4 @@
-import 'package:drs/services/api/disaster_event_api.dart';
+import 'package:drs/services/api/root_api.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
@@ -136,15 +136,16 @@ class _UpdateDisasterEventsDialogState
                     color: Colors.blueAccent,
                     onPressed: () async {
                       // Update the event and return data to the parent
-                      await updateDisasterEvents(
-                        widget.event['event_id'],
-                        disasterNameController.text,
-                        disasterTypeController.text,
-                        disasterLocationController.text,
-                        disasterStartDateController.text,
-                        disasterEndDateController.text,
-                        disasterDescriptionController.text,
-                      );
+                      await updateData({
+                        'table': 'disaster_events',
+                        'event_id': widget.event['event_id'],
+                        'event_name': disasterNameController.text,
+                        'event_type': disasterTypeController.text,
+                        'location': disasterLocationController.text,
+                        'start_date': disasterStartDateController.text,
+                        'end_date': disasterEndDateController.text,
+                        'description': disasterDescriptionController.text,
+                      });
 
                       // ignore: use_build_context_synchronously
                       Navigator.of(context).pop({

@@ -1,6 +1,6 @@
 import 'package:drs/screens/disaster_events_page/insert_disaster_events.dart';
 import 'package:drs/screens/disaster_events_page/update_disaster_events.dart';
-import 'package:drs/services/api/disaster_event_api.dart';
+import 'package:drs/services/api/root_api.dart';
 import 'package:drs/widgets/background_image.dart';
 import 'package:drs/widgets/custom_appbar.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +26,7 @@ class _DisasterEventsScreenState extends State<DisasterEventsScreen> {
   @override
   void initState() {
     super.initState();
-    futureGetDisasterEvents = fetchDisasterEvents();
+    futureGetDisasterEvents = fetchdata('disaster_events');
     futureGetDisasterEvents.then((events) {
       setState(() {
         allEvents = events;
@@ -111,9 +111,7 @@ class _DisasterEventsScreenState extends State<DisasterEventsScreen> {
                                         borderRadius: BorderRadius.circular(25),
                                         onPressed: (context) async {
                                           devtools.log('Slide action pressed');
-                                          final result =
-                                              await deleteDisasterEvent(
-                                                  event['event_id']);
+                                          final result = await deleteData('disaster_events', 'event_id',event['event_id']);  ;
                                           if (result != 0) {
                                             setState(() {
                                               allEvents.remove(event);
@@ -148,7 +146,7 @@ class _DisasterEventsScreenState extends State<DisasterEventsScreen> {
                                         builder: (context) =>
                                             UpdateDisasterEventsDialog(
                                           fetchDisasterEvents:
-                                              fetchDisasterEvents,
+                                              () => fetchdata('disaster_events'),
                                           event: event,
                                           response:
                                               null, // Pass any additional data you need
@@ -159,7 +157,7 @@ class _DisasterEventsScreenState extends State<DisasterEventsScreen> {
                                         devtools.log('change reflected');
                                         setState(() {
                                           futureGetDisasterEvents =
-                                              fetchDisasterEvents();
+                                              fetchdata('disaster_events');
                                           futureGetDisasterEvents
                                               .then((events) {
                                             setState(() {
@@ -230,11 +228,11 @@ class _DisasterEventsScreenState extends State<DisasterEventsScreen> {
               onPressed: () async {
                 devtools.log('Floating action button pressed');
                 final result = await insertDisasterEventsDialog(
-                    context, fetchDisasterEvents, response);
+                    context, () => fetchdata('disaster_events'), response);
                 // ignore: unrelated_type_equality_checks
                 if (result != 0) {
                   setState(() {
-                    futureGetDisasterEvents = fetchDisasterEvents();
+                    futureGetDisasterEvents = fetchdata('disaster_events');
                     futureGetDisasterEvents.then((events) {
                       setState(() {
                         allEvents = events;
