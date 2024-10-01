@@ -1,6 +1,7 @@
 import 'package:drs/services/AuthoriztionDemo/check_access.dart';
 import 'package:drs/services/api/disaster_event_api.dart';
 import 'package:drs/services/api/root_api.dart';
+import 'package:drs/widgets/custom_snack_bar.dart';
 import 'package:drs/widgets/custom_text.dart';
 import 'package:drs/widgets/custom_text_field.dart';
 import 'package:flutter/material.dart';
@@ -197,9 +198,15 @@ class VolunteerListTileState extends State<VolunteerListTile> {
                                   child: const Icon(Icons.edit, color: Colors.blue),
 
                                   onPressed: () {
-                                    setState(() {
+                                    if(checkAcess('volunteers', volunteerNameController.text)){
+                                       setState(() {
                                       readonly = !readonly;
                                     });
+                                    }
+                                    else{
+                                        Navigator.pop(context);
+                                        customSnackBar(context: context, message: 'You cannot Edit this data');
+                                    }
                                   }, 
                                 ),
 
@@ -234,44 +241,9 @@ class VolunteerListTileState extends State<VolunteerListTile> {
                                     }
                                     }
                                     else{
-                                      showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return AlertDialog(
-                                            title: const Text('Access Denied',style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
-                                            backgroundColor: const Color.fromARGB(255, 0, 0, 0),
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(10.0),
-                                              side: const BorderSide(
-                                                color: Color.fromARGB(255, 255, 255, 255), 
-                                                width: 3.0
-                                                ),
-                                            ),
-                                            content: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                CustomText(text: 'You do not have access to update this data'),
-                                                const SizedBox(height: 12),
-                                              ],
-                                            ),
-                                            actions: <Widget>[
-                                              TextButton(
-                                                style: TextButton.styleFrom(
-                                                  backgroundColor: Colors.white,
-                                                ),
-                                                child: const Text(
-                                                  'OK', 
-                                                  style: TextStyle(color: Colors.black)
-                                                  ),
-                                                onPressed: () {
-                                                  Navigator.pop(context);
-                                                }, 
-                                              ),
-                                            ],
-                                          );
-                                        },
-                                      );
+                                      Navigator.pop(context);
+                                      customSnackBar(context: context, message: 'You cannot Update this data');
+                                      return;
                                     }
                                   }, 
                                 ),
