@@ -1,11 +1,9 @@
 import 'package:drs/services/authorization/check_access.dart';
-import 'package:drs/services/api/unused_disaster_event_api.dart';
 import 'package:drs/services/api/root_api.dart';
 import 'package:drs/widgets/background_image.dart';
 import 'package:drs/widgets/custom_appbar.dart';
 import 'package:drs/screens/volunteers_page/volunteer_list_tile.dart';
 import 'package:drs/widgets/custom_snack_bar.dart';
-import 'package:drs/widgets/custom_text.dart';
 import 'package:drs/widgets/custom_text_field.dart';
 import 'package:drs/widgets/search_text_field.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +14,7 @@ var events = {};
 
 void getEventIds() {
   late Future<List<Map<String, dynamic>>> futureGetDisasterEvents;
-  futureGetDisasterEvents = fetchDisasterEvents();
+  futureGetDisasterEvents = fetchdata('disaster_events');
   futureGetDisasterEvents.then((value) {
     for (var event in value) {
       events[event['event_id']] = event['event_name'];
@@ -128,6 +126,9 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
             endActionPane: ActionPane(
               motion: const ScrollMotion(),
               children: [
+
+                //Delete Functionality
+
                 SlidableAction(
                   onPressed: (context) async {
                     if (checkAcess('volunteers', content['volunteer_name'])) {
@@ -146,49 +147,10 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
                             });
                       }
                     } else {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: const Text('Access Denied',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.bold
-                                    )
-                                    ),
-                            backgroundColor: const Color.fromARGB(255, 0, 0, 0),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                              side: const BorderSide(
-                                  color: Color.fromARGB(255, 255, 255, 255),
-                                  width: 3.0),
-                            ),
-                            content: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                CustomText(
-                                    text:
-                                        'You do not have access to delete this data'),
-                                const SizedBox(height: 12),
-                              ],
-                            ),
-                            actions: <Widget>[
-                              TextButton(
-                                style: TextButton.styleFrom(
-                                  backgroundColor: Colors.white,
-                                ),
-                                child: const Text('OK',
-                                    style: TextStyle(color: Colors.black)),
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                              ),
-                            ],
+                      customSnackBar(
+                          context: context,
+                          message:'You do not have access to delete this volunteer.'
                           );
-                        },
-                      );
                     }
                   },
                   backgroundColor: const Color.fromARGB(138, 236, 70, 70),
@@ -326,8 +288,7 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
                         'name': volunteerNameController.text,
                         'contact_info': volunteerContactInfoController.text,
                         'skills': volunteerSkillsController.text,
-                        'availability_status':
-                            volunteerAvailabilityStatusController.text,
+                        'availability_status': volunteerAvailabilityStatusController.text,
                         'event_id': selectedEventId,
                       });
                       if (response != null) {
@@ -342,6 +303,10 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
                           searchController.addListener(_filterData);
                         });
                       }
+                    }
+                    if(mounted){
+                      // ignore: use_build_context_synchronously
+                      Navigator.pop(context);
                     }
                   },
                 ),

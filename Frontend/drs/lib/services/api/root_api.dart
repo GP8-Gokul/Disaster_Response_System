@@ -58,6 +58,7 @@ Future updateData(data) async{
     devtools.log('Data updated');
     return response;
   } else {
+    devtools.log(response.body);
     devtools.log('Failed to update data');
   }
 }

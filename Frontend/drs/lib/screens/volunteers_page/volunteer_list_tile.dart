@@ -1,5 +1,4 @@
 import 'package:drs/services/authorization/check_access.dart';
-import 'package:drs/services/api/unused_disaster_event_api.dart';
 import 'package:drs/services/api/root_api.dart';
 import 'package:drs/widgets/custom_snack_bar.dart';
 import 'package:drs/widgets/custom_text.dart';
@@ -8,12 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 dynamic response;
-
 var events = {};
-
 void getEventIds() {
   late Future<List<Map<String, dynamic>>> futureGetDisasterEvents;
-  futureGetDisasterEvents = fetchDisasterEvents();
+  futureGetDisasterEvents = fetchdata('disaster_events');
   futureGetDisasterEvents.then((value) {
     for (var event in value) {
       events[event['event_id']] = event['event_name'];
@@ -70,9 +67,10 @@ class VolunteerListTileState extends State<VolunteerListTile> {
                           TextEditingController(text: widget.content['volunteer_skills'].toString());
                         TextEditingController volunteerAvailabilityStatusController = 
                           TextEditingController(text: widget.content['volunteer_availability_status'].toString());
-
+                        TextEditingController eventController = 
+                          TextEditingController(text: widget.content['event_id'].toString());
                         getEventIds();
-                        String? selectedEventId; 
+                        String? selectedEventId = eventController.text; 
 
                         return StatefulBuilder(
                           builder: (BuildContext context, StateSetter setState) {
@@ -150,18 +148,18 @@ class VolunteerListTileState extends State<VolunteerListTile> {
                                       controller: volunteerAvailabilityStatusController,
                                       readOnly: readonly,
                                     ),
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        border: Border.all(
-                                          color: Colors.lime.withOpacity(0.5),
-                                          width: 2.0,
-                                        ),
-                                        borderRadius: BorderRadius.circular(10.0),
-                                      ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(4.0),
                                       child: DropdownButtonFormField<String>(
                                         decoration: InputDecoration(
                                         labelText: 'Event Name',
-                                        enabled: !readonly,
+                                        labelStyle: const TextStyle(color: Colors.white),
+                                        enabledBorder: const OutlineInputBorder(
+                                          borderSide: BorderSide(color: Colors.lime),
+                                        ),
+                                        focusedBorder: const OutlineInputBorder(
+                                        borderSide: BorderSide(color: Color.fromARGB(255, 200, 99, 92)),
+                                      ),
                                         border: OutlineInputBorder(
                                           borderRadius: BorderRadius.circular(10.0),
                                           borderSide: const BorderSide(color: Colors.lime, width: 2.0),
@@ -169,20 +167,16 @@ class VolunteerListTileState extends State<VolunteerListTile> {
                                         ),
                                         value: selectedEventId ?? widget.content['event_id'].toString(),
                                         style: const TextStyle(color: Colors.white),
-                                        dropdownColor: Colors.black,
                                         
+                                        dropdownColor: const Color.fromARGB(255, 38, 36, 36),
                                         items: events.keys.map((key) {
                                         return DropdownMenuItem<String>(
                                           value: key.toString(),
-                                          child: Container(
-
-                                          color: Colors.black.withOpacity(0.5),
                                           child: Text(events[key]!),
-                                          ),
                                         );
                                         }).toList(),
                                         onChanged: (String? newValue) {
-                                        selectedEventId = newValue;
+                                          selectedEventId = newValue;
                                         },
                                       ),
                                     ),
@@ -232,7 +226,7 @@ class VolunteerListTileState extends State<VolunteerListTile> {
                                       'volunteer_contact_info': volunteerContactInfoController.text,
                                       'volunteer_skills': volunteerSkillsController.text,
                                       'volunteer_availability_status': volunteerAvailabilityStatusController.text,
-                                      'event_id': selectedEventId!,
+                                      'event_id': selectedEventId,
                                       },
                                     );
                                     if (response != null && context.mounted) {

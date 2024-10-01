@@ -37,7 +37,7 @@ def login():
     result=login_interface(data)
     if(result):
         role=result[0][3]
-        token = create_access_token(identity=data['username'],additional_claims={"sub": role})
+        token = create_access_token(identity=data['username'], additional_claims={"sub": role}, expires_delta=False)
         return token, 200
     else:
         token = "Invalid"
@@ -50,7 +50,7 @@ def insert():
     return jsonify(insert_interface(data))
 
 @app.route('/delete', methods=['POST'])
-#@jwt_required()
+@jwt_required()
 def delete():
     data = request.get_json()
     return jsonify(delete_interface(data))
