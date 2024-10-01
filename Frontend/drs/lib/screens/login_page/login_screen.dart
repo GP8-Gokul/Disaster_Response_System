@@ -1,3 +1,4 @@
+import 'package:drs/services/api/root_api.dart';
 import 'package:drs/services/unused_user.dart';
 import 'package:flutter/material.dart';
 import 'package:drs/services/api/login_api.dart';
@@ -72,83 +73,84 @@ class _LoginScreenState extends State<LoginScreen> {
         body: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Center(
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-          const Text(
-            'Login',
-            style: TextStyle(
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    'LOGIN',
+                    style: TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      color: Color.fromARGB(255, 222, 124, 12),
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+                  _buildTextField(
+                    controller: _usernameController,
+                    label: 'Username',
+                    isPassword: false,
+                  ),
+                  const SizedBox(height: 20),
+                  _buildTextField(
+                    controller: _passwordController,
+                    label: 'Password',
+                    isPassword: true,
+                  ),
+                  const SizedBox(height: 30),
+                  _isLoading
+                      ? const CircularProgressIndicator()
+                      : ElevatedButton(
+                          onPressed: login,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.grey[700],
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 100,
+                              vertical: 15,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          child: const Text(
+                            'Login',
+                            style: TextStyle(fontSize: 18, color: Colors.white),
+                          ),
+                        ),
+                  const SizedBox(height: 30),
+                  _isLoading
+                      ? const CircularProgressIndicator()
+                      : ElevatedButton(
+                          onPressed: () {
+                            userRole = 'guest';
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const MainMenuScreen(),
+                              ),
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.grey[700],
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 63,
+                              vertical: 15,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          child: const Text(
+                            'Login as Guest',
+                            style: TextStyle(fontSize: 18, color: Colors.white),
+                          ),
+                        ),
+                  const SizedBox(height: 20),
+                  if (_errorMessage != null)
+                    _buildErrorNotification(_errorMessage!)
+                ],
+              ),
             ),
-          ),
-          const SizedBox(height: 30),
-          _buildTextField(
-            controller: _usernameController,
-            label: 'Username',
-            isPassword: false,
-          ),
-          const SizedBox(height: 20),
-          _buildTextField(
-            controller: _passwordController,
-            label: 'Password',
-            isPassword: true,
-          ),
-          const SizedBox(height: 30),
-          _isLoading
-              ? const CircularProgressIndicator()
-              : ElevatedButton(
-              onPressed: login,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.grey[700],
-                padding: const EdgeInsets.symmetric(
-              horizontal: 100,
-              vertical: 15,
-                ),
-                shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              child: const Text(
-                'Login',
-                style: TextStyle(fontSize: 18, color: Colors.white),
-              ),
-            ),
-          const SizedBox(height: 30),
-          _isLoading
-              ? const CircularProgressIndicator()
-              : ElevatedButton(
-              onPressed: () {
-                Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const MainMenuScreen(),
-              ),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.grey[700],
-                padding: const EdgeInsets.symmetric(
-              horizontal: 63,
-              vertical: 15,
-                ),
-                shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              child: const Text(
-                'Login as Guest',
-                style: TextStyle(fontSize: 18, color: Colors.white),
-              ),
-            ),
-          const SizedBox(height: 20),
-          if (_errorMessage != null)
-            _buildErrorNotification(_errorMessage!)
-            ],
-          ),
-        ),
           ),
         ),
       ),

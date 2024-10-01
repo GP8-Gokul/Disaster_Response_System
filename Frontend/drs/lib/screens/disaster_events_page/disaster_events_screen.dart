@@ -4,6 +4,7 @@ import 'package:drs/services/api/root_api.dart';
 import 'package:drs/widgets/background_image.dart';
 import 'package:drs/widgets/custom_appbar.dart';
 import 'package:flutter/material.dart';
+import 'package:drs/services/authorization/check_access.dart';
 import 'dart:developer' as devtools show log;
 import 'package:flutter_slidable/flutter_slidable.dart';
 
@@ -111,19 +112,35 @@ class _DisasterEventsScreenState extends State<DisasterEventsScreen> {
                                         borderRadius: BorderRadius.circular(25),
                                         onPressed: (context) async {
                                           devtools.log('Slide action pressed');
-                                          final result = await deleteData('disaster_events', 'event_id',event['event_id']); 
-                                          if (result != 0) {
-                                            setState(() {
-                                              allEvents.remove(event);
-                                              filteredEvents.remove(event);
-                                            });
+                                          if (checkAcess(
+                                              'disaster_events', userName)) {
+                                            final result = await deleteData(
+                                                'disaster_events',
+                                                'event_id',
+                                                event['event_id']);
+                                            if (result != 0) {
+                                              setState(() {
+                                                allEvents.remove(event);
+                                                filteredEvents.remove(event);
+                                              });
+                                            } else {
+                                              // ignore: use_build_context_synchronously
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                SnackBar(
+                                                  content: Text(
+                                                      'Failed to delete event'),
+                                                  backgroundColor: Colors.red,
+                                                ),
+                                              );
+                                            }
                                           } else {
                                             // ignore: use_build_context_synchronously
                                             ScaffoldMessenger.of(context)
                                                 .showSnackBar(
                                               SnackBar(
                                                 content: Text(
-                                                    'Failed to delete event'),
+                                                    'You do not have access to delete events'),
                                                 backgroundColor: Colors.red,
                                               ),
                                             );
@@ -145,8 +162,8 @@ class _DisasterEventsScreenState extends State<DisasterEventsScreen> {
                                         context: context,
                                         builder: (context) =>
                                             UpdateDisasterEventsDialog(
-                                          fetchDisasterEvents:
-                                              () => fetchdata('disaster_events'),
+                                          fetchDisasterEvents: () =>
+                                              fetchdata('disaster_events'),
                                           event: event,
                                           response:
                                               null, // Pass any additional data you need
@@ -227,29 +244,39 @@ class _DisasterEventsScreenState extends State<DisasterEventsScreen> {
             floatingActionButton: FloatingActionButton(
               onPressed: () async {
                 devtools.log('Floating action button pressed');
-                final result = await insertDisasterEventsDialog(
-                    context, () => fetchdata('disaster_events'), response);
-                // ignore: unrelated_type_equality_checks
-                if (result != 0) {
-                  setState(() {
-                    futureGetDisasterEvents = fetchdata('disaster_events');
-                    futureGetDisasterEvents.then((events) {
-                      setState(() {
-                        allEvents = events;
-                        filteredEvents = events;
+                if (checkAcess('disaster_events', userName) == true) {
+                  final result = await insertDisasterEventsDialog(
+                      context, () => fetchdata('disaster_events'), response);
+                  // ignore: unrelated_type_equality_checks
+                  if (result != 0) {
+                    setState(() {
+                      futureGetDisasterEvents = fetchdata('disaster_events');
+                      futureGetDisasterEvents.then((events) {
+                        setState(() {
+                          allEvents = events;
+                          filteredEvents = events;
+                        });
                       });
                     });
-                  });
+                  } else {
+                    // ignore: use_build_context_synchronously
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Please fill all the fields'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                    // ignore: use_build_context_synchronously
+                    Navigator.of(context).pop();
+                  }
                 } else {
                   // ignore: use_build_context_synchronously
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text('Please fill all the fields'),
+                      content: Text('You do not have access to add events'),
                       backgroundColor: Colors.red,
                     ),
                   );
-                  // ignore: use_build_context_synchronously
-                  Navigator.of(context).pop();
                 }
               },
               backgroundColor: const Color.fromARGB(255, 23, 22, 22),
