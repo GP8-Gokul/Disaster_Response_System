@@ -111,7 +111,7 @@ class _DisasterEventsScreenState extends State<DisasterEventsScreen> {
                                         borderRadius: BorderRadius.circular(25),
                                         onPressed: (context) async {
                                           devtools.log('Slide action pressed');
-                                          final result = await deleteData('disaster_events', 'event_id',event['event_id']);  ;
+                                          final result = await deleteData('disaster_events', 'event_id',event['event_id']); 
                                           if (result != 0) {
                                             setState(() {
                                               allEvents.remove(event);
