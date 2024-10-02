@@ -4,6 +4,7 @@ import 'package:drs/screens/Incident_reports_page/incident_reports_screen.dart';
 import 'package:drs/screens/login_page/login_screen.dart';
 import 'package:drs/screens/resources_page/resources_screen.dart';
 import 'package:drs/screens/volunteers_page/volunteers_screen.dart';
+import 'package:drs/widgets/background_image.dart';
 import 'package:flutter/material.dart';
 
 class MainMenuScreen extends StatelessWidget {
@@ -46,12 +47,7 @@ class MainMenuScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        Positioned.fill(
-          child: Image.asset(
-            'assets/images/6113267.jpg',
-            fit: BoxFit.cover,
-          ),
-        ),
+        const BackgroundImage(imageName: 'main_menu_background'),
         Scaffold(
           backgroundColor: Colors.transparent,
           appBar: AppBar(

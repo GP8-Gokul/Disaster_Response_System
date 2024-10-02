@@ -234,33 +234,41 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
                       labelText: 'Availability Status',
                       controller: volunteerAvailabilityStatusController,
                       readOnly: false),
-                  DropdownButtonFormField<String>(
-                    decoration: InputDecoration(
-                      labelText: 'Event Name',
-                      labelStyle: const TextStyle(color: Colors.white),
-                      enabled: true,
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                        borderSide: const BorderSide(color: Colors.lime),
+                  Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: DropdownButtonFormField<String>(
+                      decoration: InputDecoration(
+                        labelText: 'Event Name',
+                        labelStyle: const TextStyle(color: Colors.white),
+                        enabledBorder: const OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.lime),
+                          ),
+                        focusedBorder: const OutlineInputBorder(
+                        borderSide: BorderSide(color: Color.fromARGB(255, 200, 99, 92)),
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                          borderSide: const BorderSide(color: Colors.lime, width: 2.0),
+                        ),
                       ),
-                    ),
-                    value: selectedEventId,
-                    style: const TextStyle(color: Colors.white),
-                    dropdownColor: Colors.black,
+                      value: selectedEventId,
+                      style: const TextStyle(color: Colors.white),
+                      dropdownColor: Colors.black,
+                      
+                      items: events.keys.map((key) {
+                      return DropdownMenuItem<String>(
+                        value: key.toString(),
+                        child: Container(
                     
-                    items: events.keys.map((key) {
-                    return DropdownMenuItem<String>(
-                      value: key.toString(),
-                      child: Container(
-                  
-                      color: Colors.black.withOpacity(0.5),
-                      child: Text(events[key]!),
-                      ),
-                    );
-                    }).toList(),
-                    onChanged: (String? newValue) {
-                    selectedEventId = newValue;
-                    },
+                        color: Colors.black.withOpacity(0.5),
+                        child: Text(events[key]!),
+                        ),
+                      );
+                      }).toList(),
+                      onChanged: (String? newValue) {
+                      selectedEventId = newValue;
+                      },
+                    ),
                   ),
                 ],
               ),

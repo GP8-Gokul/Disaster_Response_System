@@ -1,5 +1,6 @@
 import 'package:drs/services/api/root_api.dart';
 import 'package:drs/services/unused_user.dart';
+import 'package:drs/widgets/background_image.dart';
 import 'package:flutter/material.dart';
 import 'package:drs/services/api/login_api.dart';
 import 'package:drs/screens/main_menu_page/main_menu_screen.dart';
@@ -62,12 +63,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Stack(children: [
-      Positioned.fill(
-        child: Image.asset(
-          'assets/images/6113099.jpg',
-          fit: BoxFit.cover,
-        ),
-      ),
+      const BackgroundImage(imageName: 'login_page_background'),
       Scaffold(
         backgroundColor: Colors.transparent,
         body: Padding(
@@ -103,13 +99,15 @@ class _LoginScreenState extends State<LoginScreen> {
                       : ElevatedButton(
                           onPressed: login,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.grey[700],
+                            backgroundColor: Colors.grey[700]!.withOpacity(0.5),
+                            
                             padding: const EdgeInsets.symmetric(
                               horizontal: 100,
                               vertical: 15,
                             ),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
+                              side: const BorderSide(color: Colors.white),
                             ),
                           ),
                           child: const Text(
@@ -131,13 +129,14 @@ class _LoginScreenState extends State<LoginScreen> {
                             );
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.grey[700],
+                            backgroundColor: Colors.grey[700]!.withOpacity(0.5),
                             padding: const EdgeInsets.symmetric(
                               horizontal: 63,
                               vertical: 15,
                             ),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
+                              side: const BorderSide(color: Colors.white),
                             ),
                           ),
                           child: const Text(
@@ -168,9 +167,9 @@ class _LoginScreenState extends State<LoginScreen> {
       style: const TextStyle(color: Colors.white),
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: const TextStyle(color: Colors.white54),
+        labelStyle: const TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
         enabledBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Colors.white54),
+          borderSide: const BorderSide(color: Color.fromARGB(255, 255, 255, 255)),
           borderRadius: BorderRadius.circular(10),
         ),
         focusedBorder: OutlineInputBorder(
