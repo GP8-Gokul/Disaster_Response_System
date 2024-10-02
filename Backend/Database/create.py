@@ -11,9 +11,9 @@ create_aid_distribution_sql = '''
     quantity_distributed INTEGER NOT NULL,
     distribution_date DATE NOT NULL,
     location VARCHAR NOT NULL,
-    FOREIGN KEY (event_id) REFERENCES disaster_events (event_id),
-    FOREIGN KEY (resource_id) REFERENCES resources (resource_id),
-    FOREIGN KEY (volunteer_id) REFERENCES volunteers (volunteer_id)
+    FOREIGN KEY (event_id) REFERENCES disaster_events (event_id) ON DELETE CASCADE,
+    FOREIGN KEY (resource_id) REFERENCES resources (resource_id) ON DELETE CASCADE,
+    FOREIGN KEY (volunteer_id) REFERENCES volunteers (volunteer_id) ON DELETE CASCADE
 );
 '''
 
@@ -35,9 +35,9 @@ create_incident_report = '''
     event_id INTEGER NOT NULL,
     report_date DATE NOT NULL,
     description TEXT,
-    reported_by VARCHAR,,
+    reported_by VARCHAR,
     report_name TEXT,
-    FOREIGN KEY(event_id) REFERENCES disaster_events(event_id)
+    FOREIGN KEY(event_id) REFERENCES disaster_events(event_id) ON DELETE CASCADE
  );
 '''
 
@@ -49,7 +49,7 @@ create_resource = '''
     quantity INTEGER, 
     availability_status VARCHAR NOT NULL,
     event_id INTEGER,
-    FOREIGN KEY (event_id) REFERENCES disaster_events(event_id)
+    FOREIGN KEY (event_id) REFERENCES disaster_events(event_id) ON DELETE CASCADE
     );
 '''
 
@@ -59,7 +59,7 @@ create_users = '''
     username VARCHAR NOT NULL,
     password_hash VARCHAR NOT NULL, 
     role VARCHAR NOT NULL,
-    email VARCHAR NOT NULL, 
+    email VARCHAR NOT NULL 
     );
 '''
 
@@ -71,7 +71,7 @@ create_volunteers = '''
     skills VARCHAR, 
     availability_status VARCHAR NOT NULL, 
     event_id INTEGER,
-    FOREIGN KEY (event_id) REFERENCES disaster_events(event_id) 
+    FOREIGN KEY (event_id) REFERENCES disaster_events(event_id) on DELETE CASCADE
     );
 '''
 
