@@ -124,7 +124,7 @@ class VolunteerListTileState extends State<VolunteerListTile> {
                                   child: const Icon(Icons.call),
                                   onPressed: () async {
                                     final Uri launchUri = Uri(
-                                      scheme: 'tel',
+                                      scheme: 'whatsapp',
                                       path: widget
                                           .content['volunteer_contact_info'],
                                     );
