@@ -1,4 +1,3 @@
-from Database.others import disaster_name_id_select
 from Database.signup import signup_interface
 from Database.login import login_interface
 
@@ -66,9 +65,6 @@ def select():
     data = request.get_json()
     return jsonify(select_interface(data))
 
-@app.route('/others', methods=['GET'])
-def disaster_name_id():
-    return disaster_name_id_select()
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
