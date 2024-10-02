@@ -67,7 +67,7 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
     return SafeArea(
       child: Stack(
         children: [
-          const BackgroundImage(),
+          const BackgroundImage(imageName: 'page_background'),
           Scaffold(
             appBar: const CustomAppbar(text: 'Volunteer Details'),
             body: bodyColumn(),

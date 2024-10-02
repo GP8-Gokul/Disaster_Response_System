@@ -57,7 +57,7 @@ class _DisasterEventsScreenState extends State<DisasterEventsScreen> {
     return SafeArea(
       child: Stack(
         children: [
-          BackgroundImage(),
+          BackgroundImage(imageName: 'page_background',),
           Scaffold(
             appBar: CustomAppbar(text: 'Disaster Events'),
             body: Column(
