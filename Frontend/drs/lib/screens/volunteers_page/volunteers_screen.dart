@@ -312,10 +312,11 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
                   ),
                   child: const Text('Submit', style: TextStyle(color: Colors.black)),
                   onPressed: () async {
-                    if((volunteerNameController.text.isEmpty)){
+                    if(volunteerNameController.text.isEmpty){
                       customSnackBar(context: context, message: 'Please Enter Volunteer Name');
-                      Navigator.pop(context);
-                    }
+                    } else if(selectedEventId == null){
+                      customSnackBar(context: context, message: 'Please Select Event Name');
+                    } 
                     else{
                       if (checkAcess('volunteers', '')) {
                         response = await insertData({
@@ -339,10 +340,10 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
                           });
                         }
                       }
-                      if(mounted){
+                    }
+                    if(mounted){
                       // ignore: use_build_context_synchronously
                       Navigator.pop(context);
-                      }
                     }
                   },
                 ),
