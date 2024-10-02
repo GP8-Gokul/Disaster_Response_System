@@ -46,7 +46,7 @@ class _LoginScreenState extends State<LoginScreen> {
         );
       } else {
         setState(() {
-          _errorMessage = 'Server error. Please try again later.';
+          _errorMessage = 'Password Mismatch';
         });
       }
     } catch (e) {
