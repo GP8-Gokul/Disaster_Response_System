@@ -174,12 +174,9 @@ class VolunteerListTileState extends State<VolunteerListTile> {
                           Padding(
                             padding: const EdgeInsets.all(4.0),
                             child: FutureBuilder<void>(
-                              future: getEventIds(volunteerNameController.text,
-                                  eventController.text),
-                              builder: (BuildContext context,
-                                  AsyncSnapshot<void> snapshot) {
-                                if (snapshot.connectionState ==
-                                    ConnectionState.waiting) {
+                              future: getEventIds(volunteerNameController.text,eventController.text),
+                              builder: (BuildContext context,AsyncSnapshot<void> snapshot) {
+                                if (snapshot.connectionState == ConnectionState.waiting) {
                                   return const CircularProgressIndicator();
                                 } else if (snapshot.hasError) {
                                   return const Text('Error loading events');
@@ -205,11 +202,9 @@ class VolunteerListTileState extends State<VolunteerListTile> {
                                             color: Colors.lime, width: 2.0),
                                       ),
                                     ),
-                                    value: selectedEventId ??
-                                        widget.content['event_id'].toString(),
+                                    value: selectedEventId,
                                     style: const TextStyle(color: Colors.white),
-                                    dropdownColor:
-                                        const Color.fromARGB(255, 38, 36, 36),
+                                    dropdownColor:const Color.fromARGB(255, 38, 36, 36),
                                     items: events.keys.map((key) {
                                       return DropdownMenuItem<String>(
                                         value: key.toString(),
@@ -245,7 +240,8 @@ class VolunteerListTileState extends State<VolunteerListTile> {
                             Navigator.pop(context);
                             customSnackBar(
                                 context: context,
-                                message: 'You cannot Edit this data');
+                                message: 'You cannot Edit this data'
+                              );
                           }
                         },
                       ),
