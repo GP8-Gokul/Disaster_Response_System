@@ -23,8 +23,7 @@ Future<void> getEventIds(String volunteerName, String eventController) async {
   devtools.log(eventController);
   devtools.log(volunteerName);
   if (!(checkAcess('volunteers', volunteerName))) {
-    events.removeWhere(
-        (key, value) => key.toString() != eventController.toString());
+    events.removeWhere((key, value) => key.toString() != eventController.toString());
   }
   devtools.log(events.toString());
 }
@@ -62,8 +61,7 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
     final query = searchController.text.toLowerCase();
     setState(() {
       filteredData = allData.where((element) {
-        final volunteerName =
-            element['volunteer_name'].toString().toLowerCase();
+        final volunteerName = element['volunteer_name'].toString().toLowerCase();
         return volunteerName.contains(query);
       }).toList();
     });
@@ -92,15 +90,14 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
         SearchTextField(
             labelText: 'Search Volunteers',
             hintText: 'Enter Volunteer Name',
-            searchController: searchController),
+            searchController: searchController
+        ),
         Expanded(
           child: filteredData.isEmpty
               ? const Center(child: Text('No volunteers found.'))
               : buildFutureBuilder(),
         ),
-        SizedBox(
-          height: 70,
-        )
+        SizedBox(height: 70),
       ],
     );
   }
@@ -137,10 +134,12 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
                 //Delete Functionality
 
                 SlidableAction(
+                  backgroundColor: const Color.fromARGB(138, 236, 70, 70),
+                  icon: Icons.delete,
+                  foregroundColor: const Color.fromARGB(255, 238, 230, 230),
                   onPressed: (context) async {
                     if (checkAcess('volunteers', content['volunteer_name'])) {
-                      response = await deleteData('volunteers', 'volunteer_id',
-                          content['volunteer_id'].toString());
+                      response = await deleteData('volunteers', 'volunteer_id',content['volunteer_id'].toString());
                       if (response != null) {
                             setState(() {
                               futureGetVolunteers = fetchdata('volunteers');
@@ -160,12 +159,13 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
                           );
                     }
                   },
-                  backgroundColor: const Color.fromARGB(138, 236, 70, 70),
-                  icon: Icons.delete,
-                  foregroundColor: const Color.fromARGB(255, 238, 230, 230),
+                  
                 ),
               ],
             ),
+
+            //Display Volunteer Details
+
             child: VolunteerListTile(
               content: content,
               onChange: () {
@@ -187,6 +187,8 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
     );
   }
 
+  //Insert
+
   FloatingActionButton buildFloatingActionButton() {
     return FloatingActionButton(
       backgroundColor: Colors.white.withOpacity(0.7),
@@ -196,15 +198,12 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
           showDialog(
           context: context,
           builder: (BuildContext context) {
-            TextEditingController volunteerNameController =
-                TextEditingController();
-            TextEditingController volunteerContactInfoController =
-                TextEditingController();
-            TextEditingController volunteerSkillsController =
-                TextEditingController();
-            TextEditingController volunteerAvailabilityStatusController =
-                TextEditingController();
+            TextEditingController volunteerNameController = TextEditingController();
+            TextEditingController volunteerContactInfoController = TextEditingController();
+            TextEditingController volunteerSkillsController = TextEditingController();
+            TextEditingController volunteerAvailabilityStatusController = TextEditingController();
             TextEditingController eventController = TextEditingController();
+
             getEventIds(volunteerNameController.text, eventController.text);
             String? selectedEventId; 
 
@@ -213,7 +212,8 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
               titleTextStyle: const TextStyle(
                   color: Colors.white,
                   fontSize: 24,
-                  fontWeight: FontWeight.bold),
+                  fontWeight: FontWeight.bold
+              ),
               backgroundColor: Colors.grey[900],
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10.0),
@@ -226,22 +226,26 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
                       hintText: 'Volunteer Name',
                       labelText: 'Volunteer Name',
                       controller: volunteerNameController,
-                      readOnly: false),
+                      readOnly: false
+                  ),
                   CustomTextField(
                       hintText: 'Contact Info',
                       labelText: 'Contact Info',
                       controller: volunteerContactInfoController,
-                      readOnly: false),
+                      readOnly: false
+                  ),
                   CustomTextField(
                       hintText: 'Skills',
                       labelText: 'Skills',
                       controller: volunteerSkillsController,
-                      readOnly: false),
+                      readOnly: false
+                  ),
                   CustomTextField(
                       hintText: 'Availability Status',
                       labelText: 'Availability Status',
                       controller: volunteerAvailabilityStatusController,
-                      readOnly: false),
+                      readOnly: false
+                  ),
                   Padding(
                     padding: const EdgeInsets.all(4.0),
                     child: FutureBuilder<void>(
@@ -255,22 +259,16 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
                           return DropdownButtonFormField<String>(
                             decoration: InputDecoration(
                               labelText: 'Event Name',
-                              labelStyle:
-                                  const TextStyle(color: Colors.white),
+                              labelStyle: const TextStyle(color: Colors.white),
                               enabledBorder: const OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Colors.lime),
+                                borderSide: BorderSide(color: Colors.lime),
                               ),
                               focusedBorder: const OutlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: Color.fromARGB(
-                                        255, 200, 99, 92)),
+                                borderSide: BorderSide(color: Color.fromARGB(255, 200, 99, 92)),
                               ),
                               border: OutlineInputBorder(
-                                borderRadius:
-                                    BorderRadius.circular(10.0),
-                                borderSide: const BorderSide(
-                                    color: Colors.lime, width: 2.0),
+                                borderRadius: BorderRadius.circular(10.0),
+                                borderSide: const BorderSide(color: Colors.lime, width: 2.0),
                               ),
                             ),
                             value: selectedEventId,
@@ -295,48 +293,56 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
                 ],
               ),
               actions: <Widget>[
+
+                // Insert Cancel Button
+
                 TextButton(
-                  style: TextButton.styleFrom(
-                    backgroundColor: Colors.white,
-                  ),
-                  child: const Text('Cancel',
-                      style: TextStyle(color: Colors.black)),
+                  style: TextButton.styleFrom(backgroundColor: Colors.white),
+                  child: const Text('Cancel', style: TextStyle(color: Colors.black)),
                   onPressed: () {
                     Navigator.pop(context);
                   },
                 ),
+
+                //Insert Button
+
                 TextButton(
                   style: TextButton.styleFrom(
                     backgroundColor: Colors.white,
                   ),
-                  child: const Text('Submit',
-                      style: TextStyle(color: Colors.black)),
+                  child: const Text('Submit', style: TextStyle(color: Colors.black)),
                   onPressed: () async {
-                    if (checkAcess('volunteers', '')) {
-                      response = await insertData({
-                        'table': 'volunteers',
-                        'name': volunteerNameController.text,
-                        'contact_info': volunteerContactInfoController.text,
-                        'skills': volunteerSkillsController.text,
-                        'availability_status': volunteerAvailabilityStatusController.text,
-                        'event_id': selectedEventId,
-                      });
-                      if (response != null) {
-                        setState(() {
-                          futureGetVolunteers = fetchdata('volunteers');
-                          futureGetVolunteers.then((events) {
-                            setState(() {
-                              allData = events;
-                              filteredData = events;
-                            });
-                          });
-                          searchController.addListener(_filterData);
-                        });
-                      }
+                    if((volunteerNameController.text.isEmpty)){
+                      customSnackBar(context: context, message: 'Please Enter Volunteer Name');
+                      Navigator.pop(context);
                     }
-                    if(mounted){
+                    else{
+                      if (checkAcess('volunteers', '')) {
+                        response = await insertData({
+                          'table': 'volunteers',
+                          'name': volunteerNameController.text,
+                          'contact_info': volunteerContactInfoController.text,
+                          'skills': volunteerSkillsController.text,
+                          'availability_status': volunteerAvailabilityStatusController.text,
+                          'event_id': selectedEventId,
+                        });
+                        if (response != null) {
+                          setState(() {
+                            futureGetVolunteers = fetchdata('volunteers');
+                            futureGetVolunteers.then((events) {
+                              setState(() {
+                                allData = events;
+                                filteredData = events;
+                              });
+                            });
+                            searchController.addListener(_filterData);
+                          });
+                        }
+                      }
+                      if(mounted){
                       // ignore: use_build_context_synchronously
                       Navigator.pop(context);
+                      }
                     }
                   },
                 ),

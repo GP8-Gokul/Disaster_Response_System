@@ -19,8 +19,7 @@ Future<void> getEventIds(String volunteerName, String eventController) async {
   devtools.log(eventController);
   devtools.log(volunteerName);
   if (!(checkAcess('volunteers', volunteerName))) {
-    events.removeWhere(
-        (key, value) => key.toString() != eventController.toString());
+    events.removeWhere((key, value) => key.toString() != eventController.toString());
   }
   devtools.log(events.toString());
 }
@@ -46,6 +45,9 @@ class VolunteerListTileState extends State<VolunteerListTile> {
         border: Border.all(color: const Color.fromARGB(255, 153, 153, 43), width: 2.0),
         borderRadius: BorderRadius.circular(25.0),
       ),
+
+      //Main details of volunteer
+
       child: ListTile(
         title: Text("Name: ${widget.content['volunteer_name']}"),
         subtitle: Text("ID: ${widget.content['volunteer_id']}"),
@@ -56,6 +58,9 @@ class VolunteerListTileState extends State<VolunteerListTile> {
         subtitleTextStyle: const TextStyle(fontSize: 14.0, fontWeight: FontWeight.w500),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25.0)),
         onTap: () {
+
+          //Additional Details of volunteer
+
           bool readonly = true;
           showDialog(
             context: context,
