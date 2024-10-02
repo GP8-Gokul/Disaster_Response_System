@@ -202,7 +202,7 @@ class VolunteerListTileState extends State<VolunteerListTile> {
                                             color: Colors.lime, width: 2.0),
                                       ),
                                     ),
-                                    value: selectedEventId ?? widget.content['event_id'].toString(),
+                                    value: selectedEventId,
                                     style: const TextStyle(color: Colors.white),
                                     dropdownColor:const Color.fromARGB(255, 38, 36, 36),
                                     items: events.keys.map((key) {

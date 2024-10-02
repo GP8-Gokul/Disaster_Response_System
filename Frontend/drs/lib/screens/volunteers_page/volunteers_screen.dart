@@ -8,18 +8,25 @@ import 'package:drs/widgets/custom_text_field.dart';
 import 'package:drs/widgets/search_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'dart:developer' as devtools;
 
 bool changeInState = false;
 var events = {};
 
-void getEventIds() {
-  late Future<List<Map<String, dynamic>>> futureGetDisasterEvents;
-  futureGetDisasterEvents = fetchdata('disaster_events');
-  futureGetDisasterEvents.then((value) {
-    for (var event in value) {
-      events[event['event_id']] = event['event_name'];
-    }
-  });
+Future<void> getEventIds(String volunteerName, String eventController) async {
+  events.clear();
+  List<Map<String, dynamic>> value = await fetchdata('disaster_events');
+  for (var event in value) {
+    events[event['event_id']] = event['event_name'];
+  }
+  devtools.log(events.toString());
+  devtools.log(eventController);
+  devtools.log(volunteerName);
+  if (!(checkAcess('volunteers', volunteerName))) {
+    events.removeWhere(
+        (key, value) => key.toString() != eventController.toString());
+  }
+  devtools.log(events.toString());
 }
 
 class VolunteersScreen extends StatefulWidget {
@@ -197,7 +204,8 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
                 TextEditingController();
             TextEditingController volunteerAvailabilityStatusController =
                 TextEditingController();
-            getEventIds();
+            TextEditingController eventController = TextEditingController();
+            getEventIds(volunteerNameController.text, eventController.text);
             String? selectedEventId; 
 
             return AlertDialog(
@@ -236,37 +244,51 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
                       readOnly: false),
                   Padding(
                     padding: const EdgeInsets.all(4.0),
-                    child: DropdownButtonFormField<String>(
-                      decoration: InputDecoration(
-                        labelText: 'Event Name',
-                        labelStyle: const TextStyle(color: Colors.white),
-                        enabledBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.lime),
-                          ),
-                        focusedBorder: const OutlineInputBorder(
-                        borderSide: BorderSide(color: Color.fromARGB(255, 200, 99, 92)),
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                          borderSide: const BorderSide(color: Colors.lime, width: 2.0),
-                        ),
-                      ),
-                      value: selectedEventId,
-                      style: const TextStyle(color: Colors.white),
-                      dropdownColor: Colors.black,
-                      
-                      items: events.keys.map((key) {
-                      return DropdownMenuItem<String>(
-                        value: key.toString(),
-                        child: Container(
-                    
-                        color: Colors.black.withOpacity(0.5),
-                        child: Text(events[key]!),
-                        ),
-                      );
-                      }).toList(),
-                      onChanged: (String? newValue) {
-                      selectedEventId = newValue;
+                    child: FutureBuilder<void>(
+                      future: getEventIds(volunteerNameController.text,eventController.text),
+                      builder: (BuildContext context,AsyncSnapshot<void> snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return const CircularProgressIndicator();
+                        } else if (snapshot.hasError) {
+                          return const Text('Error loading events');
+                        } else {
+                          return DropdownButtonFormField<String>(
+                            decoration: InputDecoration(
+                              labelText: 'Event Name',
+                              labelStyle:
+                                  const TextStyle(color: Colors.white),
+                              enabledBorder: const OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.lime),
+                              ),
+                              focusedBorder: const OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Color.fromARGB(
+                                        255, 200, 99, 92)),
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.circular(10.0),
+                                borderSide: const BorderSide(
+                                    color: Colors.lime, width: 2.0),
+                              ),
+                            ),
+                            value: selectedEventId,
+                            style: const TextStyle(color: Colors.white),
+                            dropdownColor:const Color.fromARGB(255, 38, 36, 36),
+                            items: events.keys.map((key) {
+                              return DropdownMenuItem<String>(
+                                value: key.toString(),
+                                child: Text(events[key]!),
+                              );
+                            }).toList(),
+                            onChanged: (String? newValue) {
+                              setState(() {
+                                selectedEventId = newValue;
+                              });
+                            },
+                          );
+                        }
                       },
                     ),
                   ),
