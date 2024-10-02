@@ -4,7 +4,7 @@ import 'package:drs/services/api/json_encode.dart';
 import 'package:http/http.dart' as http;
 import 'dart:developer' as devtools;
 
-const url = 'http://10.0.2.2:5000/';
+const url = 'https://hosted-disaster-backend.onrender.com/';
 dynamic userRole;
 dynamic userName;
 dynamic authenticationToken;
