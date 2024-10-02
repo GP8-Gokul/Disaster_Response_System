@@ -43,44 +43,35 @@ class VolunteerListTileState extends State<VolunteerListTile> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(
-            color: const Color.fromARGB(255, 153, 153, 43), width: 2.0),
+        border: Border.all(color: const Color.fromARGB(255, 153, 153, 43), width: 2.0),
         borderRadius: BorderRadius.circular(25.0),
       ),
       child: ListTile(
         title: Text("Name: ${widget.content['volunteer_name']}"),
         subtitle: Text("ID: ${widget.content['volunteer_id']}"),
         tileColor: const Color.fromARGB(255, 255, 255, 255).withOpacity(0.05),
-        contentPadding:
-            const EdgeInsets.symmetric(vertical: 1.0, horizontal: 16.0),
+        contentPadding: const EdgeInsets.symmetric(vertical: 1.0, horizontal: 16.0),
         textColor: const Color.fromARGB(255, 255, 255, 255),
-        titleTextStyle:
-            const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-        subtitleTextStyle:
-            const TextStyle(fontSize: 14.0, fontWeight: FontWeight.w500),
-        shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(25.0)),
+        titleTextStyle: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+        subtitleTextStyle: const TextStyle(fontSize: 14.0, fontWeight: FontWeight.w500),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25.0)),
         onTap: () {
           bool readonly = true;
           showDialog(
             context: context,
             builder: (BuildContext context) {
-              TextEditingController volunteerNameController =
-                  TextEditingController(
+              TextEditingController volunteerNameController = TextEditingController(
                       text: widget.content['volunteer_name'].toString());
-              TextEditingController volunteerContactInfoController =
-                  TextEditingController(
-                      text:
-                          widget.content['volunteer_contact_info'].toString());
+              TextEditingController volunteerContactInfoController = TextEditingController(
+                      text: widget.content['volunteer_contact_info'].toString());
               TextEditingController volunteerSkillsController =
                   TextEditingController(
                       text: widget.content['volunteer_skills'].toString());
-              TextEditingController volunteerAvailabilityStatusController =
-                  TextEditingController(
-                      text: widget.content['volunteer_availability_status']
-                          .toString());
+              TextEditingController volunteerAvailabilityStatusController = TextEditingController(
+                      text: widget.content['volunteer_availability_status'].toString());
               TextEditingController eventController = TextEditingController(
                   text: widget.content['event_id'].toString());
+
               getEventIds(volunteerNameController.text, eventController.text);
               String? selectedEventId = eventController.text;
 
@@ -107,8 +98,7 @@ class VolunteerListTileState extends State<VolunteerListTile> {
                           Row(
                             children: [
                               CustomText(
-                                  text:
-                                      'Volunteer ID: ${widget.content['volunteer_id']}'),
+                                  text: 'Volunteer ID: ${widget.content['volunteer_id']}'),
                               Spacer(),
                               Container(
                                 height: 40,
@@ -118,8 +108,7 @@ class VolunteerListTileState extends State<VolunteerListTile> {
                                   shape: BoxShape.circle,
                                 ),
                                 child: FloatingActionButton(
-                                  backgroundColor:
-                                      const Color.fromARGB(255, 1, 255, 9),
+                                  backgroundColor:const Color.fromARGB(255, 1, 255, 9),
                                   mini: true,
                                   child: const Icon(Icons.call),
                                   onPressed: () async {
@@ -145,10 +134,10 @@ class VolunteerListTileState extends State<VolunteerListTile> {
                               hintText: '${widget.content['volunteer_name']}',
                               labelText: 'Volunteer Name',
                               controller: volunteerNameController,
-                              readOnly: readonly),
+                              readOnly: readonly
+                          ),
                           CustomTextField(
-                            hintText:
-                                '${widget.content['volunteer_contact_info']}',
+                            hintText: '${widget.content['volunteer_contact_info']}',
                             labelText: 'Contact Info',
                             controller: volunteerContactInfoController,
                             readOnly: readonly,
@@ -160,8 +149,7 @@ class VolunteerListTileState extends State<VolunteerListTile> {
                             readOnly: readonly,
                           ),
                           CustomTextField(
-                            hintText:
-                                '${widget.content['volunteer_availability_status']}',
+                            hintText: '${widget.content['volunteer_availability_status']}',
                             labelText: 'Availability Status',
                             controller: volunteerAvailabilityStatusController,
                             readOnly: readonly,
@@ -190,12 +178,6 @@ class VolunteerListTileState extends State<VolunteerListTile> {
                                             color: Color.fromARGB(
                                                 255, 200, 99, 92)),
                                       ),
-                                      border: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10.0),
-                                        borderSide: const BorderSide(
-                                            color: Colors.lime, width: 2.0),
-                                      ),
                                     ),
                                     value: selectedEventId,
                                     style: const TextStyle(color: Colors.white),
@@ -220,26 +202,28 @@ class VolunteerListTileState extends State<VolunteerListTile> {
                       ),
                     ),
                     actions: <Widget>[
+
+                      //Edit Functionality
+
                       TextButton(
                         style: TextButton.styleFrom(
                           backgroundColor: Colors.white,
                         ),
                         child: const Icon(Icons.edit, color: Colors.blue),
                         onPressed: () {
-                          if (checkAcess(
-                              'volunteers', volunteerNameController.text)) {
+                          if (checkAcess('volunteers', volunteerNameController.text)) {
                             setState(() {
                               readonly = !readonly;
                             });
                           } else {
                             Navigator.pop(context);
-                            customSnackBar(
-                                context: context,
-                                message: 'You cannot Edit this data'
-                              );
+                            customSnackBar(context: context, message: 'You cannot Edit this data');
                           }
                         },
                       ),
+
+                      //Update Functionality
+
                       TextButton(
                         style: TextButton.styleFrom(
                           backgroundColor: Colors.white,
@@ -247,26 +231,17 @@ class VolunteerListTileState extends State<VolunteerListTile> {
                         child: const Icon(Icons.update, color: Colors.blue),
                         onPressed: () async {
                           if (selectedEventId == null) {
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(const SnackBar(
-                              content: Text('Please select an event ID'),
-                              backgroundColor: Colors.red,
-                            ));
-                            return;
+                            customSnackBar(context: context, message: 'Please select an event ID');
                           }
-                          if (checkAcess(
-                              'volunteers', volunteerNameController.text)) {
+                          if (checkAcess('volunteers', volunteerNameController.text)) {
                             response = await updateData(
                               {
                                 'table': 'volunteers',
                                 'volunteer_id': widget.content['volunteer_id'],
                                 'volunteer_name': volunteerNameController.text,
-                                'volunteer_contact_info':
-                                    volunteerContactInfoController.text,
-                                'volunteer_skills':
-                                    volunteerSkillsController.text,
-                                'volunteer_availability_status':
-                                    volunteerAvailabilityStatusController.text,
+                                'volunteer_contact_info': volunteerContactInfoController.text,
+                                'volunteer_skills': volunteerSkillsController.text,
+                                'volunteer_availability_status': volunteerAvailabilityStatusController.text,
                                 'event_id': selectedEventId,
                               },
                             );
@@ -276,10 +251,7 @@ class VolunteerListTileState extends State<VolunteerListTile> {
                             }
                           } else {
                             Navigator.pop(context);
-                            customSnackBar(
-                                context: context,
-                                message: 'You cannot Update this data');
-                            return;
+                            customSnackBar(context: context, message: 'You cannot Update this data');
                           }
                         },
                       ),
