@@ -3,6 +3,7 @@ import 'package:drs/screens/disaster_events_page/update_disaster_events.dart';
 import 'package:drs/services/api/root_api.dart';
 import 'package:drs/widgets/background_image.dart';
 import 'package:drs/widgets/custom_appbar.dart';
+import 'package:drs/widgets/custom_snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:drs/services/authorization/check_access.dart';
 import 'dart:developer' as devtools show log;
@@ -125,25 +126,11 @@ class _DisasterEventsScreenState extends State<DisasterEventsScreen> {
                                               });
                                             } else {
                                               // ignore: use_build_context_synchronously
-                                              ScaffoldMessenger.of(context)
-                                                  .showSnackBar(
-                                                SnackBar(
-                                                  content: Text(
-                                                      'Failed to delete event'),
-                                                  backgroundColor: Colors.red,
-                                                ),
-                                              );
+                                              customSnackBar(context: context, message: 'Failed to delete event');
                                             }
                                           } else {
                                             // ignore: use_build_context_synchronously
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(
-                                              SnackBar(
-                                                content: Text(
-                                                    'You do not have access to delete events'),
-                                                backgroundColor: Colors.red,
-                                              ),
-                                            );
+                                            customSnackBar(context: context, message: 'You do not have access to delete events');
                                           }
                                         },
                                         backgroundColor: const Color.fromARGB(
@@ -260,23 +247,13 @@ class _DisasterEventsScreenState extends State<DisasterEventsScreen> {
                     });
                   } else {
                     // ignore: use_build_context_synchronously
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('Please fill all the fields'),
-                        backgroundColor: Colors.red,
-                      ),
-                    );
+                    customSnackBar(context: context, message: 'Please fill all the fields');
                     // ignore: use_build_context_synchronously
                     Navigator.of(context).pop();
                   }
                 } else {
                   // ignore: use_build_context_synchronously
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('You do not have access to add events'),
-                      backgroundColor: Colors.red,
-                    ),
-                  );
+                  customSnackBar(context: context, message: 'You do not have access to add events');
                 }
               },
               backgroundColor: const Color.fromARGB(255, 23, 22, 22),

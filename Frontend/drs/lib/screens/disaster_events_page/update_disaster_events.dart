@@ -1,5 +1,6 @@
 import 'package:drs/services/api/root_api.dart';
 import 'package:drs/services/authorization/check_access.dart';
+import 'package:drs/widgets/custom_snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
@@ -133,13 +134,7 @@ class _UpdateDisasterEventsDialogState
                         });
                       } else {
                         Navigator.of(context).pop();
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content:
-                                Text('You do not have access to add events'),
-                            backgroundColor: Colors.red,
-                          ),
-                        );
+                        customSnackBar(context: context, message: 'You do not have access to add events');
                       }
                     },
                   ),
@@ -175,13 +170,7 @@ class _UpdateDisasterEventsDialogState
                         widget.fetchDisasterEvents();
                       } else {
                         Navigator.of(context).pop();
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content:
-                                Text('You do not have access to update events'),
-                            backgroundColor: Colors.red,
-                          ),
-                        );
+                        customSnackBar(context: context, message: 'You do not have access to update events');
                       }
                     },
                   ),

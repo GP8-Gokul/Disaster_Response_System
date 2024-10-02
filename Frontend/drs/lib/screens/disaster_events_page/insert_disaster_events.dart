@@ -1,4 +1,5 @@
 import 'package:drs/services/api/root_api.dart';
+import 'package:drs/widgets/custom_snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
@@ -153,12 +154,7 @@ Future<Map<String, String>?> insertDisasterEventsDialog(
                   Navigator.of(context).pop();
                 } else {
                   // ignore: use_build_context_synchronously
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('Failed to add disaster event'),
-                      backgroundColor: Colors.red,
-                    ),
-                  );
+                  customSnackBar(context: context, message: 'Failed to add disaster event');
                   // ignore: use_build_context_synchronously
                   Navigator.of(context).pop();
                 }
@@ -171,12 +167,7 @@ Future<Map<String, String>?> insertDisasterEventsDialog(
                   'disasterDescription': disasterDescriptionController.text,
                 });
               } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('Please fill all the fields'),
-                    backgroundColor: Colors.red,
-                  ),
-                );
+                customSnackBar(context: context, message: 'Please fill all the fields');
                 Navigator.of(context).pop();
               }
             },
