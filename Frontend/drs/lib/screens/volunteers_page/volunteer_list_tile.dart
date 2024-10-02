@@ -132,12 +132,7 @@ class VolunteerListTileState extends State<VolunteerListTile> {
                                       await launchUrl(launchUri);
                                     } else {
                                       if (context.mounted) {
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(
-                                          const SnackBar(
-                                              content: Text(
-                                                  'Could not launch phone dialer')),
-                                        );
+                                        customSnackBar(context: context, message: 'Could not launch');
                                       }
                                     }
                                   },
