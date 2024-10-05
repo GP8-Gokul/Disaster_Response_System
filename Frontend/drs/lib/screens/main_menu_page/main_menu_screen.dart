@@ -111,12 +111,12 @@ class MainMenuScreen extends StatelessWidget {
                               'assets/icons/aid.png',
                               AidDistributionScreen.routeName,
                             ),
-                            buildCard(
-                              context,
-                              'Resources',
-                              'assets/icons/resources.png',
-                              ResourcesScreen.routeName,
-                            ),
+                            // buildCard(
+                            //   context,
+                            //   'Resources',
+                            //   'assets/icons/resources.png',
+                            //   ResourcesScreen.routeName,
+                            // ),
                           ],
                         ),
                         const SizedBox(height: 10),
