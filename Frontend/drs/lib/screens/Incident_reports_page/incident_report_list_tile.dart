@@ -5,6 +5,7 @@ import 'package:drs/widgets/custom_text.dart';
 import 'package:drs/widgets/custom_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'dart:developer' as devtools;
 
 dynamic response;
 
@@ -18,6 +19,7 @@ void getEventIds() {
       events[event['event_id']] = event['event_name'];
     }
   });
+  devtools.log('Events: $events');
 }
 
 class IncidentReportListTile extends StatefulWidget {
@@ -73,9 +75,11 @@ class IncidentReportListTileState extends State<IncidentReportListTile> {
                   TextEditingController(
                       text: widget.content['description']
                           .toString());
+              TextEditingController eventController = TextEditingController(
+                  text: widget.content['event_id'].toString());
 
               getEventIds();
-              String? selectedEventId;
+              String? selectedEventId = eventController.text;
 
               return StatefulBuilder(
                 builder: (BuildContext context, StateSetter setState) {
@@ -175,7 +179,7 @@ class IncidentReportListTileState extends State<IncidentReportListTile> {
                             ),
                             child: DropdownButtonFormField<String>(
                               decoration: InputDecoration(
-                                labelText: 'Report Name',
+                                labelText: 'Event Name',
                                 enabled: !readonly,
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10.0),
@@ -244,7 +248,7 @@ class IncidentReportListTileState extends State<IncidentReportListTile> {
                                     incidentReportedByController.text,
                                 'description':
                                     incidentReportDescriptionController.text,
-                                'event_id': selectedEventId!,
+                                'event_id': selectedEventId,
                               },
                             );
                             if (response != null && context.mounted) {
