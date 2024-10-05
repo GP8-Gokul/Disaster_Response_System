@@ -65,13 +65,13 @@ class IncidentReportListTileState extends State<IncidentReportListTile> {
                       text: widget.content['report_name'].toString());
               TextEditingController incidentReportDateController =
                   TextEditingController(
-                      text: widget.content['incident_report_date'].toString());
+                      text: widget.content['report_date'].toString());
               TextEditingController incidentReportedByController =
                   TextEditingController(
-                      text: widget.content['incident_reported_By'].toString());
+                      text: widget.content['reported_by'].toString());
               TextEditingController incidentReportDescriptionController =
                   TextEditingController(
-                      text: widget.content['incident_report_description']
+                      text: widget.content['description']
                           .toString());
 
               getEventIds();
@@ -119,7 +119,7 @@ class IncidentReportListTileState extends State<IncidentReportListTile> {
                                     final Uri launchUri = Uri(
                                       scheme: 'tel',
                                       path: widget
-                                          .content['incident_report_date'],
+                                          .content['report_date'],
                                     );
                                     if (await canLaunchUrl(launchUri)) {
                                       await launchUrl(launchUri);
@@ -146,21 +146,21 @@ class IncidentReportListTileState extends State<IncidentReportListTile> {
                               readOnly: readonly),
                           CustomTextField(
                             hintText:
-                                '${widget.content['incident_report_date']}',
+                                '${widget.content['report_date']}',
                             labelText: 'Report Date',
                             controller: incidentReportDateController,
                             readOnly: readonly,
                           ),
                           CustomTextField(
                             hintText:
-                                '${widget.content['incident_reported_By']}',
+                                '${widget.content['reported_by']}',
                             labelText: 'Reported By',
                             controller: incidentReportedByController,
                             readOnly: readonly,
                           ),
                           CustomTextField(
                             hintText:
-                                '${widget.content['incident_report_description']}',
+                                '${widget.content['description']}',
                             labelText: 'Description',
                             controller: incidentReportDescriptionController,
                             readOnly: readonly,
@@ -238,11 +238,11 @@ class IncidentReportListTileState extends State<IncidentReportListTile> {
                                 'report_id': widget.content['report_id'],
                                 'report_name':
                                     incidentReportNameController.text,
-                                'incident_report_date':
+                                'report_date':
                                     incidentReportDateController.text,
-                                'incident_reported_By':
+                                'reported_by':
                                     incidentReportedByController.text,
-                                'incident_report_description':
+                                'description':
                                     incidentReportDescriptionController.text,
                                 'event_id': selectedEventId!,
                               },
