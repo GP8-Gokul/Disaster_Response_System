@@ -1,7 +1,7 @@
 import 'package:drs/screens/Incident_reports_page/incident_report_list_tile.dart';
-import 'package:drs/services/AuthoriztionDemo/check_access.dart';
-import 'package:drs/services/api/disaster_event_api.dart';
 import 'package:drs/services/api/root_api.dart';
+import 'package:drs/services/api/unused_disaster_event_api.dart';
+import 'package:drs/services/authorization/check_access.dart';
 import 'package:drs/widgets/background_image.dart';
 import 'package:drs/widgets/custom_appbar.dart';
 import 'package:drs/widgets/custom_text.dart';
@@ -67,7 +67,7 @@ class _IncidentReportsScreenState extends State<IncidentReportsScreen> {
     return SafeArea(
       child: Stack(
         children: [
-          const BackgroundImage(),
+          const BackgroundImage(imageName: 'page_background',),
           Scaffold(
             appBar: const CustomAppbar(text: 'Report Details'),
             body: bodyColumn(),
@@ -85,7 +85,8 @@ class _IncidentReportsScreenState extends State<IncidentReportsScreen> {
         SearchTextField(
             labelText: 'Search Reports',
             hintText: 'Enter Report Name',
-            searchController: searchController),
+            searchController: searchController
+            ),
         Expanded(
           child: filteredData.isEmpty
               ? const Center(child: Text('No Reports found.'))
