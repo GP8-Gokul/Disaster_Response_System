@@ -1,4 +1,10 @@
+import 'package:drs/services/api/root_api.dart';
+import 'package:drs/services/authorization/check_access.dart';
+import 'package:drs/widgets/background_image.dart';
+import 'package:drs/widgets/custom_appbar.dart';
+import 'package:drs/widgets/custom_snack_bar.dart';
 import 'package:flutter/material.dart';
+import 'dart:developer' as devtools;
 
 class ResourcesScreen extends StatefulWidget {
   const ResourcesScreen({super.key});
@@ -77,7 +83,7 @@ class _ResourcesScreenState extends State<ResourcesScreen> {
                                         borderRadius: BorderRadius.circular(25),
                                         onPressed: (context) async {
                                           devtools.log('Slide action pressed');
-                                          if if (checkAcess('resources', userName) == true) {
+                                          if (checkAcess('resources', userName) == true) {
                                             final result = await deleteData(
                                                 'resources',
                                                 resources['resource_id']);
