@@ -2,6 +2,7 @@ import 'package:drs/widgets/background_image.dart';
 import 'package:drs/widgets/custom_snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'dart:developer' as devtools show log;
 
 class ResourcesScreen extends StatefulWidget {
   const ResourcesScreen({super.key});
