@@ -22,7 +22,7 @@ Future<void> getEventIds(String volunteerName, String eventController) async {
   devtools.log(events.toString());
   devtools.log(eventController);
   devtools.log(volunteerName);
-  if (!(checkAcess('volunteers', volunteerName))) {
+  if (!(checkAcess('aid_distribution', volunteerName))) {
     events.removeWhere((key, value) => key.toString() != eventController.toString());
   }
   devtools.log(events.toString());
@@ -30,7 +30,7 @@ Future<void> getEventIds(String volunteerName, String eventController) async {
 
 class VolunteersScreen extends StatefulWidget {
   const VolunteersScreen({super.key});
-  static String routeName = 'volunteers';
+  static String routeName = 'aid_distribution';
 
   @override
   State<VolunteersScreen> createState() => _VolunteersScreenState();
@@ -47,7 +47,7 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
   @override
   void initState() {
     super.initState();
-    futureGetVolunteers = fetchdata('volunteers');
+    futureGetVolunteers = fetchdata('aid_distribution');
     futureGetVolunteers.then((events) {
       setState(() {
         allData = events;
@@ -74,7 +74,7 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
         children: [
           const BackgroundImage(imageName: 'page_background'),
           Scaffold(
-            appBar: const CustomAppbar(text: 'Volunteer Details'),
+            appBar: const CustomAppbar(text: 'Aid Distribution Details'),
             body: bodyColumn(),
             floatingActionButton: buildFloatingActionButton(),
             backgroundColor: Colors.transparent,
@@ -88,13 +88,13 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
     return Column(
       children: [
         SearchTextField(
-            labelText: 'Search Volunteers',
+            labelText: 'Search Volunteer ',
             hintText: 'Enter Volunteer Name',
             searchController: searchController
         ),
         Expanded(
           child: filteredData.isEmpty
-              ? const Center(child: Text('No volunteers found.'))
+              ? const Center(child: Text('No aids found.'))
               : buildFutureBuilder(),
         ),
         SizedBox(height: 70),
@@ -104,14 +104,14 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
 
   FutureBuilder buildFutureBuilder() {
     return FutureBuilder(
-      future: futureGetVolunteers,
+      future: futureGetAidDistribution,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {
           return Center(child: Text('Error: ${snapshot.error}'));
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return const Center(child: Text('No volunteers found.'));
+          return const Center(child: Text('No aids found.'));
         } else {
           return buildListview(snapshot);
         }
@@ -138,11 +138,11 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
                   icon: Icons.delete,
                   foregroundColor: const Color.fromARGB(255, 238, 230, 230),
                   onPressed: (context) async {
-                    if (checkAcess('volunteers', content['volunteer_name'])) {
-                      response = await deleteData('volunteers', 'volunteer_id',content['volunteer_id'].toString());
+                    if (checkAcess('aid_distribution', content['volunteer_name'])) {
+                      response = await deleteData('aid_distribution', 'volunteer_id',content['volunteer_id'].toString());
                       if (response != null) {
                             setState(() {
-                              futureGetVolunteers = fetchdata('volunteers');
+                              futureGetAidDistribution = fetchdata('aid_distribution');
                               futureGetVolunteers.then((events) {
                                 setState(() {
                                   allData = events;
@@ -155,7 +155,7 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
                     } else {
                       customSnackBar(
                           context: context,
-                          message:'You do not have access to delete this volunteer.'
+                          message:'You do not have access to delete this aid.'
                           );
                     }
                   },
@@ -170,7 +170,7 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
               content: content,
               onChange: () {
                 setState(() {
-                  futureGetVolunteers = fetchdata('volunteers');
+                  futureGetAidDistribution = fetchdata('aid_distribution');
                   futureGetVolunteers.then((events) {
                     setState(() {
                       allData = events;
@@ -194,7 +194,7 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
       backgroundColor: Colors.white.withOpacity(0.7),
       child: const Icon(Icons.add),
       onPressed: () {
-        if(checkAcess('volunteers', '')){
+        if(checkAcess('aid_distribution', '')){
           showDialog(
           context: context,
           builder: (BuildContext context) {
@@ -318,9 +318,9 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
                       customSnackBar(context: context, message: 'Please Select Event Name');
                     } 
                     else{
-                      if (checkAcess('volunteers', '')) {
+                      if (checkAcess('aid_distribution', '')) {
                         response = await insertData({
-                          'table': 'volunteers',
+                          'table': 'aid_distribution',
                           'name': volunteerNameController.text,
                           'contact_info': volunteerContactInfoController.text,
                           'skills': volunteerSkillsController.text,
@@ -329,7 +329,7 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
                         });
                         if (response != null) {
                           setState(() {
-                            futureGetVolunteers = fetchdata('volunteers');
+                            futureGetVolunteers = fetchdata('aid_distribution');
                             futureGetVolunteers.then((events) {
                               setState(() {
                                 allData = events;
@@ -353,7 +353,7 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
         );
         }
         else{
-          customSnackBar(context: context, message: 'You do not have access to add new volunteers.');
+          customSnackBar(context: context, message: 'You do not have access to add new aids.');
         }
       },
     );
