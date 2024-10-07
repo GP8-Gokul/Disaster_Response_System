@@ -79,14 +79,7 @@ class _AidDistributionScreenState extends State<AidDistributionScreen> {
   Column bodyColumn() {
     return Column(
       children: [
-        SearchTextField(
-            labelText: 'Search Volunteer ',
-            hintText: 'Enter Volunteer Name',
-            searchController: searchController
-        ),
-        Expanded(
-          child: filteredData.isEmpty
-              ? const Center(child: Text('No aids found.'))
+        
               : buildFutureBuilder(),
         ),
         SizedBox(height: 70),
@@ -130,8 +123,8 @@ class _AidDistributionScreenState extends State<AidDistributionScreen> {
                   icon: Icons.delete,
                   foregroundColor: const Color.fromARGB(255, 238, 230, 230),
                   onPressed: (context) async {
-                    if (checkAcess('aid_distribution', content['volunteer_name'])) {
-                      response = await deleteData('aid_distribution', 'volunteer_id',content['volunteer_id'].toString());
+                    if (checkAcess('aid_distribution', "")) {
+                      response = await deleteData('aid_distribution', 'distribution_id',content['distribution_id'].toString());
                       if (response != null) {
                             setState(() {
                               futureGetAidDistribution = fetchdata('aid_distribution');
