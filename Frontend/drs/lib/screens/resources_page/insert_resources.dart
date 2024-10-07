@@ -10,13 +10,13 @@ Future<Map<String, String>?> insertResourcesDialog(
   showDialog(
     context: context,
     builder: (BuildContext context) {
-      TextEditingController ResourceName_Controller = TextEditingController();
-      TextEditingController resource_type_Controller = TextEditingController();
-      TextEditingController quantity_Controller =
+      TextEditingController ResourceName_controller = TextEditingController();
+      TextEditingController resource_type_controller = TextEditingController();
+      TextEditingController quantity_controller =
           TextEditingController();
-      TextEditingController availability_status_Controller =
+      TextEditingController availability_status_controller =
           TextEditingController();
-      TextEditingController event_id_Controller = TextEditingController();
+      TextEditingController event_id_controller = TextEditingController();
       
 
       return AlertDialog(
@@ -35,7 +35,7 @@ Future<Map<String, String>?> insertResourcesDialog(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
-                controller: ResourceName_Controller,
+                controller: ResourceName_controller,
                 decoration: InputDecoration(
                   labelText: 'Resource Name',
                   border: OutlineInputBorder(
@@ -45,7 +45,7 @@ Future<Map<String, String>?> insertResourcesDialog(
               ),
               const SizedBox(height: 15),
               TextField(
-                controller: resource_type_Controller,
+                controller: resource_type_controller,
                 decoration: InputDecoration(
                   labelText: 'Resource Type',
                   border: OutlineInputBorder(
@@ -55,7 +55,7 @@ Future<Map<String, String>?> insertResourcesDialog(
               ),
               const SizedBox(height: 15),
               TextField(
-                controller: quantity_Controller,
+                controller: quantity_controller,
                 decoration: InputDecoration(
                   labelText: 'Quantity',
                   border: OutlineInputBorder(
@@ -65,7 +65,7 @@ Future<Map<String, String>?> insertResourcesDialog(
               ),
               const SizedBox(height: 15),
               TextField(
-                controller: availability_status_Controller,
+                controller: availability_status_controller,
                 decoration: InputDecoration(
                   labelText: 'availability_status',
                   border: OutlineInputBorder(
@@ -75,7 +75,7 @@ Future<Map<String, String>?> insertResourcesDialog(
               ),
               const SizedBox(height: 15),
               TextField(
-                controller: event_id_Controller,
+                controller: event_id_controller,
                 decoration: InputDecoration(
                   labelText: 'event id',
                   border: OutlineInputBorder(
@@ -97,19 +97,19 @@ Future<Map<String, String>?> insertResourcesDialog(
           ),
           ElevatedButton(
             onPressed: () async {
-              if (ResourceName_Controller.text.isNotEmpty &&
-                  resource_type_Controller.text.isNotEmpty &&
-                  quantity_Controller.text.isNotEmpty &&
-                  availability_status_Controller.text.isNotEmpty &&
-                  event_id_Controller.text.isNotEmpty ) 
+              if (ResourceName_controller.text.isNotEmpty &&
+                  resource_type_controller.text.isNotEmpty &&
+                  quantity_controller.text.isNotEmpty &&
+                  availability_status_controller.text.isNotEmpty &&
+                  event_id_controller.text.isNotEmpty ) 
                   {
                 final response = await insertData({
                   'table': 'resources',
-                  'resource_Name': ResourceName_Controller.text,
-                  'resource_type':resource_type_Controller.text,
-                  'quantity': quantity_Controller.text,
-                  'availability_status': availability_status_Controller.text,
-                  'event_id': event_id_Controller.text,
+                  'resource_Name': ResourceName_controller.text,
+                  'resource_type':resource_type_controller.text,
+                  'quantity': quantity_controller.text,
+                  'availability_status': availability_status_controller.text,
+                  'event_id': event_id_controller.text,
                   
                 });
                 if (response != 0) {
