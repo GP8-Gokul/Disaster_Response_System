@@ -1,8 +1,11 @@
+import 'package:drs/screens/resources_page/insert_resources.dart';
+import 'package:drs/services/api/root_api.dart';
 import 'package:drs/widgets/background_image.dart';
 import 'package:drs/widgets/custom_snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'dart:developer' as devtools show log;
+import 'package:drs/services/authorization/check_access.dart';
 
 class ResourcesScreen extends StatefulWidget {
   const ResourcesScreen({super.key});
@@ -13,7 +16,7 @@ class ResourcesScreen extends StatefulWidget {
 }
 
 class _ResourcesScreenState extends State<ResourcesScreen> {
-   late Future<List<Map<String, dynamic>>> futureGetResources;
+  late Future<List<Map<String, dynamic>>> futureGetResources;
   dynamic response;
   List<Map<String, dynamic>> allResources = [];
   List<Map<String, dynamic>> filteredResources = [];
@@ -28,7 +31,7 @@ class _ResourcesScreenState extends State<ResourcesScreen> {
           const BackgroundImage(imageName: 'page_background'),
           Scaffold(
             appBar: AppBar(
-              title: const Text('Aid Distribution'),
+              title: const Text('Resources'),
               centerTitle: true,
               backgroundColor: const Color.fromARGB(100, 0, 0, 0),
               titleTextStyle: const TextStyle(
@@ -58,9 +61,8 @@ class _ResourcesScreenState extends State<ResourcesScreen> {
                       prefixIcon: const Icon(Icons.search,
                           color: Colors.white), // Set icon color to white
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                        borderSide: const BorderSide(color: Colors.white)
-                      ),
+                          borderRadius: BorderRadius.circular(10.0),
+                          borderSide: const BorderSide(color: Colors.white)),
                     ),
                   ),
                 ),
@@ -90,28 +92,27 @@ class _ResourcesScreenState extends State<ResourcesScreen> {
                                     children: [
                                       SlidableAction(
                                         borderRadius: BorderRadius.circular(25),
-                                         onPressed: (context) async 
-                                        {
-                                        //   //devtools.log('Slide action pressed');
-                                        //   if (checkAccess('resources', userName) == true) {
-                                        //     final result = await deleteData(
-                                        //         'resources',
-                                        //         event['resource_id']); // Using 'event' instead of 'resources'
-                                        //     if (result != 0) {
-                                        //       setState(() {
-                                        //         allResources.remove(event);
-                                        //         filteredResources.remove(event);
-                                        //       });
-                                        //     } else {
-                                        //       if (context.mounted) { // Ensure context is still valid
-                                        //         customSnackBar(context: context, message: 'Failed to delete resource');
-                                        //       }
-                                        //     }
-                                        //   } else {
-                                        //     if (context.mounted) { // Ensure context is still valid
-                                        //       customSnackBar(context: context, message: 'You do not have access to delete resources');
-                                        //     }
-                                        //   }
+                                        onPressed: (context) async {
+                                          //   //devtools.log('Slide action pressed');
+                                          //   if (checkAccess('resources', userName) == true) {
+                                          //     final result = await deleteData(
+                                          //         'resources',
+                                          //         event['resource_id']); // Using 'event' instead of 'resources'
+                                          //     if (result != 0) {
+                                          //       setState(() {
+                                          //         allResources.remove(event);
+                                          //         filteredResources.remove(event);
+                                          //       });
+                                          //     } else {
+                                          //       if (context.mounted) { // Ensure context is still valid
+                                          //         customSnackBar(context: context, message: 'Failed to delete resource');
+                                          //       }
+                                          //     }
+                                          //   } else {
+                                          //     if (context.mounted) { // Ensure context is still valid
+                                          //       customSnackBar(context: context, message: 'You do not have access to delete resources');
+                                          //     }
+                                          //   }
                                         },
                                         backgroundColor: const Color.fromARGB(
                                             138, 236, 70, 70),
@@ -122,8 +123,8 @@ class _ResourcesScreenState extends State<ResourcesScreen> {
                                     ],
                                   ),
                                   child: GestureDetector(
-                                    onTap: () async
-                                    { /* 
+                                    onTap: () async {
+                                      /* 
                                       devtools.log('Event tapped');
                                       final updatedEvent = await showDialog<
                                           Map<String, dynamic>>(
@@ -152,9 +153,9 @@ class _ResourcesScreenState extends State<ResourcesScreen> {
                                           });
                                         });
                                       }
-                                    */}, 
+                                    */
+                                    },
                                     child: Container(
-                                      
                                       decoration: BoxDecoration(
                                         color: const Color.fromARGB(
                                                 255, 227, 217, 217)
@@ -210,18 +211,18 @@ class _ResourcesScreenState extends State<ResourcesScreen> {
                 ),
               ],
             ),
-            /*floatingActionButton: FloatingActionButton(
-              onPressed: () async 
-              {
+            floatingActionButton: FloatingActionButton(
+              onPressed: () async {
                 devtools.log('Floating action button pressed');
-                if (checkAccess('resources', userName) == true) {
-                  final result = await insertResourceDialog(
+                if (checkAcess('resources', userName) == true) {
+                  final result = await insertResourcesDialog(
                       context, () => fetchdata('resources'), response);
+
                   // ignore: unrelated_type_equality_checks
                   if (result != 0) {
                     setState(() {
                       futureGetResources = fetchdata('resources');
-                      futureGetDisasterEvents.then((events) {
+                      futureGetResources.then((events) {
                         setState(() {
                           allResources = events;
                           filteredResources = events;
@@ -230,18 +231,22 @@ class _ResourcesScreenState extends State<ResourcesScreen> {
                     });
                   } else {
                     // ignore: use_build_context_synchronously
-                    customSnackBar(context: context, message: 'Please fill all the fields');
+                    customSnackBar(
+                        context: context,
+                        message: 'Please fill all the fields');
                     // ignore: use_build_context_synchronously
                     Navigator.of(context).pop();
                   }
                 } else {
                   // ignore: use_build_context_synchronously
-                  customSnackBar(context: context, message: 'You do not have access to add events');
+                  customSnackBar(
+                      context: context,
+                      message: 'You do not have access to add events');
                 }
               },
               backgroundColor: const Color.fromARGB(255, 23, 22, 22),
               child: const Icon(Icons.add, color: Colors.white),
-            ),*/
+            ),
             backgroundColor: Colors.transparent,
           ),
         ],
