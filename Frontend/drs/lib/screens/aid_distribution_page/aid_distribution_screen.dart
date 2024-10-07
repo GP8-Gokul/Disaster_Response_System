@@ -1,37 +1,70 @@
-import 'package:drs/screens/aid_distribution_page/insert_aid_distribution.dart';
-import 'package:drs/screens/aid_distribution_page/update_aid_distribution.dart';
-import 'package:drs/services/api/aid_distribution_api.dart';
+import 'package:drs/services/authorization/check_access.dart';
+import 'package:drs/services/api/root_api.dart';
+import 'package:drs/widgets/background_image.dart';
+import 'package:drs/widgets/custom_appbar.dart';
+import 'package:drs/screens/volunteers_page/volunteer_list_tile.dart';
+import 'package:drs/widgets/custom_snack_bar.dart';
+import 'package:drs/widgets/custom_text_field.dart';
+import 'package:drs/widgets/search_text_field.dart';
 import 'package:flutter/material.dart';
-import 'dart:developer' as devtools show log;
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'dart:developer' as devtools;
 
-class AidDistributionScreen extends StatefulWidget {
-  const AidDistributionScreen({super.key});
-  static String routeName = 'aid-distribution';
+bool changeInState = false;
+var events = {};
 
-  @override
-  State<AidDistributionScreen> createState() => _AidDistributionScreenState();
+Future<void> getEventIds(String volunteerName, String eventController) async {
+  events.clear();
+  List<Map<String, dynamic>> value = await fetchdata('disaster_events');
+  for (var event in value) {
+    events[event['event_id']] = event['event_name'];
+  }
+  devtools.log(events.toString());
+  devtools.log(eventController);
+  devtools.log(volunteerName);
+  if (!(checkAcess('volunteers', volunteerName))) {
+    events.removeWhere((key, value) => key.toString() != eventController.toString());
+  }
+  devtools.log(events.toString());
 }
 
-class _AidDistributionScreenState extends State<AidDistributionScreen> {
-  late Future<List<Map<String, dynamic>>> futureGetAidDistribution;
+class VolunteersScreen extends StatefulWidget {
+  const VolunteersScreen({super.key});
+  static String routeName = 'volunteers';
+
+  @override
+  State<VolunteersScreen> createState() => _VolunteersScreenState();
+}
+
+class _VolunteersScreenState extends State<VolunteersScreen> {
+  late Future<List<Map<String, dynamic>>> futureGetVolunteers;
   dynamic response;
-  List<Map<String, dynamic>> allAids = [];
+
+  TextEditingController searchController = TextEditingController();
+  List<Map<String, dynamic>> allData = [];
+  List<Map<String, dynamic>> filteredData = [];
 
   @override
   void initState() {
     super.initState();
-    futureGetAidDistribution = fetchAidDistribution();
-    futureGetAidDistribution.then((aids) {
+    futureGetVolunteers = fetchdata('volunteers');
+    futureGetVolunteers.then((events) {
       setState(() {
-        allAids = aids;
+        allData = events;
+        filteredData = events;
       });
     });
+    searchController.addListener(_filterData);
   }
 
-  @override
-  void dispose() {
-    super.dispose();
+  void _filterData() {
+    final query = searchController.text.toLowerCase();
+    setState(() {
+      filteredData = allData.where((element) {
+        final volunteerName = element['volunteer_name'].toString().toLowerCase();
+        return volunteerName.contains(query);
+      }).toList();
+    });
   }
 
   @override
@@ -39,158 +72,290 @@ class _AidDistributionScreenState extends State<AidDistributionScreen> {
     return SafeArea(
       child: Stack(
         children: [
-          Positioned.fill(
-            child: Image.asset(
-              'assets/images/background.jpg',
-              fit: BoxFit.cover,
-            ),
-          ),
+          const BackgroundImage(imageName: 'page_background'),
           Scaffold(
-            appBar: AppBar(
-              title: const Text('Aid Distribution'),
-              centerTitle: true,
-              backgroundColor: const Color.fromARGB(100, 0, 0, 0),
-              titleTextStyle: const TextStyle(
-                fontSize: 24.0,
-                fontWeight: FontWeight.bold,
-                color: Color.fromARGB(255, 31, 29, 29),
-              ),
-              elevation: 5,
-              shadowColor: Colors.black.withOpacity(0.3),
-            ),
-            body: Column(
-              children: [
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: allAids.length,
-                    itemBuilder: (context, index) {
-                      final rsc = allAids[index];
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 8.0, horizontal: 16.0),
-                        child: Slidable(
-                          endActionPane: ActionPane(
-                            motion: const StretchMotion(),
-                            children: [
-                              SlidableAction(
-                                borderRadius: BorderRadius.circular(25),
-                                onPressed: (context) {
-                                  devtools.log('Slide action pressed');
-                                  deleteAidDistribution(rsc['distribution_id']);
-                                  setState(() {
-                                    allAids.remove(rsc);
-                                  });
-                                },
-                                backgroundColor:
-                                    const Color.fromARGB(148, 226, 125, 125),
-                                icon: Icons.delete,
-                                foregroundColor:
-                                    const Color.fromARGB(255, 74, 71, 71),
-                              ),
-                            ],
-                          ),
-                          child: GestureDetector(
-                            onTap: () {
-                              // devtools.log('Event for aid tapped');
-                              // Navigator.of(context).push(
-                              //   HeroDialogRoute(
-                              //     builder: (context) => DisplayAidDistribution(
-                              //       rsc: rsc,
-                              //     ),
-                              //   ),
-                              // );
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: const Color.fromARGB(255, 70, 70, 70)
-                                    .withOpacity(0.6),
-                                borderRadius: BorderRadius.circular(25.0),
-                              ),
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 16.0, horizontal: 24.0),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          "Distribution ID: ${rsc['distribution_id']}",
-                                          style: const TextStyle(
-                                            fontSize: 20.0,
-                                            fontWeight: FontWeight.bold,
-                                            color:
-                                                Color.fromARGB(255, 41, 39, 39),
-                                          ),
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  IconButton(
-                                    icon: const Icon(
-                                      Icons.edit,
-                                      color: Colors.white,
-                                    ),
-                                    onPressed: () async {
-                                      devtools.log('Edit button pressed');
-                                      final result =
-                                          await updateAidDistributionDialog(
-                                              context,
-                                              fetchAidDistribution,
-                                              rsc,
-                                              response);
-                                      if (result != null) {
-                                        setState(() {
-                                          futureGetAidDistribution =
-                                              fetchAidDistribution();
-                                          futureGetAidDistribution
-                                              .then((events) {
-                                            setState(() {
-                                              allAids = events;
-                                            });
-                                          });
-                                        });
-                                      }
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ],
-            ),
-            floatingActionButton: FloatingActionButton(
-              onPressed: () async {
-                devtools.log('Floating action button pressed');
-                final result = await insertAidDistributionDialog(
-                    context, fetchAidDistribution, response);
-                if (result != null) {
-                  setState(() {
-                    futureGetAidDistribution = fetchAidDistribution();
-                    futureGetAidDistribution.then((aids) {
-                      setState(() {
-                        allAids = aids;
-                      });
-                    });
-                  });
-                }
-              },
-              backgroundColor: const Color.fromARGB(255, 23, 22, 22),
-              child: const Icon(Icons.add, color: Colors.white),
-            ),
+            appBar: const CustomAppbar(text: 'Volunteer Details'),
+            body: bodyColumn(),
+            floatingActionButton: buildFloatingActionButton(),
             backgroundColor: Colors.transparent,
           ),
         ],
       ),
+    );
+  }
+
+  Column bodyColumn() {
+    return Column(
+      children: [
+        SearchTextField(
+            labelText: 'Search Volunteers',
+            hintText: 'Enter Volunteer Name',
+            searchController: searchController
+        ),
+        Expanded(
+          child: filteredData.isEmpty
+              ? const Center(child: Text('No volunteers found.'))
+              : buildFutureBuilder(),
+        ),
+        SizedBox(height: 70),
+      ],
+    );
+  }
+
+  FutureBuilder buildFutureBuilder() {
+    return FutureBuilder(
+      future: futureGetVolunteers,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return const Center(child: Text('No volunteers found.'));
+        } else {
+          return buildListview(snapshot);
+        }
+      },
+    );
+  }
+
+  Widget buildListview(snapshot) {
+    return ListView.builder(
+      itemCount: filteredData.length,
+      itemBuilder: (context, index) {
+        final content = filteredData[index];
+        return Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Slidable(
+            endActionPane: ActionPane(
+              motion: const ScrollMotion(),
+              children: [
+
+                //Delete Functionality
+
+                SlidableAction(
+                  backgroundColor: const Color.fromARGB(138, 236, 70, 70),
+                  icon: Icons.delete,
+                  foregroundColor: const Color.fromARGB(255, 238, 230, 230),
+                  onPressed: (context) async {
+                    if (checkAcess('volunteers', content['volunteer_name'])) {
+                      response = await deleteData('volunteers', 'volunteer_id',content['volunteer_id'].toString());
+                      if (response != null) {
+                            setState(() {
+                              futureGetVolunteers = fetchdata('volunteers');
+                              futureGetVolunteers.then((events) {
+                                setState(() {
+                                  allData = events;
+                                  filteredData = events;
+                                });
+                              });
+                              searchController.addListener(_filterData);
+                            });
+                      }
+                    } else {
+                      customSnackBar(
+                          context: context,
+                          message:'You do not have access to delete this volunteer.'
+                          );
+                    }
+                  },
+
+                ),
+              ],
+            ),
+
+            //Display Volunteer Details
+
+            child: VolunteerListTile(
+              content: content,
+              onChange: () {
+                setState(() {
+                  futureGetVolunteers = fetchdata('volunteers');
+                  futureGetVolunteers.then((events) {
+                    setState(() {
+                      allData = events;
+                      filteredData = events;
+                    });
+                  });
+                  searchController.addListener(_filterData);
+                });
+              },
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  //Insert
+
+  FloatingActionButton buildFloatingActionButton() {
+    return FloatingActionButton(
+      backgroundColor: Colors.white.withOpacity(0.7),
+      child: const Icon(Icons.add),
+      onPressed: () {
+        if(checkAcess('volunteers', '')){
+          showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            TextEditingController volunteerNameController = TextEditingController();
+            TextEditingController volunteerContactInfoController = TextEditingController();
+            TextEditingController volunteerSkillsController = TextEditingController();
+            TextEditingController volunteerAvailabilityStatusController = TextEditingController();
+            TextEditingController eventController = TextEditingController();
+
+            getEventIds(volunteerNameController.text, eventController.text);
+            String? selectedEventId; 
+
+            return AlertDialog(
+              title: const Text('Add New Volunteer'),
+              titleTextStyle: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold
+              ),
+              backgroundColor: Colors.grey[900],
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
+                side: const BorderSide(color: Colors.white, width: 2.0),
+              ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  CustomTextField(
+                      hintText: 'Volunteer Name',
+                      labelText: 'Volunteer Name',
+                      controller: volunteerNameController,
+                      readOnly: false
+                  ),
+                  CustomTextField(
+                      hintText: 'Contact Info',
+                      labelText: 'Contact Info',
+                      controller: volunteerContactInfoController,
+                      readOnly: false
+                  ),
+                  CustomTextField(
+                      hintText: 'Skills',
+                      labelText: 'Skills',
+                      controller: volunteerSkillsController,
+                      readOnly: false
+                  ),
+                  CustomTextField(
+                      hintText: 'Availability Status',
+                      labelText: 'Availability Status',
+                      controller: volunteerAvailabilityStatusController,
+                      readOnly: false
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: FutureBuilder<void>(
+                      future: getEventIds(volunteerNameController.text,eventController.text),
+                      builder: (BuildContext context,AsyncSnapshot<void> snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return const CircularProgressIndicator();
+                        } else if (snapshot.hasError) {
+                          return const Text('Error loading events');
+                        } else {
+                          return DropdownButtonFormField<String>(
+                            decoration: InputDecoration(
+                              labelText: 'Event Name',
+                              labelStyle: const TextStyle(color: Colors.white),
+                              enabledBorder: const OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.lime),
+                              ),
+                              focusedBorder: const OutlineInputBorder(
+                                borderSide: BorderSide(color: Color.fromARGB(255, 200, 99, 92)),
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                                borderSide: const BorderSide(color: Colors.lime, width: 2.0),
+                              ),
+                            ),
+                            value: selectedEventId,
+                            style: const TextStyle(color: Colors.white),
+                            dropdownColor:const Color.fromARGB(255, 38, 36, 36),
+                            items: events.keys.map((key) {
+                              return DropdownMenuItem<String>(
+                                value: key.toString(),
+                                child: Text(events[key]!),
+                              );
+                            }).toList(),
+                            onChanged: (String? newValue) {
+                              setState(() {
+                                selectedEventId = newValue;
+                              });
+                            },
+                          );
+                        }
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              actions: <Widget>[
+
+                // Insert Cancel Button
+
+                TextButton(
+                  style: TextButton.styleFrom(backgroundColor: Colors.white),
+                  child: const Text('Cancel', style: TextStyle(color: Colors.black)),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+
+                //Insert Button
+
+                TextButton(
+                  style: TextButton.styleFrom(
+                    backgroundColor: Colors.white,
+                  ),
+                  child: const Text('Submit', style: TextStyle(color: Colors.black)),
+                  onPressed: () async {
+                    if(volunteerNameController.text.isEmpty){
+                      customSnackBar(context: context, message: 'Please Enter Volunteer Name');
+                    } else if(selectedEventId == null){
+                      customSnackBar(context: context, message: 'Please Select Event Name');
+                    } 
+                    else{
+                      if (checkAcess('volunteers', '')) {
+                        response = await insertData({
+                          'table': 'volunteers',
+                          'name': volunteerNameController.text,
+                          'contact_info': volunteerContactInfoController.text,
+                          'skills': volunteerSkillsController.text,
+                          'availability_status': volunteerAvailabilityStatusController.text,
+                          'event_id': selectedEventId,
+                        });
+                        if (response != null) {
+                          setState(() {
+                            futureGetVolunteers = fetchdata('volunteers');
+                            futureGetVolunteers.then((events) {
+                              setState(() {
+                                allData = events;
+                                filteredData = events;
+                              });
+                            });
+                            searchController.addListener(_filterData);
+                          });
+                        }
+                      }
+                    }
+                    if(mounted){
+                      // ignore: use_build_context_synchronously
+                      Navigator.pop(context);
+                    }
+                  },
+                ),
+              ],
+            );
+          },
+        );
+        }
+        else{
+          customSnackBar(context: context, message: 'You do not have access to add new volunteers.');
+        }
+      },
     );
   }
 }
