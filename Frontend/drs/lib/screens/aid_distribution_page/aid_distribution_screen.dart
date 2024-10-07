@@ -13,7 +13,8 @@ import 'dart:developer' as devtools;
 bool changeInState = false;
 var events = {};
 
-Future<void> getEventIds(String volunteerName, String eventController) async {
+Future<void> getEventIds(String eventController) async {
+
   events.clear();
   List<Map<String, dynamic>> value = await fetchdata('disaster_events');
   for (var event in value) {
@@ -22,22 +23,22 @@ Future<void> getEventIds(String volunteerName, String eventController) async {
   devtools.log(events.toString());
   devtools.log(eventController);
   devtools.log(volunteerName);
-  if (!(checkAcess('aid_distribution', volunteerName))) {
+  if (!(checkAcess('aid_distribution', ""))) {
     events.removeWhere((key, value) => key.toString() != eventController.toString());
   }
   devtools.log(events.toString());
 }
 
-class VolunteersScreen extends StatefulWidget {
-  const VolunteersScreen({super.key});
+class AidDistributionScreen extends StatefulWidget {
+  const AidDistributionScreen({super.key});
   static String routeName = 'aid_distribution';
 
   @override
-  State<VolunteersScreen> createState() => _VolunteersScreenState();
+  State<AidDistributionScreen> createState() => _AidDistributionScreenState();
 }
 
-class _VolunteersScreenState extends State<VolunteersScreen> {
-  late Future<List<Map<String, dynamic>>> futureGetVolunteers;
+class _AidDistributionScreenState extends State<AidDistributionScreen> {
+  late Future<List<Map<String, dynamic>>> futureGetAidDistribution;
   dynamic response;
 
   TextEditingController searchController = TextEditingController();
@@ -47,8 +48,8 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
   @override
   void initState() {
     super.initState();
-    futureGetVolunteers = fetchdata('aid_distribution');
-    futureGetVolunteers.then((events) {
+    futureGetAidDistribution = fetchdata('aid_distribution');
+    futureGetAidDistribution.then((events) {
       setState(() {
         allData = events;
         filteredData = events;
@@ -57,15 +58,6 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
     searchController.addListener(_filterData);
   }
 
-  void _filterData() {
-    final query = searchController.text.toLowerCase();
-    setState(() {
-      filteredData = allData.where((element) {
-        final volunteerName = element['volunteer_name'].toString().toLowerCase();
-        return volunteerName.contains(query);
-      }).toList();
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -143,7 +135,7 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
                       if (response != null) {
                             setState(() {
                               futureGetAidDistribution = fetchdata('aid_distribution');
-                              futureGetVolunteers.then((events) {
+                              futureGetAidDistribution.then((events) {
                                 setState(() {
                                   allData = events;
                                   filteredData = events;
@@ -166,12 +158,12 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
 
             //Display Volunteer Details
 
-            child: VolunteerListTile(
+            child: AidDistributionListTile(
               content: content,
               onChange: () {
                 setState(() {
                   futureGetAidDistribution = fetchdata('aid_distribution');
-                  futureGetVolunteers.then((events) {
+                  futureGetAidDistribution.then((events) {
                     setState(() {
                       allData = events;
                       filteredData = events;
@@ -208,7 +200,7 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
             String? selectedEventId; 
 
             return AlertDialog(
-              title: const Text('Add New Volunteer'),
+              title: const Text('Add New Aid'),
               titleTextStyle: const TextStyle(
                   color: Colors.white,
                   fontSize: 24,
@@ -329,8 +321,8 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
                         });
                         if (response != null) {
                           setState(() {
-                            futureGetVolunteers = fetchdata('aid_distribution');
-                            futureGetVolunteers.then((events) {
+                            futureGetAidDistribution = fetchdata('aid_distribution');
+                            futureGetAidDistribution.then((events) {
                               setState(() {
                                 allData = events;
                                 filteredData = events;
