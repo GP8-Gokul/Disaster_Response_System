@@ -4,6 +4,7 @@ import 'package:drs/services/api/unused_disaster_event_api.dart';
 import 'package:drs/services/authorization/check_access.dart';
 import 'package:drs/widgets/background_image.dart';
 import 'package:drs/widgets/custom_appbar.dart';
+import 'package:drs/widgets/custom_snack_bar.dart';
 import 'package:drs/widgets/custom_text.dart';
 import 'package:drs/widgets/custom_text_field.dart';
 import 'package:drs/widgets/search_text_field.dart';
@@ -43,10 +44,10 @@ class _IncidentReportsScreenState extends State<IncidentReportsScreen> {
   void initState() {
     super.initState();
     futureGetIncidentReports = fetchdata('incident_reports');
-    futureGetIncidentReports.then((reports) {
+    futureGetIncidentReports.then((content) {
       setState(() {
-        allData = reports;
-        filteredData = reports;
+        allData = content;
+        filteredData = content;
       });
     });
     searchController.addListener(_filterData);
@@ -129,65 +130,23 @@ class _IncidentReportsScreenState extends State<IncidentReportsScreen> {
               children: [
                 SlidableAction(
                   onPressed: (context) async {
-                    if (checkAcess(
-                        'incident_reports', content['report_name'])) {
-                      response = await deleteData('incident_reports',
-                          'report_id', content['report_id'].toString());
+                    if (checkAcess('incident_reports', content['report_name'])) {
+                      response = await deleteData('incident_reports','report_id', content['report_id'].toString());
                       if (response != null) {
                         setState(() {
-                          futureGetIncidentReports =
-                              fetchdata('incident_reports');
-                          futureGetIncidentReports.then((reports) {
+                          futureGetIncidentReports = fetchdata('incident_reports');
+                          futureGetIncidentReports.then((content) {
                             setState(() {
-                              allData = reports;
-                              filteredData = reports;
+                              allData = content;
+                              filteredData = content;
                             });
                           });
                           searchController.addListener(_filterData);
                         });
                       }
                     } else {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: const Text('Access Denied',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.bold)),
-                            backgroundColor: const Color.fromARGB(255, 0, 0, 0),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                              side: const BorderSide(
-                                  color: Color.fromARGB(255, 255, 255, 255),
-                                  width: 3.0),
-                            ),
-                            content: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                CustomText(
-                                    text:
-                                        'You do not have access to delete this data'),
-                                const SizedBox(height: 12),
-                              ],
-                            ),
-                            actions: <Widget>[
-                              TextButton(
-                                style: TextButton.styleFrom(
-                                  backgroundColor: Colors.white,
-                                ),
-                                child: const Text('OK',
-                                    style: TextStyle(color: Colors.black)),
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                              ),
-                            ],
-                          );
-                        },
-                      );
+                      Navigator.pop(context);
+                      customSnackBar(context: context, message: 'Access Denied');
                     }
                   },
                   backgroundColor: const Color.fromARGB(138, 236, 70, 70),
@@ -201,10 +160,10 @@ class _IncidentReportsScreenState extends State<IncidentReportsScreen> {
               onChange: () {
                 setState(() {
                   futureGetIncidentReports = fetchdata('incident_reports');
-                  futureGetIncidentReports.then((reports) {
+                  futureGetIncidentReports.then((content) {
                     setState(() {
-                      allData = reports;
-                      filteredData = reports;
+                      allData = content;
+                      filteredData = content;
                     });
                   });
                   searchController.addListener(_filterData);
@@ -234,7 +193,7 @@ class _IncidentReportsScreenState extends State<IncidentReportsScreen> {
             TextEditingController incidentReportedByController =
                 TextEditingController();
             getEventIds();
-            String? selectedReportId;
+            String? selectedEventId;
 
             return AlertDialog(
               title: const Text('Add New Report'),
@@ -272,7 +231,7 @@ class _IncidentReportsScreenState extends State<IncidentReportsScreen> {
                       readOnly: false),
                   DropdownButtonFormField<String>(
                     decoration: InputDecoration(
-                      labelText: 'Report Name',
+                      labelText: 'Event Name',
                       labelStyle: const TextStyle(color: Colors.white),
                       enabled: true,
                       enabledBorder: OutlineInputBorder(
@@ -280,7 +239,7 @@ class _IncidentReportsScreenState extends State<IncidentReportsScreen> {
                         borderSide: const BorderSide(color: Colors.lime),
                       ),
                     ),
-                    value: selectedReportId,
+                    value: selectedEventId,
                     style: const TextStyle(color: Colors.white),
                     dropdownColor: Colors.black,
                     items: events.keys.map((key) {
@@ -293,7 +252,7 @@ class _IncidentReportsScreenState extends State<IncidentReportsScreen> {
                       );
                     }).toList(),
                     onChanged: (String? newValue) {
-                      selectedReportId = newValue;
+                      selectedEventId = newValue;
                     },
                   ),
                 ],
@@ -323,16 +282,16 @@ class _IncidentReportsScreenState extends State<IncidentReportsScreen> {
                         'report_date': incidentReportDateController.text,
                         'reported_by': incidentReportedByController.text,
                         'description': incidentReportDescriptionController.text,
-                        'report_id': selectedReportId,
+                        'event_id': selectedEventId,
                       });
                       if (response != null) {
                         setState(() {
                           futureGetIncidentReports =
                               fetchdata('incident_reports');
-                          futureGetIncidentReports.then((reports) {
+                          futureGetIncidentReports.then((content) {
                             setState(() {
-                              allData = reports;
-                              filteredData = reports;
+                              allData = content;
+                              filteredData = content;
                             });
                           });
                           searchController.addListener(_filterData);
@@ -342,39 +301,8 @@ class _IncidentReportsScreenState extends State<IncidentReportsScreen> {
                         Navigator.pop(context);
                       }
                     } else {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: const Text('Access Denied'),
-                            titleTextStyle: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold),
-                            backgroundColor: Colors.grey[900],
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                              side: const BorderSide(
-                                  color: Colors.white, width: 2.0),
-                            ),
-                            content: const CustomText(
-                                text:
-                                    'You do not have access to add new reports.'),
-                            actions: <Widget>[
-                              TextButton(
-                                style: TextButton.styleFrom(
-                                  backgroundColor: Colors.white,
-                                ),
-                                child: const Text('OK',
-                                    style: TextStyle(color: Colors.black)),
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                              ),
-                            ],
-                          );
-                        },
-                      );
+                      Navigator.pop(context);
+                      customSnackBar(context: context, message: 'Access Denied');
                     }
                   },
                 ),

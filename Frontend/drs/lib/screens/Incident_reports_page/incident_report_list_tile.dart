@@ -1,25 +1,28 @@
 import 'package:drs/services/api/root_api.dart';
 import 'package:drs/services/api/unused_disaster_event_api.dart';
 import 'package:drs/services/authorization/check_access.dart';
+import 'package:drs/widgets/custom_snack_bar.dart';
 import 'package:drs/widgets/custom_text.dart';
 import 'package:drs/widgets/custom_text_field.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'dart:developer' as devtools;
 
 dynamic response;
 
 var events = {};
-
-void getEventIds() {
-  late Future<List<Map<String, dynamic>>> futureGetDisasterEvents;
-  futureGetDisasterEvents = fetchDisasterEvents();
-  futureGetDisasterEvents.then((value) {
-    for (var event in value) {
-      events[event['event_id']] = event['event_name'];
-    }
-  });
-  devtools.log('Events: $events');
+Future<void> getEventIds(String volunteerName, String eventController) async {
+  events.clear();
+  List<Map<String, dynamic>> value = await fetchdata('disaster_events');
+  for (var event in value) {
+    events[event['event_id']] = event['event_name'];
+  }
+  devtools.log(events.toString());
+  devtools.log(eventController);
+  devtools.log(volunteerName);
+  if (!(checkAcess('volunteers', volunteerName))) {
+    events.removeWhere((key, value) => key.toString() != eventController.toString());
+  }
+  devtools.log(events.toString());
 }
 
 class IncidentReportListTile extends StatefulWidget {
@@ -78,7 +81,7 @@ class IncidentReportListTileState extends State<IncidentReportListTile> {
               TextEditingController eventController = TextEditingController(
                   text: widget.content['event_id'].toString());
 
-              getEventIds();
+              getEventIds(incidentReportNameController.text,eventController.text);
               String? selectedEventId = eventController.text;
 
               return StatefulBuilder(
@@ -101,47 +104,7 @@ class IncidentReportListTileState extends State<IncidentReportListTile> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Row(
-                            children: [
-                              CustomText(
-                                  text:
-                                      'Report ID: ${widget.content['report_id']}'),
-                              Spacer(),
-                              Container(
-                                height: 40,
-                                width: 80,
-                                decoration: BoxDecoration(
-                                  color: Colors.green,
-                                  shape: BoxShape.circle,
-                                ),
-                                child: FloatingActionButton(
-                                  backgroundColor:
-                                      const Color.fromARGB(255, 1, 255, 9),
-                                  mini: true,
-                                  child: const Icon(Icons.call),
-                                  onPressed: () async {
-                                    final Uri launchUri = Uri(
-                                      scheme: 'tel',
-                                      path: widget
-                                          .content['report_date'],
-                                    );
-                                    if (await canLaunchUrl(launchUri)) {
-                                      await launchUrl(launchUri);
-                                    } else {
-                                      if (context.mounted) {
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(
-                                          const SnackBar(
-                                              content: Text(
-                                                  'Could not launch phone dialer')),
-                                        );
-                                      }
-                                    }
-                                  },
-                                ),
-                              ),
-                            ],
-                          ),
+                          CustomText(text:'Report ID: ${widget.content['report_id']}'),
                           const SizedBox(height: 12),
                           CustomTextField(
                               hintText: '${widget.content['report_name']}',
@@ -169,39 +132,47 @@ class IncidentReportListTileState extends State<IncidentReportListTile> {
                             controller: incidentReportDescriptionController,
                             readOnly: readonly,
                           ),
-                          Container(
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: Colors.lime.withOpacity(0.5),
-                                width: 2.0,
-                              ),
-                              borderRadius: BorderRadius.circular(10.0),
-                            ),
-                            child: DropdownButtonFormField<String>(
-                              decoration: InputDecoration(
-                                labelText: 'Event Name',
-                                enabled: !readonly,
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                  borderSide: const BorderSide(
-                                      color: Colors.lime, width: 2.0),
-                                ),
-                              ),
-                              value: selectedEventId ??
-                                  widget.content['event_id'].toString(),
-                              style: const TextStyle(color: Colors.white),
-                              dropdownColor: Colors.black,
-                              items: events.keys.map((key) {
-                                return DropdownMenuItem<String>(
-                                  value: key.toString(),
-                                  child: Container(
-                                    color: Colors.black.withOpacity(0.5),
-                                    child: Text(events[key]!),
-                                  ),
-                                );
-                              }).toList(),
-                              onChanged: (String? newValue) {
-                                selectedEventId = newValue;
+                          Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: FutureBuilder<void>(
+                              future: getEventIds(incidentReportNameController.text,eventController.text),
+                              builder: (BuildContext context,AsyncSnapshot<void> snapshot) {
+                                if (snapshot.connectionState == ConnectionState.waiting) {
+                                  return const CircularProgressIndicator();
+                                } else if (snapshot.hasError) {
+                                  return const Text('Error loading events');
+                                } else {
+                                  return DropdownButtonFormField<String>(
+                                    decoration: InputDecoration(
+                                      labelText: 'Event Name',
+                                      labelStyle:
+                                          const TextStyle(color: Colors.white),
+                                      enabledBorder: const OutlineInputBorder(
+                                        borderSide:
+                                            BorderSide(color: Colors.lime),
+                                      ),
+                                      focusedBorder: const OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Color.fromARGB(
+                                                255, 200, 99, 92)),
+                                      ),
+                                    ),
+                                    value: selectedEventId,
+                                    style: const TextStyle(color: Colors.white),
+                                    dropdownColor:const Color.fromARGB(255, 38, 36, 36),
+                                    items: events.keys.map((key) {
+                                      return DropdownMenuItem<String>(
+                                        value: key.toString(),
+                                        child: Text(events[key]!),
+                                      );
+                                    }).toList(),
+                                    onChanged: (String? newValue) {
+                                      setState(() {
+                                        selectedEventId = newValue;
+                                      });
+                                    },
+                                  );
+                                }
                               },
                             ),
                           ),
@@ -256,51 +227,8 @@ class IncidentReportListTileState extends State<IncidentReportListTile> {
                               Navigator.pop(context);
                             }
                           } else {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: const Text('Access Denied',
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 24,
-                                          fontWeight: FontWeight.bold)),
-                                  backgroundColor:
-                                      const Color.fromARGB(255, 0, 0, 0),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                    side: const BorderSide(
-                                        color:
-                                            Color.fromARGB(255, 255, 255, 255),
-                                        width: 3.0),
-                                  ),
-                                  content: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      CustomText(
-                                          text:
-                                              'You do not have access to update this data'),
-                                      const SizedBox(height: 12),
-                                    ],
-                                  ),
-                                  actions: <Widget>[
-                                    TextButton(
-                                      style: TextButton.styleFrom(
-                                        backgroundColor: Colors.white,
-                                      ),
-                                      child: const Text('OK',
-                                          style:
-                                              TextStyle(color: Colors.black)),
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
+                            Navigator.pop(context);
+                            customSnackBar(context: context, message: 'You do not have access to update this incident report');
                           }
                         },
                       ),
