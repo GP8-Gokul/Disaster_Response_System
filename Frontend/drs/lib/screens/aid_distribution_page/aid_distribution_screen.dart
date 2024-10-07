@@ -149,7 +149,7 @@ class _AidDistributionScreenState extends State<AidDistributionScreen> {
               ],
             ),
 
-            //Display Volunteer Details
+            //Display Aid Details
 
             child: AidDistributionListTile(
               content: content,
@@ -183,13 +183,14 @@ class _AidDistributionScreenState extends State<AidDistributionScreen> {
           showDialog(
           context: context,
           builder: (BuildContext context) {
-            TextEditingController volunteerNameController = TextEditingController();
-            TextEditingController volunteerContactInfoController = TextEditingController();
-            TextEditingController volunteerSkillsController = TextEditingController();
-            TextEditingController volunteerAvailabilityStatusController = TextEditingController();
-            TextEditingController eventController = TextEditingController();
-
-            getEventIds(volunteerNameController.text, eventController.text);
+            TextEditingController aidDistributionIdController = TextEditingController();
+            TextEditingController aidDistributionResourceIdController = TextEditingController();
+            TextEditingController aidDistributionVolunteerIdController = TextEditingController();
+            TextEditingController aidDistributionQuantityController = TextEditingController();
+            TextEditingController aidDistributionEventController = TextEditingController();
+aidDistributionDateController = TextEditingController();
+aidDistributionLocationController = TextEditingController();
+            getEventIds( eventController.text);
             String? selectedEventId; 
 
             return AlertDialog(
