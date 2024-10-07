@@ -10,9 +10,9 @@ Future<Map<String, String>?> insertResourcesDialog(
   showDialog(
     context: context,
     builder: (BuildContext context) {
-      TextEditingController ResourceName_controller = TextEditingController();
-      TextEditingController resource_type_controller = TextEditingController();
-      TextEditingController quantity_controller =
+      TextEditingController resourcenamecontroller = TextEditingController();
+      TextEditingController resourcetypecontroller = TextEditingController();
+      TextEditingController quantitycontroller =
           TextEditingController();
       TextEditingController availability_status_controller =
           TextEditingController();
@@ -35,7 +35,7 @@ Future<Map<String, String>?> insertResourcesDialog(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
-                controller: ResourceName_controller,
+                controller: resourcenamecontroller,
                 decoration: InputDecoration(
                   labelText: 'Resource Name',
                   border: OutlineInputBorder(
@@ -45,7 +45,7 @@ Future<Map<String, String>?> insertResourcesDialog(
               ),
               const SizedBox(height: 15),
               TextField(
-                controller: resource_type_controller,
+                controller: resourcetypecontroller,
                 decoration: InputDecoration(
                   labelText: 'Resource Type',
                   border: OutlineInputBorder(
@@ -55,7 +55,7 @@ Future<Map<String, String>?> insertResourcesDialog(
               ),
               const SizedBox(height: 15),
               TextField(
-                controller: quantity_controller,
+                controller: quantitycontroller,
                 decoration: InputDecoration(
                   labelText: 'Quantity',
                   border: OutlineInputBorder(
@@ -97,17 +97,17 @@ Future<Map<String, String>?> insertResourcesDialog(
           ),
           ElevatedButton(
             onPressed: () async {
-              if (ResourceName_controller.text.isNotEmpty &&
-                  resource_type_controller.text.isNotEmpty &&
-                  quantity_controller.text.isNotEmpty &&
+              if (resourcenamecontroller.text.isNotEmpty &&
+                  resourcetypecontroller.text.isNotEmpty &&
+                  quantitycontroller.text.isNotEmpty &&
                   availability_status_controller.text.isNotEmpty &&
                   event_id_controller.text.isNotEmpty ) 
                   {
                 final response = await insertData({
                   'table': 'resources',
-                  'resource_Name': ResourceName_controller.text,
-                  'resource_type':resource_type_controller.text,
-                  'quantity': quantity_controller.text,
+                  'resource_Name': resourcenamecontroller.text,
+                  'resource_type':resourcetypecontroller.text,
+                  'quantity': quantitycontroller.text,
                   'availability_status': availability_status_controller.text,
                   'event_id': event_id_controller.text,
                   
@@ -122,9 +122,9 @@ Future<Map<String, String>?> insertResourcesDialog(
                   Navigator.of(context).pop();
                 }
                 completer.complete({
-                  'resource_Name': ResourceName_controller.text,
-                  'resource_type':resource_type_controller.text,
-                  'quantity': quantity_controller.text,
+                  'resource_Name': resourcenamecontroller.text,
+                  'resource_type':resourcetypecontroller.text,
+                  'quantity': quantitycontroller.text,
                   'availability_status': availability_status_controller.text,
                   'event_id': event_id_controller.text,
                 });
