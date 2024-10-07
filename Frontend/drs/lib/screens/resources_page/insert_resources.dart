@@ -122,11 +122,11 @@ Future<Map<String, String>?> insertResourcesDialog(
                   Navigator.of(context).pop();
                 }
                 completer.complete({
-                  'resource_Name': ResourceName_Controller.text,
-                  'resource_type':resource_type_Controller.text,
-                  'quantity': quantity_Controller.text,
-                  'availability_status': availability_status_Controller.text,
-                  'event_id': event_id_Controller.text,
+                  'resource_Name': ResourceName_controller.text,
+                  'resource_type':resource_type_controller.text,
+                  'quantity': quantity_controller.text,
+                  'availability_status': availability_status_controller.text,
+                  'event_id': event_id_controller.text,
                 });
               } else {
                 customSnackBar(context: context, message: 'Please fill all the fields');
