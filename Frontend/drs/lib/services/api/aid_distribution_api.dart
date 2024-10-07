@@ -1,12 +1,8 @@
 import 'dart:convert';
 import 'package:drs/services/api/root_api.dart';
 import 'package:http/http.dart' as http;
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:drs/services/authorization/check_access.dart';
 import 'dart:developer' as devtools show log;
-
-final _box = Hive.box('DBMSBox');
-String token = _box.get('token');
-String cleanedToken = token.replaceAll('"', '').trim();
 
 Future<List<Map<String, dynamic>>> fetchAidDistribution() async {
   final response = await http.post(
@@ -36,12 +32,12 @@ Future<List<Map<String, dynamic>>> fetchAidDistribution() async {
 Future addAidDistribution(aidEventId, aidResourceId, aidVolunteerId,
     aidQuantity, aidDistributionDate, aidLocation) async {
   devtools.log('addAidDistribution');
-  if (_box.get('role') == 'admin') {
+  if (checkAcess('aid_distribution', '')) {
     final response = await http.post(
       Uri.parse('${url}insert'),
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer $cleanedToken'
+        'Authorization': 'Bearer $authenticationToken'
       },
       body: jsonEncode({
         'table': 'aid_distribution',
@@ -66,13 +62,13 @@ Future addAidDistribution(aidEventId, aidResourceId, aidVolunteerId,
 }
 
 Future deleteAidDistribution(distributionId) async {
-  if (_box.get('role') == 'admin') {
+  if (checkAcess('aid_distribution', '')) {
     devtools.log('deleteAidDistribution');
     final response = await http.post(
       Uri.parse('${url}delete'),
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer $cleanedToken'
+        'Authorization': 'Bearer $authenticationToken'
       },
       body: jsonEncode({
         'table': 'aid_distribution',
@@ -94,14 +90,13 @@ Future deleteAidDistribution(distributionId) async {
 Future updateAidDistribution(distributionId, aidEventId, aidResourceId,
     aidVolunteerId, aidQuantity, aidDistributionDate, aidLocation) async {
   devtools.log('updateAidDistribution');
-  devtools.log(cleanedToken);
   try {
-    if (_box.get('role') == 'admin') {
+    if (checkAcess('aid_distribution', '')) {
       final response = await http.post(
         Uri.parse('${url}update'),
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer $cleanedToken'
+          'Authorization': 'Bearer $authenticationToken'
         },
         body: jsonEncode({
           'table': 'aid_distribution',

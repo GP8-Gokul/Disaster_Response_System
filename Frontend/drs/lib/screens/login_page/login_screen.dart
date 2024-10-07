@@ -1,5 +1,4 @@
 import 'package:drs/services/api/root_api.dart';
-import 'package:drs/services/unused_user.dart';
 import 'package:drs/widgets/background_image.dart';
 import 'package:flutter/material.dart';
 import 'package:drs/services/api/login_api.dart';
@@ -21,7 +20,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   bool _isLoading = false;
   String? _errorMessage;
-  userAuth user = userAuth();
 
   Future<void> login() async {
     setState(() {
@@ -36,7 +34,6 @@ class _LoginScreenState extends State<LoginScreen> {
       var response = await loginUser(username, password);
       devtools.log(response.statusCode.toString());
       if (response.statusCode == 200) {
-        user.setUser(username, password, 'admin', response.body);
         Navigator.pushReplacement(
           // ignore: use_build_context_synchronously
           context,
@@ -78,7 +75,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     style: TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
-                      color: Color.fromARGB(255, 222, 124, 12),
+                      color: Color.fromARGB(255, 221, 200, 9),
                     ),
                   ),
                   const SizedBox(height: 30),
@@ -100,7 +97,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           onPressed: login,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.grey[700]!.withOpacity(0.5),
-                            
                             padding: const EdgeInsets.symmetric(
                               horizontal: 100,
                               vertical: 15,
@@ -117,7 +113,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                   const SizedBox(height: 30),
                   _isLoading
-                      ? const CircularProgressIndicator()
+                      ? const SizedBox.shrink()
                       : ElevatedButton(
                           onPressed: () {
                             userRole = 'guest';
@@ -169,7 +165,8 @@ class _LoginScreenState extends State<LoginScreen> {
         labelText: label,
         labelStyle: const TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
         enabledBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Color.fromARGB(255, 255, 255, 255)),
+          borderSide:
+              const BorderSide(color: Color.fromARGB(255, 255, 255, 255)),
           borderRadius: BorderRadius.circular(10),
         ),
         focusedBorder: OutlineInputBorder(

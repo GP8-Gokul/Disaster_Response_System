@@ -6,11 +6,8 @@ import 'package:drs/screens/resources_page/resources_screen.dart';
 import 'package:drs/screens/volunteers_page/volunteers_screen.dart';
 import 'package:drs/screens/login_page/login_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 
 void main() async {
-  await Hive.initFlutter();
-  var box = await Hive.openBox('DBMSBox');
   WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
@@ -29,8 +26,8 @@ class MyApp extends StatelessWidget {
       ),
       routes: {
         MainMenuScreen.routeName: (context) => const MainMenuScreen(),
-        AidDistributionScreen.routeName: (context) =>
-            const AidDistributionScreen(),
+        // AidDistributionScreen.routeName: (context) =>
+        //     const AidDistributionScreen(),
         DisasterEventsScreen.routeName: (context) =>
             const DisasterEventsScreen(),
         IncidentReportsScreen.routeName: (context) =>

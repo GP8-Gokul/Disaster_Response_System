@@ -21,17 +21,30 @@ class MainMenuScreen extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Log Out'),
-          content: const Text('Do you actually want to log out?'),
+          backgroundColor: Colors.black,
+          title: const Text(
+            'Log Out',
+            style: TextStyle(color: Colors.white),
+          ),
+          content: const Text(
+            'Do you actually want to log out?',
+            style: TextStyle(color: Colors.white70),
+          ),
           actions: <Widget>[
             TextButton(
-              child: const Text('No'),
+              child: const Text(
+                'No',
+                style: TextStyle(color: Colors.redAccent),
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             TextButton(
-              child: const Text('Yes'),
+              child: const Text(
+                'Yes',
+                style: TextStyle(color: Colors.greenAccent),
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
                 Navigator.pushNamed(context, LoginScreen.routeName);
@@ -75,82 +88,64 @@ class MainMenuScreen extends StatelessWidget {
           body: SafeArea(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Column(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(8.0),
-                    decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.5),
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    child: const Text(
-                      'The Disaster Response System (DRS) helps in managing disaster response activities like distributing aid, managing resources, reporting incidents, and overseeing volunteers.',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.bold,
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8.0),
+                      decoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.5),
+                        borderRadius: BorderRadius.circular(10.0),
                       ),
-                      textAlign: TextAlign.center,
+                      child: const Text(
+                        'The Disaster Response System (DRS) is a comprehensive platform designed to assist in managing disaster response activities. It facilitates the distribution of aid, efficient management of resources, accurate reporting of incidents, and effective oversight of volunteers, ensuring a coordinated and timely response to disasters.',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 20),
-                  const Divider(
-                    color: Colors.white,
-                    thickness: 2.0,
-                  ),
-                  const SizedBox(height: 20),
-                  Expanded(
-                    child: Column(
+                    const SizedBox(height: 10),
+                    const Divider(
+                      color: Colors.white,
+                      thickness: 2.0,
+                    ),
+                    const SizedBox(height: 10),
+                    Column(
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            buildCard(
-                              context,
-                              'Aid Distribution',
-                              'assets/icons/aid.png',
-                              AidDistributionScreen.routeName,
-                            ),
-                            // buildCard(
-                            //   context,
-                            //   'Resources',
-                            //   'assets/icons/resources.png',
-                            //   ResourcesScreen.routeName,
-                            // ),
-                          ],
+                        buildCard(
+                          context,
+                          'RESOURCES',
+                          'assets/icons/resources.png',
+                          ResourcesScreen.routeName,
                         ),
                         const SizedBox(height: 10),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            buildCard(
-                              context,
-                              'Disaster Events',
-                              'assets/icons/disaster.png',
-                              DisasterEventsScreen.routeName,
-                            ),
-                            buildCard(
-                              context,
-                              'Incident Reports',
-                              'assets/icons/incident.png',
-                              IncidentReportsScreen.routeName,
-                            ),
-                          ],
+                        buildCard(
+                          context,
+                          'DISASTER EVENTS',
+                          'assets/icons/disaster.png',
+                          DisasterEventsScreen.routeName,
                         ),
                         const SizedBox(height: 10),
-                        Align(
-                          alignment: Alignment.center,
-                          child: buildCard(
-                            context,
-                            'Volunteers',
-                            'assets/icons/volunteers.png',
-                            VolunteersScreen.routeName,
-                          ),
+                        buildCard(
+                          context,
+                          'INCIDENT REPORTS',
+                          'assets/icons/incident.png',
+                          IncidentReportsScreen.routeName,
+                        ),
+                        const SizedBox(height: 10),
+                        buildCard(
+                          context,
+                          'VOLUNTEERS',
+                          'assets/icons/volunteers.png',
+                          VolunteersScreen.routeName,
                         ),
                       ],
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
@@ -167,10 +162,12 @@ class MainMenuScreen extends StatelessWidget {
         elevation: 5,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15),
+          side: const BorderSide(
+              color: Color.fromARGB(255, 221, 200, 9), width: 2),
         ),
-        color: Colors.white.withOpacity(0.9),
+        color: const Color.fromARGB(255, 54, 8, 145),
         child: Container(
-          width: 150,
+          width: double.infinity,
           height: 80,
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -179,9 +176,9 @@ class MainMenuScreen extends StatelessWidget {
               Text(
                 title,
                 style: const TextStyle(
-                  fontSize: 14.0,
+                  fontSize: 22.0,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black87,
+                  color: Color.fromARGB(255, 221, 200, 9),
                 ),
                 textAlign: TextAlign.center,
               ),
