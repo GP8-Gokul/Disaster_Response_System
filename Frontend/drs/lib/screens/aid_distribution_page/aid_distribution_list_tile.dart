@@ -5,7 +5,6 @@ import 'package:drs/widgets/custom_text.dart';
 import 'package:drs/widgets/custom_text_field.dart';
 import 'dart:developer' as devtools show log;
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 dynamic response;
 var events = {};

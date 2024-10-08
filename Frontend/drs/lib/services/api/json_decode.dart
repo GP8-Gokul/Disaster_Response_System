@@ -67,7 +67,7 @@ List<Map<String, dynamic>> decodeIncidentReports(response){
         'reported_by': content['reported_by'].toString(),
         'report_date': content['report_date'].toString(),
         'event_id': content['event_id'].toString(),
-        'description': content['description'].toString(),
+        'description': content['report_description'].toString(),
       }).toList();
 }
 

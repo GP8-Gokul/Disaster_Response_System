@@ -5,7 +5,6 @@ import 'package:drs/services/authorization/check_access.dart';
 import 'package:drs/widgets/background_image.dart';
 import 'package:drs/widgets/custom_appbar.dart';
 import 'package:drs/widgets/custom_snack_bar.dart';
-import 'package:drs/widgets/custom_text.dart';
 import 'package:drs/widgets/custom_text_field.dart';
 import 'package:drs/widgets/search_text_field.dart';
 import 'package:flutter/material.dart';
