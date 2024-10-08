@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
             const DisasterEventsScreen(),
         IncidentReportsScreen.routeName: (context) =>
             const IncidentReportsScreen(),
-        // ResourcesScreen.routeName: (context) => const ResourcesScreen(),
+        ResourcesScreen.routeName: (context) => const ResourcesScreen(),
         VolunteersScreen.routeName: (context) => const VolunteersScreen(),
         LoginScreen.routeName: (context) => const LoginScreen(),
       },

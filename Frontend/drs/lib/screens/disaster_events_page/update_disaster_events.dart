@@ -64,16 +64,17 @@ class _UpdateDisasterEventsDialogState
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: Colors.black,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20.0),
+        side: BorderSide(color: Colors.white, width: 2.0),
       ),
       title: Text(
         'Update Disaster Event',
         style: TextStyle(
           fontWeight: FontWeight.bold,
           fontSize: 22.0,
-          color: Colors.grey[800],
+          color: Colors.white,
         ),
       ),
       content: SingleChildScrollView(
@@ -126,7 +127,7 @@ class _UpdateDisasterEventsDialogState
                 children: [
                   _buildActionButton(
                     icon: Icons.edit,
-                    color: Colors.blueGrey[700],
+                    color: const Color.fromARGB(255, 112, 164, 189),
                     onPressed: () {
                       if (checkAcess('disaster_events', userName)) {
                         setState(() {
@@ -134,13 +135,15 @@ class _UpdateDisasterEventsDialogState
                         });
                       } else {
                         Navigator.of(context).pop();
-                        customSnackBar(context: context, message: 'You do not have access to add events');
+                        customSnackBar(
+                            context: context,
+                            message: 'You do not have access to add events');
                       }
                     },
                   ),
                   _buildActionButton(
                     icon: Icons.update,
-                    color: Colors.blueAccent,
+                    color: const Color.fromARGB(255, 31, 82, 171),
                     onPressed: () async {
                       // Update the event and return data to the parent
                       if (checkAcess('disaster_events', userName)) {
@@ -170,7 +173,9 @@ class _UpdateDisasterEventsDialogState
                         widget.fetchDisasterEvents();
                       } else {
                         Navigator.of(context).pop();
-                        customSnackBar(context: context, message: 'You do not have access to update events');
+                        customSnackBar(
+                            context: context,
+                            message: 'You do not have access to update events');
                       }
                     },
                   ),
@@ -193,22 +198,23 @@ class _UpdateDisasterEventsDialogState
       controller: controller,
       readOnly: readOnly,
       maxLines: maxLines,
+      style: TextStyle(color: Colors.white), // Set the text color to white
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: TextStyle(color: Colors.grey[600]),
-        fillColor: Colors.grey[100],
+        labelStyle: TextStyle(color: Colors.white),
+        fillColor: Colors.black,
         filled: true,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12.0),
-          borderSide: BorderSide(color: Colors.grey[300]!),
+          borderSide: BorderSide(color: Colors.white),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12.0),
-          borderSide: BorderSide(color: Colors.grey[500]!),
+          borderSide: BorderSide(color: Colors.white),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12.0),
-          borderSide: BorderSide(color: Colors.grey[300]!),
+          borderSide: BorderSide(color: Colors.white),
         ),
       ),
     );
@@ -223,18 +229,27 @@ class _UpdateDisasterEventsDialogState
     return TextField(
       controller: controller,
       readOnly: readOnly,
+      style: TextStyle(color: Colors.white),
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: TextStyle(color: Colors.grey[600]),
-        fillColor: Colors.grey[100],
+        labelStyle: TextStyle(color: Colors.white),
+        fillColor: Colors.black,
         filled: true,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12.0),
-          borderSide: BorderSide(color: Colors.grey[300]!),
+          borderSide: BorderSide(color: Colors.white),
         ),
         suffixIcon: Icon(
           Icons.calendar_today,
-          color: Colors.grey[500],
+          color: Colors.white,
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12.0),
+          borderSide: BorderSide(color: Colors.white),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12.0),
+          borderSide: BorderSide(color: Colors.white),
         ),
       ),
       onTap: () async {
