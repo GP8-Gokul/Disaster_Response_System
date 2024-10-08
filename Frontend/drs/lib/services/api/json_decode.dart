@@ -77,10 +77,9 @@ List<Map<String, dynamic>> decodeResources(response){
         'resource_id': content['resource_id'].toString(),
         'resource_name': content['resource_name'].toString(),
         'resource_type': content['resource_type'].toString(),
-        'location': content['location'].toString(),
-        'start_date': content['start_date'].toString(),
-        'end_date': content['end_date'].toString(),
-        'description': content['description'].toString(),
+        'quantity': content['quantity'].toString(),
+        'availability_status': content['availability_status'].toString(),
+        'event_id': content['event_id'].toString(),
       }).toList();
 }
 
