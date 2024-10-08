@@ -24,6 +24,19 @@ Future<void> getEventIds(String volunteerName, String eventController) async {
   devtools.log(events.toString());
 }
 
+void sendMessageToWhatsApp(String phoneNumber, String message, BuildContext context) async {
+  final Uri whatsappUri = Uri.parse("https://wa.me/$phoneNumber?text=${Uri.encodeComponent(message)}");
+  if (await canLaunchUrl(whatsappUri)) {
+    await launchUrl(whatsappUri);
+  } else {
+    if (context.mounted) {
+      devtools.log('Could not launch WhatsApp with URL: $whatsappUri');
+      Navigator.pop(context);
+      customSnackBar(context: context, message: 'Could not launch WhatsApp');
+    }
+  }
+}
+
 class VolunteerListTile extends StatefulWidget {
   final dynamic content;
   final VoidCallback onChange;
@@ -115,20 +128,13 @@ class VolunteerListTileState extends State<VolunteerListTile> {
                                 child: FloatingActionButton(
                                   backgroundColor:const Color.fromARGB(255, 1, 255, 9),
                                   mini: true,
-                                  child: const Icon(Icons.call),
+                                  child: const Icon(Icons.message),
                                   onPressed: () async {
-                                    final Uri launchUri = Uri(
-                                      scheme: 'whatsapp',
-                                      path: widget
-                                          .content['volunteer_contact_info'],
-                                    );
-                                    if (await canLaunchUrl(launchUri)) {
-                                      await launchUrl(launchUri);
-                                    } else {
-                                      if (context.mounted) {
-                                        customSnackBar(context: context, message: 'Could not launch');
-                                      }
-                                    }
+                                    sendMessageToWhatsApp(
+                                      widget.content['volunteer_contact_info'], 
+                                      'Hi ${widget.content['volunteer_name']},You were sited as a volunteer in DRS App.',
+                                      context,
+                                      );
                                   },
                                 ),
                               ),

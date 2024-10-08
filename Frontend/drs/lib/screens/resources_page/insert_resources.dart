@@ -1,15 +1,151 @@
+  import 'package:drs/services/api/root_api.dart';
+import 'package:drs/widgets/custom_snack_bar.dart';
+import 'package:flutter/material.dart';
+import 'dart:async';
 
+Future<Map<String, String>?> insertResourcesDialog(
+    BuildContext context, Function fetchResources, response) async {
+  Completer<Map<String, String>?> completer = Completer();
 
-// Future<Map<String, String>?> insertResourceDialog(
-//     BuildContext context, Function fetchResources, response) async {
-//   Completer<Map<String, String>?> completer = Completer();
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      TextEditingController resourcenamecontroller = TextEditingController();
+      TextEditingController resourcetypecontroller = TextEditingController();
+      TextEditingController quantitycontroller =
+          TextEditingController();
+      TextEditingController availability_status_controller =
+          TextEditingController();
+      TextEditingController event_id_controller = TextEditingController();
+      
 
-//   showDialog(
-//     context: context,
-//     builder: (BuildContext context) {
-//       TextEditingController resourceNameController = TextEditingController();
-//       TextEditingController resourceTypeController = TextEditingController();
-//       TextEditingController resourceDescriptionController = TextEditingController();
-//       TextEditingController resourceQuantitycontroller=TextEditingController();
-//     }
-//     }  
+      return AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15.0),
+        ),
+        title: const Text(
+          'Add Resources',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 20.0,
+          ),
+        ),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: resourcenamecontroller,
+                decoration: InputDecoration(
+                  labelText: 'Resource Name',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 15),
+              TextField(
+                controller: resourcetypecontroller,
+                decoration: InputDecoration(
+                  labelText: 'Resource Type',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 15),
+              TextField(
+                controller: quantitycontroller,
+                decoration: InputDecoration(
+                  labelText: 'Quantity',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 15),
+              TextField(
+                controller: availability_status_controller,
+                decoration: InputDecoration(
+                  labelText: 'availability_status',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 15),
+              TextField(
+                controller: event_id_controller,
+                decoration: InputDecoration(
+                  labelText: 'event id',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                ),
+              ),
+              
+            ],
+          ),
+        ),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              completer.complete(null);
+            },
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              if (resourcenamecontroller.text.isNotEmpty &&
+                  resourcetypecontroller.text.isNotEmpty &&
+                  quantitycontroller.text.isNotEmpty &&
+                  availability_status_controller.text.isNotEmpty &&
+                  event_id_controller.text.isNotEmpty ) 
+                  {
+                final response = await insertData({
+                  'table': 'resources',
+                  'resource_Name': resourcenamecontroller.text,
+                  'resource_type':resourcetypecontroller.text,
+                  'quantity': quantitycontroller.text,
+                  'availability_status': availability_status_controller.text,
+                  'event_id': event_id_controller.text,
+                  
+                });
+                if (response != 0) {
+                  // ignore: use_build_context_synchronously
+                  Navigator.of(context).pop();
+                } else {
+                  // ignore: use_build_context_synchronously
+                  customSnackBar(context: context, message: 'Failed to add resources');
+                  // ignore: use_build_context_synchronously
+                  Navigator.of(context).pop();
+                }
+                completer.complete({
+                  'resource_Name': resourcenamecontroller.text,
+                  'resource_type':resourcetypecontroller.text,
+                  'quantity': quantitycontroller.text,
+                  'availability_status': availability_status_controller.text,
+                  'event_id': event_id_controller.text,
+                });
+              } else {
+                customSnackBar(context: context, message: 'Please fill all the fields');
+                Navigator.of(context).pop();
+              }
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color.fromARGB(255, 3, 39, 68),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+            ),
+            child: const Text('Submit'),
+          ),
+        ],
+      );
+    },
+  );
+
+  return completer.future;
+}
+

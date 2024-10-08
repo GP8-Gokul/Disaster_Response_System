@@ -142,6 +142,12 @@ class MainMenuScreen extends StatelessWidget {
                           'assets/icons/volunteers.png',
                           VolunteersScreen.routeName,
                         ),
+                        buildCard(
+                          context,
+                          'AID DISTRIBUTION',
+                          'assets/icons/aid.png',
+                          AidDistributionScreen.routeName,
+                        ),
                       ],
                     ),
                   ],
