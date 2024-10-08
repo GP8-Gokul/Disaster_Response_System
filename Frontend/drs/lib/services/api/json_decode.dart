@@ -62,12 +62,11 @@ List<Map<String, dynamic>> decodeAidDistribution(response){
 List<Map<String, dynamic>> decodeIncidentReports(response){
   List<dynamic> data = jsonDecode(response.body);
       return data.map((content) => {
-        'incident_report_id': content['incident_report_id'].toString(),
-        'incident_report_name': content['incident_report_name'].toString(),
-        'incident_report_type': content['incident_report_type'].toString(),
-        'location': content['location'].toString(),
-        'start_date': content['start_date'].toString(),
-        'end_date': content['end_date'].toString(),
+        'report_id': content['report_id'].toString(),
+        'report_name': content['report_name'].toString(),
+        'reported_by': content['reported_by'].toString(),
+        'report_date': content['report_date'].toString(),
+        'event_id': content['event_id'].toString(),
         'description': content['description'].toString(),
       }).toList();
 }
