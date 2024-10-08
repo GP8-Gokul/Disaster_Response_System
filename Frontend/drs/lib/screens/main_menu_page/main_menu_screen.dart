@@ -162,10 +162,9 @@ class MainMenuScreen extends StatelessWidget {
         elevation: 5,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15),
-          side: const BorderSide(
-              color: Color.fromARGB(255, 221, 200, 9), width: 2),
+          side: const BorderSide(color: Colors.white, width: 2),
         ),
-        color: const Color.fromARGB(255, 54, 8, 145),
+        color: const Color.fromARGB(91, 0, 0, 0),
         child: Container(
           width: double.infinity,
           height: 80,
@@ -178,7 +177,7 @@ class MainMenuScreen extends StatelessWidget {
                 style: const TextStyle(
                   fontSize: 22.0,
                   fontWeight: FontWeight.bold,
-                  color: Color.fromARGB(255, 221, 200, 9),
+                  color: Colors.white,
                 ),
                 textAlign: TextAlign.center,
               ),
