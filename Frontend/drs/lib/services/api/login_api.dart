@@ -43,3 +43,7 @@ dynamic retrieveRole(String jwt) {
   }
 }
 
+Future dummyCall() async{
+  await http.post(Uri.parse(url));
+}
+
