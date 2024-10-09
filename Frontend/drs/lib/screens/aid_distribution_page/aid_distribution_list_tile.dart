@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 
 dynamic response;
 var events = {};
+var resources = {};
+var volunteers = {};
 Future<void> getEventIds(String location, String eventController) async {
   events.clear();
   List<Map<String, dynamic>> value = await fetchdata('disaster_events');
@@ -18,9 +20,40 @@ Future<void> getEventIds(String location, String eventController) async {
   devtools.log(eventController);
   devtools.log(location);
   if (!(checkAcess('aid_distribution', location))) {
-    events.removeWhere((key, value) => key.toString() != eventController.toString());
+    events.removeWhere(
+        (key, value) => key.toString() != eventController.toString());
   }
   devtools.log(events.toString());
+}
+
+Future<void> getResourceIds(String resourceController) async {
+  resources.clear();
+  List<Map<String, dynamic>> value = await fetchdata('resources');
+  for (var resource in value) {
+    resources[resource['resource_id']] = resource['resource_name'];
+  }
+  devtools.log(resources.toString());
+  devtools.log(resourceController);
+  if (!(checkAcess('aid_distribution', ''))) {
+    events.removeWhere(
+        (key, value) => key.toString() != resourceController.toString());
+  }
+  devtools.log(resources.toString());
+}
+
+Future<void> getVolunteerIds(String volunteerController) async {
+  volunteers.clear();
+  List<Map<String, dynamic>> value = await fetchdata('volunteers');
+  for (var volunteer in value) {
+    volunteers[volunteer['volunteer_id']] = volunteer['volunteer_name'];
+  }
+  devtools.log(volunteers.toString());
+  devtools.log(volunteerController);
+  if (!(checkAcess('aid_distribution', ''))) {
+    events.removeWhere(
+        (key, value) => key.toString() != volunteerController.toString());
+  }
+  devtools.log(volunteers.toString());
 }
 
 class AidDistributionListTile extends StatefulWidget {
@@ -41,7 +74,8 @@ class AidDistributionTileState extends State<AidDistributionListTile> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(color: const Color.fromARGB(255, 153, 153, 43), width: 2.0),
+        border: Border.all(
+            color: const Color.fromARGB(255, 153, 153, 43), width: 2.0),
         borderRadius: BorderRadius.circular(25.0),
       ),
 
@@ -51,27 +85,42 @@ class AidDistributionTileState extends State<AidDistributionListTile> {
         title: Text("location: ${widget.content['location']}"),
         subtitle: Text("Quantity: ${widget.content['quantity_distributed']}"),
         tileColor: const Color.fromARGB(255, 255, 255, 255).withOpacity(0.05),
-        contentPadding: const EdgeInsets.symmetric(vertical: 1.0, horizontal: 16.0),
+        contentPadding:
+            const EdgeInsets.symmetric(vertical: 1.0, horizontal: 16.0),
         textColor: const Color.fromARGB(255, 255, 255, 255),
-        titleTextStyle: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-        subtitleTextStyle: const TextStyle(fontSize: 14.0, fontWeight: FontWeight.w500),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25.0)),
+        titleTextStyle:
+            const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+        subtitleTextStyle:
+            const TextStyle(fontSize: 14.0, fontWeight: FontWeight.w500),
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(25.0)),
         onTap: () {
-
           //Additional Details of aid distribution
 
           bool readonly = true;
           showDialog(
             context: context,
             builder: (BuildContext context) {
-              TextEditingController eventController = TextEditingController(text: widget.content['event_id'].toString());
-              TextEditingController resourceController = TextEditingController(text: widget.content['resource_id'].toString());
-              TextEditingController volunteerController = TextEditingController(text: widget.content['volunteer_id'].toString());
-              TextEditingController locationController = TextEditingController(text: widget.content['location'].toString());
-              TextEditingController quantityDistributedController = TextEditingController(text: widget.content['quantity_distributed'].toString());
-              TextEditingController distributionDateController = TextEditingController(text: widget.content['distribution_date'].toString());
+              TextEditingController eventController = TextEditingController(
+                  text: widget.content['event_id'].toString());
+              TextEditingController resourceController = TextEditingController(
+                  text: widget.content['resource_id'].toString());
+              TextEditingController volunteerController = TextEditingController(
+                  text: widget.content['volunteer_id'].toString());
+              TextEditingController locationController = TextEditingController(
+                  text: widget.content['location'].toString());
+              TextEditingController quantityDistributedController =
+                  TextEditingController(
+                      text: widget.content['quantity_distributed'].toString());
+              TextEditingController distributionDateController =
+                  TextEditingController(
+                      text: widget.content['distribution_date'].toString());
               getEventIds(locationController.text, eventController.text);
+              getResourceIds(resourceController.text);
+              getVolunteerIds(volunteerController.text);
               String? selectedEventId = eventController.text;
+              String? selectedResourceId = resourceController.text;
+              String? selectedVolunteerId = volunteerController.text;
 
               return StatefulBuilder(
                 builder: (BuildContext context, StateSetter setState) {
@@ -93,44 +142,151 @@ class AidDistributionTileState extends State<AidDistributionListTile> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          CustomText(text: 'distribution ID: ${widget.content['distribution_id']}'),
+                          CustomText(
+                              text:
+                                  'distribution ID: ${widget.content['distribution_id']}'),
                           const SizedBox(height: 12),
                           CustomTextField(
                               hintText: '${widget.content['location']}',
                               labelText: 'Location',
                               controller: locationController,
-                              readOnly: readonly
+                              readOnly: readonly),
+                          Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: FutureBuilder(
+                              future: getVolunteerIds(volunteerController.text),
+                              builder: (BuildContext context,
+                                  AsyncSnapshot<void> snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return const CircularProgressIndicator();
+                                } else if (snapshot.hasError) {
+                                  return const Text('Error loading volunteers');
+                                } else {
+                                  return DropdownButtonFormField<String>(
+                                    decoration: InputDecoration(
+                                      labelText: 'Volunteer Name',
+                                      labelStyle:
+                                          const TextStyle(color: Colors.white),
+                                      enabledBorder: const OutlineInputBorder(
+                                        borderSide:
+                                            BorderSide(color: Colors.lime),
+                                      ),
+                                      focusedBorder: const OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Color.fromARGB(
+                                                255, 200, 99, 92)),
+                                      ),
+                                    ),
+                                    value: selectedVolunteerId,
+                                    style: const TextStyle(color: Colors.white),
+                                    dropdownColor:
+                                        const Color.fromARGB(255, 38, 36, 36),
+                                    items: volunteers.keys.map((key) {
+                                      return DropdownMenuItem<String>(
+                                        value: key.toString(),
+                                        child: Text(volunteers[key]!),
+                                      );
+                                    }).toList(),
+                                    onChanged: (String? newValue) {
+                                      setState(() {
+                                        selectedVolunteerId = newValue!;
+                                      });
+                                    },
+                                  );
+                                }
+                              },
+                            ),
                           ),
                           CustomTextField(
-                              hintText: '${widget.content['volunteer_id']}',
-                              labelText: 'Volunteer ID',
-                              controller: volunteerController,
-                              readOnly: readonly
-                          ),
-                          CustomTextField(
-                            hintText: '${widget.content['quantity_distributed']}',
-                            labelText: 'Quantity Distributed',
-                            controller: quantityDistributedController,
-                            readOnly: readonly,
-                          ),
-                          CustomTextField(
-                            hintText: '${widget.content['distribution_date']}',
-                            labelText: 'Distribution Date',
+                              hintText: 'Quantity Distributed',
+                              labelText: 'Quantity Distributed',
+                              controller: quantityDistributedController,
+                              readOnly: false),
+                          TextField(
                             controller: distributionDateController,
-                            readOnly: readonly,
-                          ),
-                          CustomTextField(
-                            hintText: '${widget.content['resource_id']}',
-                            labelText: 'Resource ID',
-                            controller: resourceController,
-                            readOnly: readonly,
+                            style: TextStyle(color: Colors.white),
+                            decoration: InputDecoration(
+                              hintText: 'Start Date',
+                              labelText: 'Start Date',
+                              labelStyle: TextStyle(color: Colors.white),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5.0),
+                                borderSide:
+                                    const BorderSide(color: Colors.lime),
+                              ),
+                            ),
+                            readOnly: true,
+                            onTap: () async {
+                              DateTime? pickedDate = await showDatePicker(
+                                context: context,
+                                initialDate: DateTime.now(),
+                                firstDate: DateTime(1900),
+                                lastDate: DateTime(2100),
+                              );
+                              if (pickedDate != null) {
+                                distributionDateController.text = pickedDate
+                                    .toIso8601String()
+                                    .substring(0, 10);
+                              }
+                            },
                           ),
                           Padding(
                             padding: const EdgeInsets.all(4.0),
                             child: FutureBuilder<void>(
-                              future: getEventIds(locationController.text,eventController.text),
-                              builder: (BuildContext context,AsyncSnapshot<void> snapshot) {
-                                if (snapshot.connectionState == ConnectionState.waiting) {
+                              future: getResourceIds(resourceController.text),
+                              builder: (BuildContext context,
+                                  AsyncSnapshot<void> snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return const CircularProgressIndicator();
+                                } else if (snapshot.hasError) {
+                                  return const Text('Error loading resources');
+                                } else {
+                                  return DropdownButtonFormField<String>(
+                                    decoration: InputDecoration(
+                                      labelText: 'Resource Name',
+                                      labelStyle:
+                                          const TextStyle(color: Colors.white),
+                                      enabledBorder: const OutlineInputBorder(
+                                        borderSide:
+                                            BorderSide(color: Colors.lime),
+                                      ),
+                                      focusedBorder: const OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Color.fromARGB(
+                                                255, 200, 99, 92)),
+                                      ),
+                                    ),
+                                    value: selectedResourceId,
+                                    style: const TextStyle(color: Colors.white),
+                                    dropdownColor:
+                                        const Color.fromARGB(255, 38, 36, 36),
+                                    items: resources.keys.map((key) {
+                                      return DropdownMenuItem<String>(
+                                        value: key.toString(),
+                                        child: Text(resources[key]!),
+                                      );
+                                    }).toList(),
+                                    onChanged: (String? newValue) {
+                                      setState(() {
+                                        selectedResourceId = newValue!;
+                                      });
+                                    },
+                                  );
+                                }
+                              },
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: FutureBuilder<void>(
+                              future: getEventIds(locationController.text,
+                                  eventController.text),
+                              builder: (BuildContext context,
+                                  AsyncSnapshot<void> snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
                                   return const CircularProgressIndicator();
                                 } else if (snapshot.hasError) {
                                   return const Text('Error loading events');
@@ -152,7 +308,8 @@ class AidDistributionTileState extends State<AidDistributionListTile> {
                                     ),
                                     value: selectedEventId,
                                     style: const TextStyle(color: Colors.white),
-                                    dropdownColor:const Color.fromARGB(255, 38, 36, 36),
+                                    dropdownColor:
+                                        const Color.fromARGB(255, 38, 36, 36),
                                     items: events.keys.map((key) {
                                       return DropdownMenuItem<String>(
                                         value: key.toString(),
@@ -173,7 +330,6 @@ class AidDistributionTileState extends State<AidDistributionListTile> {
                       ),
                     ),
                     actions: <Widget>[
-
                       //Edit Functionality
 
                       TextButton(
@@ -182,13 +338,16 @@ class AidDistributionTileState extends State<AidDistributionListTile> {
                         ),
                         child: const Icon(Icons.edit, color: Colors.blue),
                         onPressed: () {
-                          if (checkAcess('aid_distribution', locationController.text)) {
+                          if (checkAcess(
+                              'aid_distribution', locationController.text)) {
                             setState(() {
                               readonly = !readonly;
                             });
                           } else {
                             Navigator.pop(context);
-                            customSnackBar(context: context, message: 'You cannot Edit this data');
+                            customSnackBar(
+                                context: context,
+                                message: 'You cannot Edit this data');
                           }
                         },
                       ),
@@ -202,18 +361,24 @@ class AidDistributionTileState extends State<AidDistributionListTile> {
                         child: const Icon(Icons.update, color: Colors.blue),
                         onPressed: () async {
                           if (selectedEventId == null) {
-                            customSnackBar(context: context, message: 'Please select an event ID');
+                            customSnackBar(
+                                context: context,
+                                message: 'Please select an event ID');
                           }
-                          if (checkAcess('aid_distribution', locationController.text)) {
+                          if (checkAcess(
+                              'aid_distribution', locationController.text)) {
                             response = await updateData(
                               {
                                 'table': 'aid_distribution',
-                                'distribution_id': widget.content['distribution_id'],
+                                'distribution_id':
+                                    widget.content['distribution_id'],
                                 'event_id': selectedEventId,
                                 'resource_id': resourceController.text,
                                 'volunteer_id': volunteerController.text,
-                                'quantity_distributed': quantityDistributedController.text,
-                                'distribution_date': distributionDateController.text,
+                                'quantity_distributed':
+                                    quantityDistributedController.text,
+                                'distribution_date':
+                                    distributionDateController.text,
                                 'location': locationController.text,
                               },
                             );
@@ -223,7 +388,9 @@ class AidDistributionTileState extends State<AidDistributionListTile> {
                             }
                           } else {
                             Navigator.pop(context);
-                            customSnackBar(context: context, message: 'You cannot Update this data');
+                            customSnackBar(
+                                context: context,
+                                message: 'You cannot Update this data');
                           }
                         },
                       ),

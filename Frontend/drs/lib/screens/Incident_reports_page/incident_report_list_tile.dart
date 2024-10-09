@@ -113,11 +113,33 @@ class IncidentReportListTileState extends State<IncidentReportListTile> {
                               labelText: 'Report Name',
                               controller: incidentReportNameController,
                               readOnly: readonly),
-                          CustomTextField(
-                            hintText: '${widget.content['report_date']}',
-                            labelText: 'Report Date',
+                          TextField(
                             controller: incidentReportDateController,
+                            style: TextStyle(color: Colors.white),
+                            decoration: InputDecoration(
+                              hintText: 'Start Date',
+                              labelText: 'Start Date',
+                              labelStyle: TextStyle(color: Colors.white),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5.0),
+                                borderSide:
+                                    const BorderSide(color: Colors.lime),
+                              ),
+                            ),
                             readOnly: readonly,
+                            onTap: () async {
+                              DateTime? pickedDate = await showDatePicker(
+                                context: context,
+                                initialDate: DateTime.now(),
+                                firstDate: DateTime(1900),
+                                lastDate: DateTime(2100),
+                              );
+                              if (pickedDate != null) {
+                                incidentReportDateController.text = pickedDate
+                                    .toIso8601String()
+                                    .substring(0, 10);
+                              }
+                            },
                           ),
                           CustomTextField(
                             hintText: '${widget.content['reported_by']}',
