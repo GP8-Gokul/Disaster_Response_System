@@ -58,7 +58,9 @@ class _DisasterEventsScreenState extends State<DisasterEventsScreen> {
     return SafeArea(
       child: Stack(
         children: [
-          const BackgroundImage(imageName: 'page_background',),
+          const BackgroundImage(
+            imageName: 'page_background',
+          ),
           Scaffold(
             appBar: CustomAppbar(text: 'Disaster Events'),
             body: Column(
@@ -126,11 +128,17 @@ class _DisasterEventsScreenState extends State<DisasterEventsScreen> {
                                               });
                                             } else {
                                               // ignore: use_build_context_synchronously
-                                              customSnackBar(context: context, message: 'Failed to delete event');
+                                              customSnackBar(
+                                                  context: context,
+                                                  message:
+                                                      'Failed to delete event');
                                             }
                                           } else {
                                             // ignore: use_build_context_synchronously
-                                            customSnackBar(context: context, message: 'You do not have access to delete events');
+                                            customSnackBar(
+                                                context: context,
+                                                message:
+                                                    'You do not have access to delete events');
                                           }
                                         },
                                         backgroundColor: const Color.fromARGB(
@@ -176,7 +184,7 @@ class _DisasterEventsScreenState extends State<DisasterEventsScreen> {
                                       decoration: BoxDecoration(
                                         color: const Color.fromARGB(
                                                 255, 227, 217, 217)
-                                            .withOpacity(0.6),
+                                            .withOpacity(0.3),
                                         borderRadius:
                                             BorderRadius.circular(25.0),
                                       ),
@@ -247,13 +255,17 @@ class _DisasterEventsScreenState extends State<DisasterEventsScreen> {
                     });
                   } else {
                     // ignore: use_build_context_synchronously
-                    customSnackBar(context: context, message: 'Please fill all the fields');
+                    customSnackBar(
+                        context: context,
+                        message: 'Please fill all the fields');
                     // ignore: use_build_context_synchronously
                     Navigator.of(context).pop();
                   }
                 } else {
                   // ignore: use_build_context_synchronously
-                  customSnackBar(context: context, message: 'You do not have access to add events');
+                  customSnackBar(
+                      context: context,
+                      message: 'You do not have access to add events');
                 }
               },
               backgroundColor: const Color.fromARGB(255, 23, 22, 22),

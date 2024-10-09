@@ -12,7 +12,8 @@ import 'dart:developer' as devtools;
 
 bool changeInState = false;
 var events = {};
-
+var resources = {};
+var volunteers = {};
 Future<void> getEventIds(String location, String eventController) async {
   events.clear();
   List<Map<String, dynamic>> value = await fetchdata('disaster_events');
@@ -23,9 +24,40 @@ Future<void> getEventIds(String location, String eventController) async {
   devtools.log(eventController);
   devtools.log(location);
   if (!(checkAcess('aid_distribution', location))) {
-    events.removeWhere((key, value) => key.toString() != eventController.toString());
+    events.removeWhere(
+        (key, value) => key.toString() != eventController.toString());
   }
   devtools.log(events.toString());
+}
+
+Future<void> getResourceIds(String resourceController) async {
+  resources.clear();
+  List<Map<String, dynamic>> value = await fetchdata('resources');
+  for (var resource in value) {
+    resources[resource['resource_id']] = resource['resource_name'];
+  }
+  devtools.log(resources.toString());
+  devtools.log(resourceController);
+  if (!(checkAcess('aid_distribution', ''))) {
+    resources.removeWhere(
+        (key, value) => key.toString() != resourceController.toString());
+  }
+  devtools.log(resources.toString());
+}
+
+Future<void> getVolunteerIds(String volunteerController) async {
+  volunteers.clear();
+  List<Map<String, dynamic>> value = await fetchdata('volunteers');
+  for (var volunteer in value) {
+    volunteers[volunteer['volunteer_id']] = volunteer['volunteer_name'];
+  }
+  devtools.log(volunteers.toString());
+  devtools.log(volunteerController);
+  if (!(checkAcess('aid_distribution', ''))) {
+    volunteers.removeWhere(
+        (key, value) => key.toString() != volunteerController.toString());
+  }
+  devtools.log(volunteers.toString());
 }
 
 class AidDistributionScreen extends StatefulWidget {
@@ -90,8 +122,7 @@ class _AidDistributionScreenState extends State<AidDistributionScreen> {
         SearchTextField(
             labelText: 'Search Location',
             hintText: 'Enter Location Name',
-            searchController: searchController
-        ),
+            searchController: searchController),
         Expanded(
           child: filteredData.isEmpty
               ? const Center(child: Text('No Location found.'))
@@ -130,7 +161,6 @@ class _AidDistributionScreenState extends State<AidDistributionScreen> {
             endActionPane: ActionPane(
               motion: const ScrollMotion(),
               children: [
-
                 //Delete Functionality
 
                 SlidableAction(
@@ -139,27 +169,30 @@ class _AidDistributionScreenState extends State<AidDistributionScreen> {
                   foregroundColor: const Color.fromARGB(255, 238, 230, 230),
                   onPressed: (context) async {
                     if (checkAcess('aid_distribution', ' ')) {
-                      response = await deleteData('aid_distribution', 'distribution_id',content['distribution_id'].toString());
+                      response = await deleteData(
+                          'aid_distribution',
+                          'distribution_id',
+                          content['distribution_id'].toString());
                       if (response != null) {
+                        setState(() {
+                          futureGetAidDistribution =
+                              fetchdata('aid_distribution');
+                          futureGetAidDistribution.then((content) {
                             setState(() {
-                              futureGetAidDistribution = fetchdata('aid_distribution');
-                              futureGetAidDistribution.then((content) {
-                                setState(() {
-                                  allData = content;
-                                  filteredData = content;
-                                });
-                              });
-                              searchController.addListener(_filterData);
+                              allData = content;
+                              filteredData = content;
                             });
+                          });
+                          searchController.addListener(_filterData);
+                        });
                       }
                     } else {
                       customSnackBar(
                           context: context,
-                          message:'You do not have access to delete this data.'
-                          );
+                          message:
+                              'You do not have access to delete this data.');
                     }
                   },
-                  
                 ),
               ],
             ),
@@ -194,169 +227,310 @@ class _AidDistributionScreenState extends State<AidDistributionScreen> {
       backgroundColor: Colors.white.withOpacity(0.7),
       child: const Icon(Icons.add),
       onPressed: () {
-        if(checkAcess('aid_distribution', '')){
+        if (checkAcess('aid_distribution', '')) {
           showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            TextEditingController eventController = TextEditingController();
-            TextEditingController resourceController = TextEditingController();
-            TextEditingController volunteerController = TextEditingController();
-            TextEditingController locationController = TextEditingController();
-            TextEditingController quantityDistributedController = TextEditingController();
-            TextEditingController distributionDateController = TextEditingController();
+            context: context,
+            builder: (BuildContext context) {
+              TextEditingController eventController = TextEditingController();
+              TextEditingController resourceController =
+                  TextEditingController();
+              TextEditingController volunteerController =
+                  TextEditingController();
+              TextEditingController locationController =
+                  TextEditingController();
+              TextEditingController quantityDistributedController =
+                  TextEditingController();
+              TextEditingController distributionDateController =
+                  TextEditingController();
 
-            getEventIds(locationController.text, eventController.text);
-            String? selectedEventId; 
+              getEventIds(locationController.text, eventController.text);
+              getResourceIds(resourceController.text);
+              getVolunteerIds(volunteerController.text);
+              String? selectedEventId;
+              String? selectedResourceId;
+              String? selectedVolunteerId;
 
-            return AlertDialog(
-              title: const Text('Add New Aid'),
-              titleTextStyle: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold
-              ),
-              backgroundColor: Colors.grey[900],
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
-                side: const BorderSide(color: Colors.white, width: 2.0),
-              ),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(4.0),
-                    child: FutureBuilder<void>(
-                      future: getEventIds(locationController.text,eventController.text),
-                      builder: (BuildContext context,AsyncSnapshot<void> snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
-                          return const CircularProgressIndicator();
-                        } else if (snapshot.hasError) {
-                          return const Text('Error loading events');
-                        } else {
-                          return DropdownButtonFormField<String>(
-                            decoration: InputDecoration(
-                              labelText: 'Event Name',
-                              labelStyle: const TextStyle(color: Colors.white),
-                              enabledBorder: const OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.lime),
+              return AlertDialog(
+                title: const Text('Add New Aid'),
+                titleTextStyle: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold),
+                backgroundColor: Colors.grey[900],
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                  side: const BorderSide(color: Colors.white, width: 2.0),
+                ),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    CustomTextField(
+                        hintText: 'Location',
+                        labelText: 'Location',
+                        controller: locationController,
+                        readOnly: false),
+                    Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: FutureBuilder<void>(
+                        future: getEventIds(
+                            locationController.text, eventController.text),
+                        builder: (BuildContext context,
+                            AsyncSnapshot<void> snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const CircularProgressIndicator();
+                          } else if (snapshot.hasError) {
+                            return const Text('Error loading events');
+                          } else {
+                            return DropdownButtonFormField<String>(
+                              decoration: InputDecoration(
+                                labelText: 'Event Name',
+                                labelStyle:
+                                    const TextStyle(color: Colors.white),
+                                enabledBorder: const OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.lime),
+                                ),
+                                focusedBorder: const OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Color.fromARGB(255, 200, 99, 92)),
+                                ),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  borderSide: const BorderSide(
+                                      color: Colors.lime, width: 2.0),
+                                ),
                               ),
-                              focusedBorder: const OutlineInputBorder(
-                                borderSide: BorderSide(color: Color.fromARGB(255, 200, 99, 92)),
+                              value: selectedEventId,
+                              style: const TextStyle(color: Colors.white),
+                              dropdownColor:
+                                  const Color.fromARGB(255, 38, 36, 36),
+                              items: events.keys.map((key) {
+                                return DropdownMenuItem<String>(
+                                  value: key.toString(),
+                                  child: Text(events[key]!),
+                                );
+                              }).toList(),
+                              onChanged: (String? newValue) {
+                                setState(() {
+                                  selectedEventId = newValue;
+                                });
+                              },
+                            );
+                          }
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(4.0),
+                      child: FutureBuilder<void>(
+                        future: getResourceIds(resourceController.text),
+                        builder: (BuildContext context,
+                            AsyncSnapshot<void> snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const CircularProgressIndicator();
+                          } else if (snapshot.hasError) {
+                            return const Text('Error loading resources');
+                          } else {
+                            return DropdownButtonFormField<String>(
+                              decoration: InputDecoration(
+                                labelText: 'Resource Name',
+                                labelStyle:
+                                    const TextStyle(color: Colors.white),
+                                enabledBorder: const OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.lime),
+                                ),
+                                focusedBorder: const OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Color.fromARGB(255, 200, 99, 92)),
+                                ),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  borderSide: const BorderSide(
+                                      color: Colors.lime, width: 2.0),
+                                ),
                               ),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                                borderSide: const BorderSide(color: Colors.lime, width: 2.0),
+                              value: selectedResourceId,
+                              style: const TextStyle(color: Colors.white),
+                              dropdownColor:
+                                  const Color.fromARGB(255, 38, 36, 36),
+                              items: resources.keys.map((key) {
+                                return DropdownMenuItem<String>(
+                                  value: key.toString(),
+                                  child: Text(resources[key]!),
+                                );
+                              }).toList(),
+                              onChanged: (String? newValue) {
+                                setState(() {
+                                  selectedResourceId = newValue!;
+                                });
+                              },
+                            );
+                          }
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(4.0),
+                      child: FutureBuilder(
+                        future: getVolunteerIds(volunteerController.text),
+                        builder: (BuildContext context,
+                            AsyncSnapshot<void> snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const CircularProgressIndicator();
+                          } else if (snapshot.hasError) {
+                            return const Text('Error loading volunteers');
+                          } else {
+                            return DropdownButtonFormField<String>(
+                              decoration: InputDecoration(
+                                labelText: 'Volunteer Name',
+                                labelStyle:
+                                    const TextStyle(color: Colors.white),
+                                enabledBorder: const OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.lime),
+                                ),
+                                focusedBorder: const OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Color.fromARGB(255, 200, 99, 92)),
+                                ),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  borderSide: const BorderSide(
+                                      color: Colors.lime, width: 2.0),
+                                ),
                               ),
-                            ),
-                            value: selectedEventId,
-                            style: const TextStyle(color: Colors.white),
-                            dropdownColor:const Color.fromARGB(255, 38, 36, 36),
-                            items: events.keys.map((key) {
-                              return DropdownMenuItem<String>(
-                                value: key.toString(),
-                                child: Text(events[key]!),
-                              );
-                            }).toList(),
-                            onChanged: (String? newValue) {
-                              setState(() {
-                                selectedEventId = newValue;
-                              });
-                            },
-                          );
+                              value: selectedVolunteerId,
+                              style: const TextStyle(color: Colors.white),
+                              dropdownColor:
+                                  const Color.fromARGB(255, 38, 36, 36),
+                              items: volunteers.keys.map((key) {
+                                return DropdownMenuItem<String>(
+                                  value: key.toString(),
+                                  child: Text(volunteers[key]!),
+                                );
+                              }).toList(),
+                              onChanged: (String? newValue) {
+                                setState(() {
+                                  selectedVolunteerId = newValue!;
+                                });
+                              },
+                            );
+                          }
+                        },
+                      ),
+                    ),
+                    CustomTextField(
+                        hintText: 'Quantity Distributed',
+                        labelText: 'Quantity Distributed',
+                        controller: quantityDistributedController,
+                        readOnly: false),
+                    TextField(
+                      controller: distributionDateController,
+                      style: TextStyle(color: Colors.white),
+                      decoration: InputDecoration(
+                        hintText: 'Start Date',
+                        labelText: 'Start Date',
+                        labelStyle: TextStyle(color: Colors.white),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5.0),
+                          borderSide: const BorderSide(color: Colors.lime),
+                        ),
+                      ),
+                      readOnly: true,
+                      onTap: () async {
+                        DateTime? pickedDate = await showDatePicker(
+                          context: context,
+                          initialDate: DateTime.now(),
+                          firstDate: DateTime(1900),
+                          lastDate: DateTime(2100),
+                        );
+                        if (pickedDate != null) {
+                          distributionDateController.text =
+                              pickedDate.toIso8601String().substring(0, 10);
                         }
                       },
                     ),
-                  ),
-                  CustomTextField(
-                      hintText: 'Resorce Name',
-                      labelText: 'Resorce Name',
-                      controller: resourceController,
-                      readOnly: false
-                  ),
-                  CustomTextField(
-                      hintText: 'Volunteer Name',
-                      labelText: 'Volunteer Name',
-                      controller: volunteerController,
-                      readOnly: false
-                  ),
-                  CustomTextField(
-                      hintText: 'Quantity Distributed',
-                      labelText: 'Quantity Distributed',
-                      controller: quantityDistributedController,
-                      readOnly: false
-                  ),
-                  CustomTextField(
-                      hintText: 'Distribution Date',
-                      labelText: 'Distribution Date',
-                      controller: distributionDateController,
-                      readOnly: false
-                  ),
-                  
-                ],
-              ),
-              actions: <Widget>[
-
-                // Insert Cancel Button
-
-                TextButton(
-                  style: TextButton.styleFrom(backgroundColor: Colors.white),
-                  child: const Text('Cancel', style: TextStyle(color: Colors.black)),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
+                  ],
                 ),
+                actions: <Widget>[
+                  // Insert Cancel Button
 
-                //Insert Button
-
-                TextButton(
-                  style: TextButton.styleFrom(
-                    backgroundColor: Colors.white,
+                  TextButton(
+                    style: TextButton.styleFrom(backgroundColor: Colors.white),
+                    child: const Text('Cancel',
+                        style: TextStyle(color: Colors.black)),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
                   ),
-                  child: const Text('Submit', style: TextStyle(color: Colors.black)),
-                  onPressed: () async {
-                    if(volunteerController.text.isEmpty){
-                      customSnackBar(context: context, message: 'Please Enter Volunteer Name');
-                    } else if(selectedEventId == null){
-                      customSnackBar(context: context, message: 'Please Select Event Name');
-                    } 
-                    else{
-                      if (checkAcess('aid_distribution', '')) {
-                        response = await insertData({
-                          'table': 'aid_distribution',
-                          'event_id': selectedEventId,
-                          'resource_id': resourceController.text,
-                          'volunteer_id': volunteerController.text,
-                          'quantity_distributed': quantityDistributedController.text,
-                          'distribution_date': distributionDateController.text,
-                          'location': locationController.text,
-                        });
-                        if (response != null) {
-                          setState(() {
-                            futureGetAidDistribution = fetchdata('aid_distribution');
-                            futureGetAidDistribution.then((events) {
-                              setState(() {
-                                allData = events;
-                                filteredData = events;
-                              });
-                            });
-                            searchController.addListener(_filterData);
+
+                  //Insert Button
+
+                  TextButton(
+                    style: TextButton.styleFrom(
+                      backgroundColor: Colors.white,
+                    ),
+                    child: const Text('Submit',
+                        style: TextStyle(color: Colors.black)),
+                    onPressed: () async {
+                      devtools.log(selectedEventId.toString());
+                      devtools.log(selectedResourceId.toString());
+                      devtools.log(selectedVolunteerId.toString());
+                      if (selectedVolunteerId == null) {
+                        customSnackBar(
+                            context: context,
+                            message: 'Please Enter Volunteer Name');
+                      } else if (selectedResourceId == null) {
+                        customSnackBar(
+                            context: context,
+                            message: 'Please Enter Resource Name');
+                      } else if (selectedEventId == null) {
+                        customSnackBar(
+                            context: context,
+                            message: 'Please Select Event Name');
+                      } else {
+                        if (checkAcess('aid_distribution', '')) {
+                          response = await insertData({
+                            'table': 'aid_distribution',
+                            'event_id': selectedEventId,
+                            'resource_id': selectedResourceId,
+                            'volunteer_id': selectedVolunteerId,
+                            'quantity_distributed':
+                                quantityDistributedController.text,
+                            'distribution_date':
+                                distributionDateController.text,
+                            'location': locationController.text,
                           });
+                          if (response != null) {
+                            setState(() {
+                              futureGetAidDistribution =
+                                  fetchdata('aid_distribution');
+                              futureGetAidDistribution.then((events) {
+                                setState(() {
+                                  allData = events;
+                                  filteredData = events;
+                                });
+                              });
+                              searchController.addListener(_filterData);
+                            });
+                          }
                         }
                       }
-                    }
-                    if(mounted){
-                      // ignore: use_build_context_synchronously
-                      Navigator.pop(context);
-                    }
-                  },
-                ),
-              ],
-            );
-          },
-        );
-        }
-        else{
-          customSnackBar(context: context, message: 'You do not have access to add new aid_distribution.');
+                      if (mounted) {
+                        // ignore: use_build_context_synchronously
+                        Navigator.pop(context);
+                      }
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        } else {
+          customSnackBar(
+              context: context,
+              message: 'You do not have access to add new aid_distribution.');
         }
       },
     );
