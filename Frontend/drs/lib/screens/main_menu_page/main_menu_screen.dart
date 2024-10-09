@@ -5,7 +5,23 @@ import 'package:drs/screens/login_page/login_screen.dart';
 import 'package:drs/screens/resources_page/resources_screen.dart';
 import 'package:drs/screens/volunteers_page/volunteers_screen.dart';
 import 'package:drs/widgets/background_image.dart';
+import 'package:drs/widgets/main_menu_button.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+Future<void> launchGooglePay() async {
+  final String upiId = 'gokulpjayan2004-1@okicici'; 
+  final String payeeName = 'Gokul P Jayan'; 
+  final String amount = '100'; 
+  final String googlePayUri = 'upi://pay?pa=$upiId&pn=$payeeName&am=$amount&cu=INR';
+  final Uri launchUri = Uri.parse(googlePayUri);
+
+  if (await canLaunchUrl(launchUri)) {
+    await launchUrl(launchUri);
+  } else {
+    throw 'Could not launch $googlePayUri';
+  }
+}
 
 class MainMenuScreen extends StatelessWidget {
   const MainMenuScreen({super.key});
@@ -148,6 +164,7 @@ class MainMenuScreen extends StatelessWidget {
                           'assets/icons/aid.png',
                           AidDistributionScreen.routeName,
                         ),
+                        MainMenuButton(onTap: launchGooglePay, text: "Donate to DRS"),
                       ],
                     ),
                   ],
