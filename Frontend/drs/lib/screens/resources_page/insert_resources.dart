@@ -103,6 +103,7 @@ Future<Map<String, String>?> insertResourcesDialog(
                   availability_status_controller.text.isNotEmpty &&
                   event_id_controller.text.isNotEmpty ) 
                   {
+                  
                 final response = await insertData({
                   'table': 'resources',
                   'resource_Name': resourcenamecontroller.text,
