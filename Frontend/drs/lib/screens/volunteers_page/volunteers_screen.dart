@@ -219,78 +219,80 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
                 borderRadius: BorderRadius.circular(10.0),
                 side: const BorderSide(color: Colors.white, width: 2.0),
               ),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  CustomTextField(
-                      hintText: 'Volunteer Name',
-                      labelText: 'Volunteer Name',
-                      controller: volunteerNameController,
-                      readOnly: false
-                  ),
-                  CustomTextField(
-                      hintText: 'Contact Info',
-                      labelText: 'Contact Info',
-                      controller: volunteerContactInfoController,
-                      readOnly: false
-                  ),
-                  CustomTextField(
-                      hintText: 'Skills',
-                      labelText: 'Skills',
-                      controller: volunteerSkillsController,
-                      readOnly: false
-                  ),
-                  CustomTextField(
-                      hintText: 'Availability Status',
-                      labelText: 'Availability Status',
-                      controller: volunteerAvailabilityStatusController,
-                      readOnly: false
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(4.0),
-                    child: FutureBuilder<void>(
-                      future: getEventIds(volunteerNameController.text,eventController.text),
-                      builder: (BuildContext context,AsyncSnapshot<void> snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
-                          return const CircularProgressIndicator();
-                        } else if (snapshot.hasError) {
-                          return const Text('Error loading events');
-                        } else {
-                          return DropdownButtonFormField<String>(
-                            decoration: InputDecoration(
-                              labelText: 'Event Name',
-                              labelStyle: const TextStyle(color: Colors.white),
-                              enabledBorder: const OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.lime),
-                              ),
-                              focusedBorder: const OutlineInputBorder(
-                                borderSide: BorderSide(color: Color.fromARGB(255, 200, 99, 92)),
-                              ),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                                borderSide: const BorderSide(color: Colors.lime, width: 2.0),
-                              ),
-                            ),
-                            value: selectedEventId,
-                            style: const TextStyle(color: Colors.white),
-                            dropdownColor:const Color.fromARGB(255, 38, 36, 36),
-                            items: events.keys.map((key) {
-                              return DropdownMenuItem<String>(
-                                value: key.toString(),
-                                child: Text(events[key]!),
-                              );
-                            }).toList(),
-                            onChanged: (String? newValue) {
-                              setState(() {
-                                selectedEventId = newValue;
-                              });
-                            },
-                          );
-                        }
-                      },
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    CustomTextField(
+                        hintText: 'Volunteer Name',
+                        labelText: 'Volunteer Name',
+                        controller: volunteerNameController,
+                        readOnly: false
                     ),
-                  ),
-                ],
+                    CustomTextField(
+                        hintText: 'Contact Info',
+                        labelText: 'Contact Info',
+                        controller: volunteerContactInfoController,
+                        readOnly: false
+                    ),
+                    CustomTextField(
+                        hintText: 'Skills',
+                        labelText: 'Skills',
+                        controller: volunteerSkillsController,
+                        readOnly: false
+                    ),
+                    CustomTextField(
+                        hintText: 'Availability Status',
+                        labelText: 'Availability Status',
+                        controller: volunteerAvailabilityStatusController,
+                        readOnly: false
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: FutureBuilder<void>(
+                        future: getEventIds(volunteerNameController.text,eventController.text),
+                        builder: (BuildContext context,AsyncSnapshot<void> snapshot) {
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return const CircularProgressIndicator();
+                          } else if (snapshot.hasError) {
+                            return const Text('Error loading events');
+                          } else {
+                            return DropdownButtonFormField<String>(
+                              decoration: InputDecoration(
+                                labelText: 'Event Name',
+                                labelStyle: const TextStyle(color: Colors.white),
+                                enabledBorder: const OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.lime),
+                                ),
+                                focusedBorder: const OutlineInputBorder(
+                                  borderSide: BorderSide(color: Color.fromARGB(255, 200, 99, 92)),
+                                ),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  borderSide: const BorderSide(color: Colors.lime, width: 2.0),
+                                ),
+                              ),
+                              value: selectedEventId,
+                              style: const TextStyle(color: Colors.white),
+                              dropdownColor:const Color.fromARGB(255, 38, 36, 36),
+                              items: events.keys.map((key) {
+                                return DropdownMenuItem<String>(
+                                  value: key.toString(),
+                                  child: Text(events[key]!),
+                                );
+                              }).toList(),
+                              onChanged: (String? newValue) {
+                                setState(() {
+                                  selectedEventId = newValue;
+                                });
+                              },
+                            );
+                          }
+                        },
+                      ),
+                    ),
+                  ],
+                ),
               ),
               actions: <Widget>[
 
