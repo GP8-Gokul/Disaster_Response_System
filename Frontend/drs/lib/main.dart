@@ -2,6 +2,8 @@ import 'package:drs/screens/aid_distribution_page/aid_distribution_screen.dart';
 import 'package:drs/screens/disaster_events_page/disaster_events_screen.dart';
 import 'package:drs/screens/Incident_reports_page/incident_reports_screen.dart';
 import 'package:drs/screens/main_menu_page/main_menu_screen.dart';
+import 'package:drs/screens/resources_page/resource-screen.dart';
+//import 'package:drs/screens/resources_page/resource-screen.dart';
 import 'package:drs/screens/resources_page/resources_screen.dart';
 import 'package:drs/screens/volunteers_page/volunteers_screen.dart';
 import 'package:drs/screens/login_page/login_screen.dart';
@@ -31,7 +33,7 @@ class MyApp extends StatelessWidget {
             const DisasterEventsScreen(),
         IncidentReportsScreen.routeName: (context) =>
             const IncidentReportsScreen(),
-        ResourcesScreen.routeName: (context) => const ResourcesScreen(),
+        ResourceScreenB.routeName : (context) => const ResourceScreenB(),
         VolunteersScreen.routeName: (context) => const VolunteersScreen(),
         LoginScreen.routeName: (context) => const LoginScreen(),
       },

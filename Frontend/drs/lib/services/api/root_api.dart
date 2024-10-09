@@ -56,6 +56,7 @@ Future updateData(data) async {
   );
   if (response.statusCode == 200) {
     devtools.log('Data updated');
+    devtools.log(response.body);
     return response;
   } else {
     devtools.log(response.body);
@@ -74,6 +75,7 @@ Future insertData(data) async {
   );
   if (response.statusCode == 200) {
     devtools.log('Data inserted');
+    devtools.log(response.body);
     return response;
   } else {
     devtools.log('Failed to insert data');

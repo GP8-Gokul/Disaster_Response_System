@@ -2,6 +2,7 @@ import 'package:drs/screens/aid_distribution_page/aid_distribution_screen.dart';
 import 'package:drs/screens/disaster_events_page/disaster_events_screen.dart';
 import 'package:drs/screens/Incident_reports_page/incident_reports_screen.dart';
 import 'package:drs/screens/login_page/login_screen.dart';
+import 'package:drs/screens/resources_page/resource-screen.dart';
 import 'package:drs/screens/resources_page/resources_screen.dart';
 import 'package:drs/screens/volunteers_page/volunteers_screen.dart';
 import 'package:drs/widgets/background_image.dart';
@@ -119,7 +120,7 @@ class MainMenuScreen extends StatelessWidget {
                           context,
                           'RESOURCES',
                           'assets/icons/resources.png',
-                          ResourcesScreen.routeName,
+                          ResourceScreenB.routeName 
                         ),
                         const SizedBox(height: 10),
                         buildCard(
