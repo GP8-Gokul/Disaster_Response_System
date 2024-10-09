@@ -11,10 +11,11 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 Future<void> launchGooglePay() async {
-  final String upiId = 'gokulpjayan2004-1@okicici'; 
-  final String payeeName = 'Gokul P Jayan'; 
-  final String amount = '100'; 
-  final String googlePayUri = 'upi://pay?pa=$upiId&pn=$payeeName&am=$amount&cu=INR';
+  final String upiId = 'gokulpjayan2004-1@okicici';
+  final String payeeName = 'Gokul P Jayan';
+  final String amount = '100';
+  final String googlePayUri =
+      'upi://pay?pa=$upiId&pn=$payeeName&am=$amount&cu=INR';
   final Uri launchUri = Uri.parse(googlePayUri);
 
   if (await canLaunchUrl(launchUri)) {
@@ -133,11 +134,10 @@ class MainMenuScreen extends StatelessWidget {
                     Column(
                       children: [
                         buildCard(
-                          context,
-                          'RESOURCES',
-                          'assets/icons/resources.png',
-                          ResourceScreenB.routeName 
-                        ),
+                            context,
+                            'RESOURCES',
+                            'assets/icons/resources.png',
+                            ResourceScreenB.routeName),
                         const SizedBox(height: 10),
                         buildCard(
                           context,
@@ -159,13 +159,39 @@ class MainMenuScreen extends StatelessWidget {
                           'assets/icons/volunteers.png',
                           VolunteersScreen.routeName,
                         ),
+                        const SizedBox(height: 10),
                         buildCard(
                           context,
                           'AID DISTRIBUTION',
                           'assets/icons/aid.png',
                           AidDistributionScreen.routeName,
                         ),
-                        MainMenuButton(onTap: launchGooglePay, text: "Donate to DRS"),
+                        GestureDetector(
+                          child: Card(
+                            borderOnForeground: true,
+                            elevation: 5,
+                            color: const Color.fromARGB(91, 0, 0, 0),
+                            child: OverflowBar(
+                              alignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'Support the Developer ',
+                                  style: const TextStyle(
+                                    fontSize: 22.0,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                                Icon(
+                                  Icons.payment,
+                                  color: Colors.white,
+                                ),
+                              ],
+                            ),
+                          ),
+                          onTap: () => launchGooglePay(),
+                        ),
                       ],
                     ),
                   ],

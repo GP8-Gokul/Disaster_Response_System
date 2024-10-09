@@ -19,7 +19,8 @@ Future<void> getEventIds(String volunteerName, String eventController) async {
   devtools.log(eventController);
   devtools.log(volunteerName);
   if (!(checkAcess('volunteers', volunteerName))) {
-    events.removeWhere((key, value) => key.toString() != eventController.toString());
+    events.removeWhere(
+        (key, value) => key.toString() != eventController.toString());
   }
   devtools.log(events.toString());
 }
@@ -75,12 +76,12 @@ class IncidentReportListTileState extends State<IncidentReportListTile> {
                       text: widget.content['reported_by'].toString());
               TextEditingController incidentReportDescriptionController =
                   TextEditingController(
-                      text: widget.content['description']
-                          .toString());
+                      text: widget.content['description'].toString());
               TextEditingController eventController = TextEditingController(
                   text: widget.content['event_id'].toString());
 
-              getEventIds(incidentReportNameController.text,eventController.text);
+              getEventIds(
+                  incidentReportNameController.text, eventController.text);
               String? selectedEventId = eventController.text;
 
               return StatefulBuilder(
@@ -103,7 +104,9 @@ class IncidentReportListTileState extends State<IncidentReportListTile> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          CustomText(text:'Report ID: ${widget.content['report_id']}'),
+                          CustomText(
+                              text:
+                                  'Report ID: ${widget.content['report_id']}'),
                           const SizedBox(height: 12),
                           CustomTextField(
                               hintText: '${widget.content['report_name']}',
@@ -111,22 +114,19 @@ class IncidentReportListTileState extends State<IncidentReportListTile> {
                               controller: incidentReportNameController,
                               readOnly: readonly),
                           CustomTextField(
-                            hintText:
-                                '${widget.content['report_date']}',
+                            hintText: '${widget.content['report_date']}',
                             labelText: 'Report Date',
                             controller: incidentReportDateController,
                             readOnly: readonly,
                           ),
                           CustomTextField(
-                            hintText:
-                                '${widget.content['reported_by']}',
+                            hintText: '${widget.content['reported_by']}',
                             labelText: 'Reported By',
                             controller: incidentReportedByController,
                             readOnly: readonly,
                           ),
                           CustomTextField(
-                            hintText:
-                                '${widget.content['description']}',
+                            hintText: '${widget.content['description']}',
                             labelText: 'Description',
                             controller: incidentReportDescriptionController,
                             readOnly: readonly,
@@ -134,9 +134,13 @@ class IncidentReportListTileState extends State<IncidentReportListTile> {
                           Padding(
                             padding: const EdgeInsets.all(4.0),
                             child: FutureBuilder<void>(
-                              future: getEventIds(incidentReportNameController.text,eventController.text),
-                              builder: (BuildContext context,AsyncSnapshot<void> snapshot) {
-                                if (snapshot.connectionState == ConnectionState.waiting) {
+                              future: getEventIds(
+                                  incidentReportNameController.text,
+                                  eventController.text),
+                              builder: (BuildContext context,
+                                  AsyncSnapshot<void> snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
                                   return const CircularProgressIndicator();
                                 } else if (snapshot.hasError) {
                                   return const Text('Error loading events');
@@ -158,7 +162,8 @@ class IncidentReportListTileState extends State<IncidentReportListTile> {
                                     ),
                                     value: selectedEventId,
                                     style: const TextStyle(color: Colors.white),
-                                    dropdownColor:const Color.fromARGB(255, 38, 36, 36),
+                                    dropdownColor:
+                                        const Color.fromARGB(255, 38, 36, 36),
                                     items: events.keys.map((key) {
                                       return DropdownMenuItem<String>(
                                         value: key.toString(),
@@ -216,7 +221,7 @@ class IncidentReportListTileState extends State<IncidentReportListTile> {
                                     incidentReportDateController.text,
                                 'reported_by':
                                     incidentReportedByController.text,
-                                'description':
+                                'report_description':
                                     incidentReportDescriptionController.text,
                                 'event_id': selectedEventId,
                               },
@@ -227,7 +232,10 @@ class IncidentReportListTileState extends State<IncidentReportListTile> {
                             }
                           } else {
                             Navigator.pop(context);
-                            customSnackBar(context: context, message: 'You do not have access to update this incident report');
+                            customSnackBar(
+                                context: context,
+                                message:
+                                    'You do not have access to update this incident report');
                           }
                         },
                       ),

@@ -67,7 +67,9 @@ class _IncidentReportsScreenState extends State<IncidentReportsScreen> {
     return SafeArea(
       child: Stack(
         children: [
-          const BackgroundImage(imageName: 'page_background',),
+          const BackgroundImage(
+            imageName: 'page_background',
+          ),
           Scaffold(
             appBar: const CustomAppbar(text: 'Report Details'),
             body: bodyColumn(),
@@ -85,8 +87,7 @@ class _IncidentReportsScreenState extends State<IncidentReportsScreen> {
         SearchTextField(
             labelText: 'Search Reports',
             hintText: 'Enter Report Name',
-            searchController: searchController
-            ),
+            searchController: searchController),
         Expanded(
           child: filteredData.isEmpty
               ? const Center(child: Text('No Reports found.'))
@@ -129,11 +130,14 @@ class _IncidentReportsScreenState extends State<IncidentReportsScreen> {
               children: [
                 SlidableAction(
                   onPressed: (context) async {
-                    if (checkAcess('incident_reports', content['report_name'])) {
-                      response = await deleteData('incident_reports','report_id', content['report_id'].toString());
+                    if (checkAcess(
+                        'incident_reports', content['report_name'])) {
+                      response = await deleteData('incident_reports',
+                          'report_id', content['report_id'].toString());
                       if (response != null) {
                         setState(() {
-                          futureGetIncidentReports = fetchdata('incident_reports');
+                          futureGetIncidentReports =
+                              fetchdata('incident_reports');
                           futureGetIncidentReports.then((content) {
                             setState(() {
                               allData = content;
@@ -145,7 +149,8 @@ class _IncidentReportsScreenState extends State<IncidentReportsScreen> {
                       }
                     } else {
                       Navigator.pop(context);
-                      customSnackBar(context: context, message: 'Access Denied');
+                      customSnackBar(
+                          context: context, message: 'Access Denied');
                     }
                   },
                   backgroundColor: const Color.fromARGB(138, 236, 70, 70),
@@ -213,11 +218,32 @@ class _IncidentReportsScreenState extends State<IncidentReportsScreen> {
                       labelText: 'Report Name',
                       controller: incidentReportNameController,
                       readOnly: false),
-                  CustomTextField(
-                      hintText: 'Report Date',
-                      labelText: 'Report Date',
-                      controller: incidentReportDateController,
-                      readOnly: false),
+                  TextField(
+                    controller: incidentReportDateController,
+                    style: TextStyle(color: Colors.white),
+                    decoration: InputDecoration(
+                      hintText: 'Start Date',
+                      labelText: 'Start Date',
+                      labelStyle: TextStyle(color: Colors.white),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5.0),
+                        borderSide: const BorderSide(color: Colors.lime),
+                      ),
+                    ),
+                    readOnly: true,
+                    onTap: () async {
+                      DateTime? pickedDate = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime(2000),
+                        lastDate: DateTime(2101),
+                      );
+                      if (pickedDate != null) {
+                        incidentReportDateController.text =
+                            pickedDate.toIso8601String().substring(0, 10);
+                      }
+                    },
+                  ),
                   CustomTextField(
                       hintText: 'Reported By',
                       labelText: 'Reported By',
@@ -301,7 +327,8 @@ class _IncidentReportsScreenState extends State<IncidentReportsScreen> {
                       }
                     } else {
                       Navigator.pop(context);
-                      customSnackBar(context: context, message: 'Access Denied');
+                      customSnackBar(
+                          context: context, message: 'Access Denied');
                     }
                   },
                 ),
