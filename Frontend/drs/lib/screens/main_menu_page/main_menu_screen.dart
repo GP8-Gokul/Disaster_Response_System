@@ -3,17 +3,14 @@ import 'package:drs/screens/disaster_events_page/disaster_events_screen.dart';
 import 'package:drs/screens/Incident_reports_page/incident_reports_screen.dart';
 import 'package:drs/screens/login_page/login_screen.dart';
 import 'package:drs/screens/resources_page/resource-screen.dart';
-import 'package:drs/screens/resources_page/resources_screen.dart';
 import 'package:drs/screens/volunteers_page/volunteers_screen.dart';
 import 'package:drs/widgets/background_image.dart';
-import 'package:drs/widgets/main_menu_button.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-Future<void> launchGooglePay() async {
+Future<void> launchGooglePay(amount) async {
   final String upiId = 'gokulpjayan2004-1@okicici';
   final String payeeName = 'Gokul P Jayan';
-  final String amount = '100';
   final String googlePayUri =
       'upi://pay?pa=$upiId&pn=$payeeName&am=$amount&cu=INR';
   final Uri launchUri = Uri.parse(googlePayUri);
@@ -82,6 +79,80 @@ class MainMenuScreen extends StatelessWidget {
         Scaffold(
           backgroundColor: Colors.transparent,
           appBar: AppBar(
+            leading: IconButton(
+                icon: const Icon(Icons.help),
+              color: Colors.white,
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    TextEditingController amountController = TextEditingController(text: '10');
+                    return AlertDialog(
+                      backgroundColor: const Color.fromARGB(255, 250, 250, 250),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15.0),
+                        side: const BorderSide(color: Color.fromARGB(255, 0, 0, 0), width: 3.0),
+                      ),
+                      title: const Text('Support the Initiative',
+                        style: TextStyle(color: Colors.black),
+                      ),
+                      content: 
+                        Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          StatefulBuilder(
+                          builder: (BuildContext context, StateSetter setState) {
+                            return Slider(
+                            value: double.parse(amountController.text.isEmpty ? '100' : amountController.text),
+                            min: 10,
+                            max: 1000,
+                            divisions: 100,
+                            label: amountController.text,
+                            onChanged: (double value) {
+                              setState(() {
+                              amountController.text = value.toStringAsFixed(0);
+                              });
+                            },
+                            );
+                          },
+                          ),
+                          TextField(
+                          controller: amountController,
+                          keyboardType: TextInputType.number,
+                          decoration: const InputDecoration(
+                            labelText: 'Amount',
+                            hintText: 'Enter amount',
+                          ),
+                          ),
+                          SizedBox(height: 10),
+                          TextButton(
+                            style: TextButton.styleFrom(
+                              backgroundColor: Colors.black.withOpacity(0.7),
+                              side: const BorderSide(color: Colors.white, width: 2),
+                            ),
+                          child: const Text('Donate',
+                            style: TextStyle(color: Colors.greenAccent),
+                          ),
+
+                          onPressed: () {
+                            launchGooglePay(amountController.text);
+                          },
+                          ),
+                        ],
+                        ),
+                      actions: <Widget>[
+                        TextButton(
+                          child: const Text('Close'),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+            ),
             backgroundColor: Colors.transparent,
             automaticallyImplyLeading: false,
             centerTitle: true,
@@ -165,32 +236,6 @@ class MainMenuScreen extends StatelessWidget {
                           'AID DISTRIBUTION',
                           'assets/icons/aid.png',
                           AidDistributionScreen.routeName,
-                        ),
-                        GestureDetector(
-                          child: Card(
-                            borderOnForeground: true,
-                            elevation: 5,
-                            color: const Color.fromARGB(91, 0, 0, 0),
-                            child: OverflowBar(
-                              alignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  'Support the Developer ',
-                                  style: const TextStyle(
-                                    fontSize: 22.0,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
-                                  ),
-                                  textAlign: TextAlign.center,
-                                ),
-                                Icon(
-                                  Icons.payment,
-                                  color: Colors.white,
-                                ),
-                              ],
-                            ),
-                          ),
-                          onTap: () => launchGooglePay(),
                         ),
                       ],
                     ),

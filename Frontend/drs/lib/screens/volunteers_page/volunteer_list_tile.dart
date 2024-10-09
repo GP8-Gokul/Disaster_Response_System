@@ -140,12 +140,40 @@ class VolunteerListTileState extends State<VolunteerListTile> {
                               ),
                             ],
                           ),
+                          Row(
+                            children: [
+                              const Text(
+                              'Availability Status:',
+                              style: TextStyle(color: Colors.white),
+                              ),
+                              Checkbox(
+                              value: volunteerAvailabilityStatusController.text.toLowerCase() == 'yes',
+                              onChanged: readonly
+                              ? null
+                              : (bool? newValue) {
+                                setState(() {
+                                volunteerAvailabilityStatusController.text = newValue! ? 'Yes' : 'No';
+                                });
+                                },
+                              activeColor: Colors.green,
+                              checkColor: Colors.white,
+                              ),
+                              Text(
+                              volunteerAvailabilityStatusController.text,
+                              style: TextStyle(
+                              color: volunteerAvailabilityStatusController.text.toLowerCase() == 'yes'
+                                ? Colors.green
+                                : Colors.red,
+                              ),
+                              ),
+                            ],
+                          ),
                           const SizedBox(height: 12),
                           CustomTextField(
-                              hintText: '${widget.content['volunteer_name']}',
-                              labelText: 'Volunteer Name',
-                              controller: volunteerNameController,
-                              readOnly: readonly
+                          hintText: '${widget.content['volunteer_name']}',
+                          labelText: 'Volunteer Name',
+                          controller: volunteerNameController,
+                          readOnly: readonly,
                           ),
                           CustomTextField(
                             hintText: '${widget.content['volunteer_contact_info']}',
@@ -159,12 +187,7 @@ class VolunteerListTileState extends State<VolunteerListTile> {
                             controller: volunteerSkillsController,
                             readOnly: readonly,
                           ),
-                          CustomTextField(
-                            hintText: '${widget.content['volunteer_availability_status']}',
-                            labelText: 'Availability Status',
-                            controller: volunteerAvailabilityStatusController,
-                            readOnly: readonly,
-                          ),
+                            
                           Padding(
                             padding: const EdgeInsets.all(4.0),
                             child: FutureBuilder<void>(

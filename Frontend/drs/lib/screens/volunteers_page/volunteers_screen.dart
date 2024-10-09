@@ -201,8 +201,9 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
             TextEditingController volunteerNameController = TextEditingController();
             TextEditingController volunteerContactInfoController = TextEditingController();
             TextEditingController volunteerSkillsController = TextEditingController();
-            TextEditingController volunteerAvailabilityStatusController = TextEditingController();
+            TextEditingController volunteerAvailabilityStatusController = TextEditingController(text: 'Yes');
             TextEditingController eventController = TextEditingController();
+            bool isAvailable = false;
 
             getEventIds(volunteerNameController.text, eventController.text);
             String? selectedEventId; 
@@ -223,6 +224,38 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    StatefulBuilder(
+                      builder: (BuildContext context, StateSetter setState) {
+                        return Row(
+                          children: [
+                            const Text(
+                              'Availability Status:',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            Checkbox(
+                              value: isAvailable,
+                              onChanged: (bool? newValue) {
+                                setState(() {
+                                  isAvailable = newValue ?? false; 
+                                });
+                              },
+                              activeColor: Colors.green,
+                              checkColor: Colors.white,
+                            ),
+                            Text(
+                              isAvailable ? 'Yes' : 'No',
+                              style: TextStyle(
+                                color: isAvailable ? Colors.green : Colors.red,
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+
+   
+
+
                     CustomTextField(
                         hintText: 'Volunteer Name',
                         labelText: 'Volunteer Name',
@@ -239,12 +272,6 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
                         hintText: 'Skills',
                         labelText: 'Skills',
                         controller: volunteerSkillsController,
-                        readOnly: false
-                    ),
-                    CustomTextField(
-                        hintText: 'Availability Status',
-                        labelText: 'Availability Status',
-                        controller: volunteerAvailabilityStatusController,
                         readOnly: false
                     ),
                     Padding(
