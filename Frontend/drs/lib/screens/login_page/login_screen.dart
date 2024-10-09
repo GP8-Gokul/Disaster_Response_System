@@ -115,9 +115,11 @@ class _LoginScreenState extends State<LoginScreen> {
                   _isLoading
                       ? const SizedBox.shrink()
                       : ElevatedButton(
-                          onPressed: () {
+                          onPressed: () async {
                             userRole = 'guest';
+                            await dummyCall();
                             Navigator.pushReplacement(
+                              // ignore: use_build_context_synchronously
                               context,
                               MaterialPageRoute(
                                 builder: (context) => const MainMenuScreen(),

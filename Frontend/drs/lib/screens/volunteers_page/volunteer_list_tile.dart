@@ -25,7 +25,7 @@ Future<void> getEventIds(String volunteerName, String eventController) async {
 }
 
 void sendMessageToWhatsApp(String phoneNumber, String message, BuildContext context) async {
-  final Uri whatsappUri = Uri.parse("https://wa.me/+91$phoneNumber?text=${Uri.encodeComponent(message)}");
+  final Uri whatsappUri = Uri.parse("https://wa.me/$phoneNumber?text=${Uri.encodeComponent(message)}");
   if (await canLaunchUrl(whatsappUri)) {
     await launchUrl(whatsappUri);
   } else {
