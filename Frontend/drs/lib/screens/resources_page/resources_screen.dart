@@ -230,8 +230,8 @@ class _ResourcesScreenState extends State<ResourcesScreen> {
                       });
                     });
                   } else {
-                    // ignore: use_build_context_synchronously
                     customSnackBar(
+                        // ignore: use_build_context_synchronously
                         context: context,
                         message: 'Please fill all the fields');
                     // ignore: use_build_context_synchronously

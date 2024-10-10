@@ -1,4 +1,4 @@
-  import 'package:drs/services/api/root_api.dart';
+import 'package:drs/services/api/root_api.dart';
 import 'package:drs/widgets/custom_snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
@@ -12,12 +12,10 @@ Future<Map<String, String>?> insertResourcesDialog(
     builder: (BuildContext context) {
       TextEditingController resourcenamecontroller = TextEditingController();
       TextEditingController resourcetypecontroller = TextEditingController();
-      TextEditingController quantitycontroller =
+      TextEditingController quantitycontroller = TextEditingController();
+      TextEditingController availabilityStatusController =
           TextEditingController();
-      TextEditingController availability_status_controller =
-          TextEditingController();
-      TextEditingController event_id_controller = TextEditingController();
-      
+      TextEditingController eventIdController = TextEditingController();
 
       return AlertDialog(
         shape: RoundedRectangleBorder(
@@ -65,7 +63,7 @@ Future<Map<String, String>?> insertResourcesDialog(
               ),
               const SizedBox(height: 15),
               TextField(
-                controller: availability_status_controller,
+                controller: availabilityStatusController,
                 decoration: InputDecoration(
                   labelText: 'availability_status',
                   border: OutlineInputBorder(
@@ -75,7 +73,7 @@ Future<Map<String, String>?> insertResourcesDialog(
               ),
               const SizedBox(height: 15),
               TextField(
-                controller: event_id_controller,
+                controller: eventIdController,
                 decoration: InputDecoration(
                   labelText: 'event id',
                   border: OutlineInputBorder(
@@ -83,7 +81,6 @@ Future<Map<String, String>?> insertResourcesDialog(
                   ),
                 ),
               ),
-              
             ],
           ),
         ),
@@ -100,37 +97,37 @@ Future<Map<String, String>?> insertResourcesDialog(
               if (resourcenamecontroller.text.isNotEmpty &&
                   resourcetypecontroller.text.isNotEmpty &&
                   quantitycontroller.text.isNotEmpty &&
-                  availability_status_controller.text.isNotEmpty &&
-                  event_id_controller.text.isNotEmpty ) 
-                  {
-                  
+                  availabilityStatusController.text.isNotEmpty &&
+                  eventIdController.text.isNotEmpty) {
                 final response = await insertData({
                   'table': 'resources',
                   'resource_Name': resourcenamecontroller.text,
-                  'resource_type':resourcetypecontroller.text,
+                  'resource_type': resourcetypecontroller.text,
                   'quantity': quantitycontroller.text,
-                  'availability_status': availability_status_controller.text,
-                  'event_id': event_id_controller.text,
-                  
+                  'availability_status': availabilityStatusController.text,
+                  'event_id': eventIdController.text,
                 });
                 if (response != 0) {
                   // ignore: use_build_context_synchronously
                   Navigator.of(context).pop();
                 } else {
-                  // ignore: use_build_context_synchronously
-                  customSnackBar(context: context, message: 'Failed to add resources');
+                  customSnackBar(
+                      // ignore: use_build_context_synchronously
+                      context: context,
+                      message: 'Failed to add resources');
                   // ignore: use_build_context_synchronously
                   Navigator.of(context).pop();
                 }
                 completer.complete({
                   'resource_Name': resourcenamecontroller.text,
-                  'resource_type':resourcetypecontroller.text,
+                  'resource_type': resourcetypecontroller.text,
                   'quantity': quantitycontroller.text,
-                  'availability_status': availability_status_controller.text,
-                  'event_id': event_id_controller.text,
+                  'availability_status': availabilityStatusController.text,
+                  'event_id': eventIdController.text,
                 });
               } else {
-                customSnackBar(context: context, message: 'Please fill all the fields');
+                customSnackBar(
+                    context: context, message: 'Please fill all the fields');
                 Navigator.of(context).pop();
               }
             },
@@ -149,4 +146,3 @@ Future<Map<String, String>?> insertResourcesDialog(
 
   return completer.future;
 }
-
