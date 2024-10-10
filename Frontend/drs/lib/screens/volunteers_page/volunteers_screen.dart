@@ -3,6 +3,7 @@ import 'package:drs/services/api/root_api.dart';
 import 'package:drs/widgets/background_image.dart';
 import 'package:drs/widgets/custom_appbar.dart';
 import 'package:drs/screens/volunteers_page/volunteer_list_tile.dart';
+import 'package:drs/widgets/custom_loading_animation.dart';
 import 'package:drs/widgets/custom_snack_bar.dart';
 import 'package:drs/widgets/custom_text_field.dart';
 import 'package:drs/widgets/search_text_field.dart';
@@ -111,7 +112,7 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
         } else if (snapshot.hasError) {
           return Center(child: Text('Error: ${snapshot.error}'));
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return const Center(child: Text('No volunteers found.'));
+          return const CustomLoadingAnimation();
         } else {
           return buildListview(snapshot);
         }

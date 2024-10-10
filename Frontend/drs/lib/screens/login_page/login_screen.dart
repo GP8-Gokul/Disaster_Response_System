@@ -1,10 +1,10 @@
 import 'package:drs/services/api/root_api.dart';
 import 'package:drs/widgets/background_image.dart';
+import 'package:drs/widgets/custom_loading_animation.dart';
 import 'package:flutter/material.dart';
 import 'package:drs/services/api/login_api.dart';
 import 'package:drs/screens/main_menu_page/main_menu_screen.dart';
 import 'dart:developer' as devtools show log;
-import 'package:rive/rive.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -120,13 +120,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                   const SizedBox(height: 30),
                   _isLoading
-                      ? const SizedBox(
-                          width: 50,
-                          height: 50,
-                          child: RiveAnimation.asset(
-                            'assets/rive/loading_symbol.riv',
-                          ),
-                        )
+                      ? const CustomLoadingAnimation()
                       : ElevatedButton(
                           onPressed: () async {
                             userRole = 'guest';

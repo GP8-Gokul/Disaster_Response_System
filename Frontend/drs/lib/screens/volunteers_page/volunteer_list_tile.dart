@@ -9,7 +9,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 dynamic response;
 var events = {};
-Future<void> getEventIds(String volunteerName, String eventController) async {
+Future<void> getEventIdsForEdit(String volunteerName, String eventController) async {
   events.clear();
   List<Map<String, dynamic>> value = await fetchdata('disaster_events');
   for (var event in value) {
@@ -19,6 +19,21 @@ Future<void> getEventIds(String volunteerName, String eventController) async {
   devtools.log(eventController);
   devtools.log(volunteerName);
   if (!(checkAcess('volunteers', volunteerName))) {
+    events.removeWhere((key, value) => key.toString() != eventController.toString());
+  }
+  devtools.log(events.toString());
+}
+
+Future<void> getEventIdsNoEdit(String volunteerName, String eventController) async {
+  events.clear();
+  List<Map<String, dynamic>> value = await fetchdata('disaster_events');
+  for (var event in value) {
+    events[event['event_id']] = event['event_name'];
+  }
+  devtools.log(events.toString());
+  devtools.log(eventController);
+  devtools.log(volunteerName);
+  if (checkAcess('volunteers', volunteerName)) {
     events.removeWhere((key, value) => key.toString() != eventController.toString());
   }
   devtools.log(events.toString());
@@ -90,7 +105,7 @@ class VolunteerListTileState extends State<VolunteerListTile> {
               TextEditingController eventController = TextEditingController(
                   text: widget.content['event_id'].toString());
 
-              getEventIds(volunteerNameController.text, eventController.text);
+              getEventIdsForEdit(volunteerNameController.text, eventController.text);
               String? selectedEventId = eventController.text;
 
               return StatefulBuilder(
@@ -187,49 +202,98 @@ class VolunteerListTileState extends State<VolunteerListTile> {
                             controller: volunteerSkillsController,
                             readOnly: readonly,
                           ),
-                            
-                          Padding(
-                            padding: const EdgeInsets.all(4.0),
-                            child: FutureBuilder<void>(
-                              future: getEventIds(volunteerNameController.text,eventController.text),
-                              builder: (BuildContext context,AsyncSnapshot<void> snapshot) {
-                                if (snapshot.connectionState == ConnectionState.waiting) {
-                                  return const CircularProgressIndicator();
-                                } else if (snapshot.hasError) {
-                                  return const Text('Error loading events');
-                                } else {
-                                  return DropdownButtonFormField<String>(
-                                    decoration: InputDecoration(
-                                      labelText: 'Event Name',
-                                      labelStyle:
-                                          const TextStyle(color: Colors.white),
-                                      enabledBorder: const OutlineInputBorder(
-                                        borderSide:
-                                            BorderSide(color: Colors.lime),
+                          Visibility(
+                            visible: readonly,
+                            child: Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: FutureBuilder<void>(
+                                future: getEventIdsNoEdit(volunteerNameController.text,eventController.text),
+                                builder: (BuildContext context,AsyncSnapshot<void> snapshot) {
+                                  if (snapshot.connectionState == ConnectionState.waiting) {
+                                    return const CircularProgressIndicator();
+                                  } else if (snapshot.hasError) {
+                                    return const Text('Error loading events');
+                                  } else {
+                                    return DropdownButtonFormField<String>(
+                                      decoration: InputDecoration(
+                                        labelText: 'Event Name',
+                                        labelStyle:
+                                            const TextStyle(color: Colors.white),
+                                        enabledBorder: const OutlineInputBorder(
+                                          borderSide:
+                                              BorderSide(color: Colors.lime),
+                                        ),
+                                        focusedBorder: const OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Color.fromARGB(
+                                                  255, 200, 99, 92)),
+                                        ),
                                       ),
-                                      focusedBorder: const OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: Color.fromARGB(
-                                                255, 200, 99, 92)),
+                                      value: selectedEventId,
+                                      style: const TextStyle(color: Colors.white),
+                                      dropdownColor:const Color.fromARGB(255, 38, 36, 36),
+                                      items: events.keys.map((key) {
+                                        return DropdownMenuItem<String>(
+                                          value: key.toString(),
+                                          child: Text(events[key]!),
+                                        );
+                                      }).toList(),
+                                      onChanged: (String? newValue) {
+                                        setState(() {
+                                          selectedEventId = newValue;
+                                        });
+                                      },
+                                    );
+                                  }
+                                },
+                              ),
+                            ),
+                          ),
+                          Visibility(
+                            visible: !readonly,
+                            child: Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: FutureBuilder<void>(
+                                future: getEventIdsForEdit(volunteerNameController.text,eventController.text),
+                                builder: (BuildContext context,AsyncSnapshot<void> snapshot) {
+                                  if (snapshot.connectionState == ConnectionState.waiting) {
+                                    return const CircularProgressIndicator();
+                                  } else if (snapshot.hasError) {
+                                    return const Text('Error loading events');
+                                  } else {
+                                    return DropdownButtonFormField<String>(
+                                      decoration: InputDecoration(
+                                        labelText: 'Event Name',
+                                        labelStyle:
+                                            const TextStyle(color: Colors.white),
+                                        enabledBorder: const OutlineInputBorder(
+                                          borderSide:
+                                              BorderSide(color: Colors.lime),
+                                        ),
+                                        focusedBorder: const OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Color.fromARGB(
+                                                  255, 200, 99, 92)),
+                                        ),
                                       ),
-                                    ),
-                                    value: selectedEventId,
-                                    style: const TextStyle(color: Colors.white),
-                                    dropdownColor:const Color.fromARGB(255, 38, 36, 36),
-                                    items: events.keys.map((key) {
-                                      return DropdownMenuItem<String>(
-                                        value: key.toString(),
-                                        child: Text(events[key]!),
-                                      );
-                                    }).toList(),
-                                    onChanged: (String? newValue) {
-                                      setState(() {
-                                        selectedEventId = newValue;
-                                      });
-                                    },
-                                  );
-                                }
-                              },
+                                      value: selectedEventId,
+                                      style: const TextStyle(color: Colors.white),
+                                      dropdownColor:const Color.fromARGB(255, 38, 36, 36),
+                                      items: events.keys.map((key) {
+                                        return DropdownMenuItem<String>(
+                                          value: key.toString(),
+                                          child: Text(events[key]!),
+                                        );
+                                      }).toList(),
+                                      onChanged: (String? newValue) {
+                                        setState(() {
+                                          selectedEventId = newValue;
+                                        });
+                                      },
+                                    );
+                                  }
+                                },
+                              ),
                             ),
                           ),
                         ],

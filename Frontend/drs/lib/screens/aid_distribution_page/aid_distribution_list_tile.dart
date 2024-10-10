@@ -10,7 +10,7 @@ dynamic response;
 var events = {};
 var resources = {};
 var volunteers = {};
-Future<void> getEventIds(String location, String eventController) async {
+Future<void> getEventIdsForEdit(String location, String eventController) async {
   events.clear();
   List<Map<String, dynamic>> value = await fetchdata('disaster_events');
   for (var event in value) {
@@ -26,7 +26,7 @@ Future<void> getEventIds(String location, String eventController) async {
   devtools.log(events.toString());
 }
 
-Future<void> getResourceIds(String resourceController) async {
+Future<void> getResourceIdsForEdit(String resourceController) async {
   resources.clear();
   List<Map<String, dynamic>> value = await fetchdata('resources');
   for (var resource in value) {
@@ -41,7 +41,38 @@ Future<void> getResourceIds(String resourceController) async {
   devtools.log(resources.toString());
 }
 
-Future<void> getVolunteerIds(String volunteerController) async {
+Future<void> getEventIdsNoEdit(String location, String eventController) async {
+  events.clear();
+  List<Map<String, dynamic>> value = await fetchdata('disaster_events');
+  for (var event in value) {
+    events[event['event_id']] = event['event_name'];
+  }
+  devtools.log(events.toString());
+  devtools.log(eventController);
+  devtools.log(location);
+  if (checkAcess('aid_distribution', location)) {
+    events.removeWhere(
+        (key, value) => key.toString() != eventController.toString());
+  }
+  devtools.log(events.toString());
+}
+
+Future<void> getResourceIdsNoEdit(String location,String resourceController) async {
+  resources.clear();
+  List<Map<String, dynamic>> value = await fetchdata('resources');
+  for (var resource in value) {
+    resources[resource['resource_id']] = resource['resource_name'];
+  }
+  devtools.log(resources.toString());
+  devtools.log(resourceController);
+  if (checkAcess('aid_distribution', location)) {
+    events.removeWhere(
+        (key, value) => key.toString() != resourceController.toString());
+  }
+  devtools.log(resources.toString());
+}
+
+Future<void> getVolunteerIdsForEdit(String volunteerController) async {
   volunteers.clear();
   List<Map<String, dynamic>> value = await fetchdata('volunteers');
   for (var volunteer in value) {
@@ -50,6 +81,21 @@ Future<void> getVolunteerIds(String volunteerController) async {
   devtools.log(volunteers.toString());
   devtools.log(volunteerController);
   if (!(checkAcess('aid_distribution', ''))) {
+    events.removeWhere(
+        (key, value) => key.toString() != volunteerController.toString());
+  }
+  devtools.log(volunteers.toString());
+}
+
+Future<void> getVolunteerIdsNoEdit(String volunteerController) async {
+  volunteers.clear();
+  List<Map<String, dynamic>> value = await fetchdata('volunteers');
+  for (var volunteer in value) {
+    volunteers[volunteer['volunteer_id']] = volunteer['volunteer_name'];
+  }
+  devtools.log(volunteers.toString());
+  devtools.log(volunteerController);
+  if (checkAcess('aid_distribution', '')) {
     events.removeWhere(
         (key, value) => key.toString() != volunteerController.toString());
   }
@@ -115,9 +161,9 @@ class AidDistributionTileState extends State<AidDistributionListTile> {
               TextEditingController distributionDateController =
                   TextEditingController(
                       text: widget.content['distribution_date'].toString());
-              getEventIds(locationController.text, eventController.text);
-              getResourceIds(resourceController.text);
-              getVolunteerIds(volunteerController.text);
+              getEventIdsForEdit(locationController.text, eventController.text);
+              getResourceIdsForEdit(resourceController.text);
+              getVolunteerIdsForEdit(volunteerController.text);
               String? selectedEventId = eventController.text;
               String? selectedResourceId = resourceController.text;
               String? selectedVolunteerId = volunteerController.text;
@@ -151,74 +197,30 @@ class AidDistributionTileState extends State<AidDistributionListTile> {
                               labelText: 'Location',
                               controller: locationController,
                               readOnly: readonly),
-                          Padding(
-                            padding: const EdgeInsets.all(4.0),
-                            child: FutureBuilder(
-                              future: getVolunteerIds(volunteerController.text),
-                              builder: (BuildContext context,
-                                  AsyncSnapshot<void> snapshot) {
-                                if (snapshot.connectionState ==
-                                    ConnectionState.waiting) {
-                                  return const CircularProgressIndicator();
-                                } else if (snapshot.hasError) {
-                                  return const Text('Error loading volunteers');
-                                } else {
-                                  return DropdownButtonFormField<String>(
-                                    decoration: InputDecoration(
-                                      labelText: 'Volunteer Name',
-                                      labelStyle:
-                                          const TextStyle(color: Colors.white),
-                                      enabledBorder: const OutlineInputBorder(
-                                        borderSide:
-                                            BorderSide(color: Colors.lime),
-                                      ),
-                                      focusedBorder: const OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: Color.fromARGB(
-                                                255, 200, 99, 92)),
-                                      ),
-                                    ),
-                                    value: selectedVolunteerId,
-                                    style: const TextStyle(color: Colors.white),
-                                    dropdownColor:
-                                        const Color.fromARGB(255, 38, 36, 36),
-                                    items: volunteers.keys.map((key) {
-                                      return DropdownMenuItem<String>(
-                                        value: key.toString(),
-                                        child: Text(volunteers[key]!),
-                                      );
-                                    }).toList(),
-                                    onChanged: (String? newValue) {
-                                      setState(() {
-                                        selectedVolunteerId = newValue!;
-                                      });
-                                    },
-                                  );
-                                }
-                              },
-                            ),
-                          ),
                           CustomTextField(
                               hintText: 'Quantity Distributed',
                               labelText: 'Quantity Distributed',
                               controller: quantityDistributedController,
-                              readOnly: false),
-                          TextField(
-                            controller: distributionDateController,
-                            style: TextStyle(color: Colors.white),
-                            decoration: InputDecoration(
+                              readOnly: readonly),
+                          Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: TextField(
+                              controller: distributionDateController,
+                              style: TextStyle(color: Colors.white),
+                              decoration: InputDecoration(
                               hintText: 'Start Date',
                               labelText: 'Start Date',
                               labelStyle: TextStyle(color: Colors.white),
                               enabledBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(5.0),
                                 borderSide:
-                                    const BorderSide(color: Colors.lime),
+                                  const BorderSide(color: Colors.lime),
                               ),
-                            ),
-                            readOnly: true,
-                            onTap: () async {
-                              DateTime? pickedDate = await showDatePicker(
+                              ),
+                              readOnly: true,
+                              onTap: () async {
+                              if(!readonly){
+                                DateTime? pickedDate = await showDatePicker(
                                 context: context,
                                 initialDate: DateTime.now(),
                                 firstDate: DateTime(1900),
@@ -226,109 +228,321 @@ class AidDistributionTileState extends State<AidDistributionListTile> {
                               );
                               if (pickedDate != null) {
                                 distributionDateController.text = pickedDate
-                                    .toIso8601String()
-                                    .substring(0, 10);
+                                  .toIso8601String()
+                                  .substring(0, 10);
                               }
-                            },
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(4.0),
-                            child: FutureBuilder<void>(
-                              future: getResourceIds(resourceController.text),
-                              builder: (BuildContext context,
-                                  AsyncSnapshot<void> snapshot) {
-                                if (snapshot.connectionState ==
-                                    ConnectionState.waiting) {
-                                  return const CircularProgressIndicator();
-                                } else if (snapshot.hasError) {
-                                  return const Text('Error loading resources');
-                                } else {
-                                  return DropdownButtonFormField<String>(
-                                    decoration: InputDecoration(
-                                      labelText: 'Resource Name',
-                                      labelStyle:
-                                          const TextStyle(color: Colors.white),
-                                      enabledBorder: const OutlineInputBorder(
-                                        borderSide:
-                                            BorderSide(color: Colors.lime),
-                                      ),
-                                      focusedBorder: const OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: Color.fromARGB(
-                                                255, 200, 99, 92)),
-                                      ),
-                                    ),
-                                    value: selectedResourceId,
-                                    style: const TextStyle(color: Colors.white),
-                                    dropdownColor:
-                                        const Color.fromARGB(255, 38, 36, 36),
-                                    items: resources.keys.map((key) {
-                                      return DropdownMenuItem<String>(
-                                        value: key.toString(),
-                                        child: Text(resources[key]!),
-                                      );
-                                    }).toList(),
-                                    onChanged: (String? newValue) {
-                                      setState(() {
-                                        selectedResourceId = newValue!;
-                                      });
-                                    },
-                                  );
-                                }
+                              }
                               },
                             ),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.all(4.0),
-                            child: FutureBuilder<void>(
-                              future: getEventIds(locationController.text,
-                                  eventController.text),
-                              builder: (BuildContext context,
-                                  AsyncSnapshot<void> snapshot) {
-                                if (snapshot.connectionState ==
-                                    ConnectionState.waiting) {
-                                  return const CircularProgressIndicator();
-                                } else if (snapshot.hasError) {
-                                  return const Text('Error loading events');
-                                } else {
-                                  return DropdownButtonFormField<String>(
-                                    decoration: InputDecoration(
-                                      labelText: 'Event Name',
-                                      labelStyle:
-                                          const TextStyle(color: Colors.white),
-                                      enabledBorder: const OutlineInputBorder(
-                                        borderSide:
-                                            BorderSide(color: Colors.lime),
+                          Visibility(
+                            visible: readonly,
+                            child: Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: FutureBuilder(
+                                future: getVolunteerIdsNoEdit(volunteerController.text),
+                                builder: (BuildContext context,
+                                    AsyncSnapshot<void> snapshot) {
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return const CircularProgressIndicator();
+                                  } else if (snapshot.hasError) {
+                                    return const Text('Error loading volunteers');
+                                  } else {
+                                    return DropdownButtonFormField<String>(
+                                      decoration: InputDecoration(
+                                        labelText: 'Volunteer Name',
+                                        labelStyle:
+                                            const TextStyle(color: Colors.white),
+                                        enabledBorder: const OutlineInputBorder(
+                                          borderSide:
+                                              BorderSide(color: Colors.lime),
+                                        ),
+                                        focusedBorder: const OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Color.fromARGB(
+                                                  255, 200, 99, 92)),
+                                        ),
                                       ),
-                                      focusedBorder: const OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: Color.fromARGB(
-                                                255, 200, 99, 92)),
+                                      value: selectedVolunteerId,
+                                      style: const TextStyle(color: Colors.white),
+                                      dropdownColor:
+                                          const Color.fromARGB(255, 38, 36, 36),
+                                      items: volunteers.keys.map((key) {
+                                        return DropdownMenuItem<String>(
+                                          value: key.toString(),
+                                          child: Text(volunteers[key]!),
+                                        );
+                                      }).toList(),
+                                      onChanged: (String? newValue) {
+                                        setState(() {
+                                          selectedVolunteerId = newValue!;
+                                        });
+                                      },
+                                    );
+                                  }
+                                },
+                              ),
+                            ),
+                          ),
+                          
+                          Visibility(
+                            visible: readonly,
+                            child: Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: FutureBuilder<void>(
+                                future: getResourceIdsNoEdit(locationController.text,resourceController.text),
+                                builder: (BuildContext context,
+                                    AsyncSnapshot<void> snapshot) {
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return const CircularProgressIndicator();
+                                  } else if (snapshot.hasError) {
+                                    return const Text('Error loading resources');
+                                  } else {
+                                    return DropdownButtonFormField<String>(
+                                      decoration: InputDecoration(
+                                        labelText: 'Resource Name',
+                                        labelStyle:
+                                            const TextStyle(color: Colors.white),
+                                        enabledBorder: const OutlineInputBorder(
+                                          borderSide:
+                                              BorderSide(color: Colors.lime),
+                                        ),
+                                        focusedBorder: const OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Color.fromARGB(
+                                                  255, 200, 99, 92)),
+                                        ),
                                       ),
-                                    ),
-                                    value: selectedEventId,
-                                    style: const TextStyle(color: Colors.white),
-                                    dropdownColor:
-                                        const Color.fromARGB(255, 38, 36, 36),
-                                    items: events.keys.map((key) {
-                                      return DropdownMenuItem<String>(
-                                        value: key.toString(),
-                                        child: Text(events[key]!),
-                                      );
-                                    }).toList(),
-                                    onChanged: (String? newValue) {
-                                      setState(() {
-                                        selectedEventId = newValue;
-                                      });
-                                    },
-                                  );
-                                }
-                              },
+                                      value: selectedResourceId,
+                                      style: const TextStyle(color: Colors.white),
+                                      dropdownColor:
+                                          const Color.fromARGB(255, 38, 36, 36),
+                                      items: resources.keys.map((key) {
+                                        return DropdownMenuItem<String>(
+                                          value: key.toString(),
+                                          child: Text(resources[key]!),
+                                        );
+                                      }).toList(),
+                                      onChanged: (String? newValue) {
+                                        setState(() {
+                                          selectedResourceId = newValue!;
+                                        });
+                                      },
+                                    );
+                                  }
+                                },
+                              ),
+                            ),
+                          ),
+                          Visibility(
+                            visible: readonly,
+                            child: Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: FutureBuilder<void>(
+                                future: getEventIdsNoEdit(locationController.text,
+                                    eventController.text),
+                                builder: (BuildContext context,
+                                    AsyncSnapshot<void> snapshot) {
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return const CircularProgressIndicator();
+                                  } else if (snapshot.hasError) {
+                                    return const Text('Error loading events');
+                                  } else {
+                                    return DropdownButtonFormField<String>(
+                                      decoration: InputDecoration(
+                                        labelText: 'Event Name',
+                                        labelStyle:
+                                            const TextStyle(color: Colors.white),
+                                        enabledBorder: const OutlineInputBorder(
+                                          borderSide:
+                                              BorderSide(color: Colors.lime),
+                                        ),
+                                        focusedBorder: const OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Color.fromARGB(
+                                                  255, 200, 99, 92)),
+                                        ),
+                                      ),
+                                      value: selectedEventId,
+                                      style: const TextStyle(color: Colors.white),
+                                      dropdownColor:
+                                          const Color.fromARGB(255, 38, 36, 36),
+                                      items: events.keys.map((key) {
+                                        return DropdownMenuItem<String>(
+                                          value: key.toString(),
+                                          child: Text(events[key]!),
+                                        );
+                                      }).toList(),
+                                      onChanged: (String? newValue) {
+                                        setState(() {
+                                          selectedEventId = newValue;
+                                        });
+                                      },
+                                    );
+                                  }
+                                },
+                              ),
+                            ),
+                          ),
+                          Visibility(
+                            visible: !readonly,
+                            child: Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: FutureBuilder(
+                                future: getVolunteerIdsForEdit(volunteerController.text),
+                                builder: (BuildContext context,
+                                    AsyncSnapshot<void> snapshot) {
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return const CircularProgressIndicator();
+                                  } else if (snapshot.hasError) {
+                                    return const Text('Error loading volunteers');
+                                  } else {
+                                    return DropdownButtonFormField<String>(
+                                      decoration: InputDecoration(
+                                        labelText: 'Volunteer Name',
+                                        labelStyle:
+                                            const TextStyle(color: Colors.white),
+                                        enabledBorder: const OutlineInputBorder(
+                                          borderSide:
+                                              BorderSide(color: Colors.lime),
+                                        ),
+                                        focusedBorder: const OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Color.fromARGB(
+                                                  255, 200, 99, 92)),
+                                        ),
+                                      ),
+                                      value: selectedVolunteerId,
+                                      style: const TextStyle(color: Colors.white),
+                                      dropdownColor:
+                                          const Color.fromARGB(255, 38, 36, 36),
+                                      items: volunteers.keys.map((key) {
+                                        return DropdownMenuItem<String>(
+                                          value: key.toString(),
+                                          child: Text(volunteers[key]!),
+                                        );
+                                      }).toList(),
+                                      onChanged: (String? newValue) {
+                                        setState(() {
+                                          selectedVolunteerId = newValue!;
+                                        });
+                                      },
+                                    );
+                                  }
+                                },
+                              ),
+                            ),
+                          ),
+                          
+                          Visibility(
+                            visible: !readonly,
+                            child: Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: FutureBuilder<void>(
+                                future: getResourceIdsForEdit(resourceController.text),
+                                builder: (BuildContext context,
+                                    AsyncSnapshot<void> snapshot) {
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return const CircularProgressIndicator();
+                                  } else if (snapshot.hasError) {
+                                    return const Text('Error loading resources');
+                                  } else {
+                                    return DropdownButtonFormField<String>(
+                                      decoration: InputDecoration(
+                                        labelText: 'Resource Name',
+                                        labelStyle:
+                                            const TextStyle(color: Colors.white),
+                                        enabledBorder: const OutlineInputBorder(
+                                          borderSide:
+                                              BorderSide(color: Colors.lime),
+                                        ),
+                                        focusedBorder: const OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Color.fromARGB(
+                                                  255, 200, 99, 92)),
+                                        ),
+                                      ),
+                                      value: selectedResourceId,
+                                      style: const TextStyle(color: Colors.white),
+                                      dropdownColor:
+                                          const Color.fromARGB(255, 38, 36, 36),
+                                      items: resources.keys.map((key) {
+                                        return DropdownMenuItem<String>(
+                                          value: key.toString(),
+                                          child: Text(resources[key]!),
+                                        );
+                                      }).toList(),
+                                      onChanged: (String? newValue) {
+                                        setState(() {
+                                          selectedResourceId = newValue!;
+                                        });
+                                      },
+                                    );
+                                  }
+                                },
+                              ),
+                            ),
+                          ),
+                          Visibility(
+                            visible: !readonly,
+                            child: Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: FutureBuilder<void>(
+                                future: getEventIdsForEdit(locationController.text,
+                                    eventController.text),
+                                builder: (BuildContext context,
+                                    AsyncSnapshot<void> snapshot) {
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return const CircularProgressIndicator();
+                                  } else if (snapshot.hasError) {
+                                    return const Text('Error loading events');
+                                  } else {
+                                    return DropdownButtonFormField<String>(
+                                      decoration: InputDecoration(
+                                        labelText: 'Event Name',
+                                        labelStyle:
+                                            const TextStyle(color: Colors.white),
+                                        enabledBorder: const OutlineInputBorder(
+                                          borderSide:
+                                              BorderSide(color: Colors.lime),
+                                        ),
+                                        focusedBorder: const OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Color.fromARGB(
+                                                  255, 200, 99, 92)),
+                                        ),
+                                      ),
+                                      value: selectedEventId,
+                                      style: const TextStyle(color: Colors.white),
+                                      dropdownColor:
+                                          const Color.fromARGB(255, 38, 36, 36),
+                                      items: events.keys.map((key) {
+                                        return DropdownMenuItem<String>(
+                                          value: key.toString(),
+                                          child: Text(events[key]!),
+                                        );
+                                      }).toList(),
+                                      onChanged: (String? newValue) {
+                                        setState(() {
+                                          selectedEventId = newValue;
+                                        });
+                                      },
+                                    );
+                                  }
+                                },
+                              ),
                             ),
                           ),
                         ],
                       ),
                     ),
+                    
                     actions: <Widget>[
                       //Edit Functionality
 

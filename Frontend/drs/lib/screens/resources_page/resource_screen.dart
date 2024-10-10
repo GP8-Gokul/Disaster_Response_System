@@ -3,6 +3,7 @@ import 'package:drs/services/authorization/check_access.dart';
 import 'package:drs/services/api/root_api.dart';
 import 'package:drs/widgets/background_image.dart';
 import 'package:drs/widgets/custom_appbar.dart';
+import 'package:drs/widgets/custom_loading_animation.dart';
 import 'package:drs/widgets/custom_snack_bar.dart';
 import 'package:drs/widgets/custom_text_field.dart';
 import 'package:drs/widgets/search_text_field.dart';
@@ -14,17 +15,20 @@ bool changeInState = false;
 var events = {};
 
 Future<void> getEventIds(String eventController) async {
+
   events.clear();
   List<Map<String, dynamic>> value = await fetchdata('disaster_events');
   for (var event in value) {
     events[event['event_id']] = event['event_name'];
   }
+
   devtools.log(events.toString());
   devtools.log(eventController);
+  
   if (!(checkAcess('resources', " "))) {
-    events.removeWhere(
-        (key, value) => key.toString() != eventController.toString());
+    events.removeWhere((key, value) => key.toString() != eventController.toString());
   }
+
   devtools.log(events.toString());
 }
 
@@ -62,9 +66,8 @@ class _ResourceScreenBState extends State<ResourceScreenB> {
     final query = searchController.text.toLowerCase();
     setState(() {
       filteredData = allData.where((element) {
-        // ignore: non_constant_identifier_names
-        final ResourceName = element['resource_name'].toString().toLowerCase();
-        return ResourceName.contains(query);
+        final resourceName = element['resource_name'].toString().toLowerCase();
+        return resourceName.contains(query);
       }).toList();
     });
   }
@@ -92,10 +95,11 @@ class _ResourceScreenBState extends State<ResourceScreenB> {
         SearchTextField(
             labelText: 'Search Resources',
             hintText: 'Enter item Name',
-            searchController: searchController),
+            searchController: searchController
+        ),
         Expanded(
           child: filteredData.isEmpty
-              ? const Center(child: Text('No items found.'))
+              ? const Center(child: Text('No resource found'),)
               : buildFutureBuilder(),
         ),
         SizedBox(height: 70),
@@ -112,7 +116,7 @@ class _ResourceScreenBState extends State<ResourceScreenB> {
         } else if (snapshot.hasError) {
           return Center(child: Text('Error: ${snapshot.error}'));
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return const Center(child: Text('No resources found.'));
+          return const CustomLoadingAnimation();
         } else {
           return buildListview(snapshot);
         }
@@ -131,6 +135,7 @@ class _ResourceScreenBState extends State<ResourceScreenB> {
             endActionPane: ActionPane(
               motion: const ScrollMotion(),
               children: [
+
                 //Delete Functionality
 
                 SlidableAction(
@@ -139,8 +144,7 @@ class _ResourceScreenBState extends State<ResourceScreenB> {
                   foregroundColor: const Color.fromARGB(255, 238, 230, 230),
                   onPressed: (context) async {
                     if (checkAcess('resources', userName) == true) {
-                      response = await deleteData('resources', 'resource_id',
-                          content['resource_id'].toString());
+                      response = await deleteData('resources', 'resource_id',content['resource_id'].toString());
                       if (response != null) {
                         setState(() {
                           futureGetResources = fetchdata('resources');
@@ -154,9 +158,7 @@ class _ResourceScreenBState extends State<ResourceScreenB> {
                         });
                       }
                     } else {
-                      customSnackBar(
-                          context: context,
-                          message: 'You do not have access to delete .');
+                      customSnackBar(context: context,message: 'You do not have access to delete .');
                     }
                   },
                 ),
@@ -197,14 +199,10 @@ class _ResourceScreenBState extends State<ResourceScreenB> {
           showDialog(
             context: context,
             builder: (BuildContext context) {
-              TextEditingController resourcenamecontroller =
-                  TextEditingController();
-              TextEditingController resourcetypecontroller =
-                  TextEditingController();
-              TextEditingController quantitycontroller =
-                  TextEditingController();
-              TextEditingController availabilityStatusController =
-                  TextEditingController();
+              TextEditingController resourcenamecontroller = TextEditingController();
+              TextEditingController resourcetypecontroller = TextEditingController();
+              TextEditingController quantitycontroller = TextEditingController();
+              TextEditingController availabilityStatusController = TextEditingController();
               TextEditingController eventController = TextEditingController();
 
               getEventIds(eventController.text);
@@ -215,7 +213,8 @@ class _ResourceScreenBState extends State<ResourceScreenB> {
                 titleTextStyle: const TextStyle(
                     color: Colors.white,
                     fontSize: 24,
-                    fontWeight: FontWeight.bold),
+                    fontWeight: FontWeight.bold
+                ),
                 backgroundColor: Colors.grey[900],
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.0),
@@ -228,30 +227,32 @@ class _ResourceScreenBState extends State<ResourceScreenB> {
                         hintText: 'Resource Name',
                         labelText: 'Resource Name',
                         controller: resourcenamecontroller,
-                        readOnly: false),
+                        readOnly: false
+                    ),
                     CustomTextField(
                         hintText: 'Resource Type',
                         labelText: 'Resource Type',
                         controller: resourcetypecontroller,
-                        readOnly: false),
+                        readOnly: false
+                    ),
                     CustomTextField(
                         hintText: 'Quantity',
                         labelText: 'Quantity',
                         controller: quantitycontroller,
-                        readOnly: false),
+                        readOnly: false
+                    ),
                     CustomTextField(
                         hintText: 'Availability Status',
                         labelText: 'Availability Status',
                         controller: availabilityStatusController,
-                        readOnly: false),
+                        readOnly: false
+                    ),
                     Padding(
                       padding: const EdgeInsets.all(4.0),
                       child: FutureBuilder<void>(
                         future: getEventIds(eventController.text),
-                        builder: (BuildContext context,
-                            AsyncSnapshot<void> snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
+                        builder: (BuildContext context,AsyncSnapshot<void> snapshot) {
+                          if (snapshot.connectionState ==ConnectionState.waiting) {
                             return const CircularProgressIndicator();
                           } else if (snapshot.hasError) {
                             return const Text('Error loading events');
@@ -259,25 +260,19 @@ class _ResourceScreenBState extends State<ResourceScreenB> {
                             return DropdownButtonFormField<String>(
                               decoration: InputDecoration(
                                 labelText: 'Event Name',
-                                labelStyle:
-                                    const TextStyle(color: Colors.white),
-                                enabledBorder: const OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.lime),
-                                ),
-                                focusedBorder: const OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: Color.fromARGB(255, 200, 99, 92)),
+                                labelStyle: const TextStyle(color: Colors.white),
+                                enabledBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.lime),),
+                                focusedBorder: const OutlineInputBorder(borderSide: BorderSide(
+                                  color: Color.fromARGB(255, 200, 99, 92)),
                                 ),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10.0),
-                                  borderSide: const BorderSide(
-                                      color: Colors.lime, width: 2.0),
+                                  borderSide: const BorderSide(color: Colors.lime, width: 2.0),
                                 ),
                               ),
                               value: selectedEventId,
                               style: const TextStyle(color: Colors.white),
-                              dropdownColor:
-                                  const Color.fromARGB(255, 38, 36, 36),
+                              dropdownColor:const Color.fromARGB(255, 38, 36, 36),
                               items: events.keys.map((key) {
                                 return DropdownMenuItem<String>(
                                   value: key.toString(),
@@ -301,8 +296,7 @@ class _ResourceScreenBState extends State<ResourceScreenB> {
 
                   TextButton(
                     style: TextButton.styleFrom(backgroundColor: Colors.white),
-                    child: const Text('Cancel',
-                        style: TextStyle(color: Colors.black)),
+                    child: const Text('Cancel',style: TextStyle(color: Colors.black)),
                     onPressed: () {
                       Navigator.pop(context);
                     },
@@ -318,11 +312,9 @@ class _ResourceScreenBState extends State<ResourceScreenB> {
                         style: TextStyle(color: Colors.black)),
                     onPressed: () async {
                       if (resourcenamecontroller.text.isEmpty) {
-                        customSnackBar(
-                            context: context,
-                            message: 'Please Enter Resource Name');
+                        customSnackBar(context: context, message: 'Please Enter Resource Name');
                       } else {
-                        if (checkAcess('resources', userName) == true) {
+                        if (checkAcess('resources', userName)) {
                           devtools.log('inserting data');
                           devtools.log(selectedEventId!);
                           response = await insertData({
@@ -330,8 +322,7 @@ class _ResourceScreenBState extends State<ResourceScreenB> {
                             'resource_name': resourcenamecontroller.text,
                             'resource_type': resourcetypecontroller.text,
                             'quantity': quantitycontroller.text,
-                            'availability_status':
-                                availabilityStatusController.text,
+                            'availability_status': availabilityStatusController.text,
                             'event_id': selectedEventId,
                           });
                           if (response != null) {
@@ -359,9 +350,7 @@ class _ResourceScreenBState extends State<ResourceScreenB> {
             },
           );
         } else {
-          customSnackBar(
-              context: context,
-              message: 'You do not have access to add new resources.');
+          customSnackBar(context: context, message: 'You do not have access to add new resources.');
         }
       },
     );

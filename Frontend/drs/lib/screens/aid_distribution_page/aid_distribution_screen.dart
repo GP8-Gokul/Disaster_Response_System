@@ -261,197 +261,204 @@ class _AidDistributionScreenState extends State<AidDistributionScreen> {
                   borderRadius: BorderRadius.circular(10.0),
                   side: const BorderSide(color: Colors.white, width: 2.0),
                 ),
-                content: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    CustomTextField(
-                        hintText: 'Location',
-                        labelText: 'Location',
-                        controller: locationController,
-                        readOnly: false),
-                    Padding(
-                      padding: const EdgeInsets.all(4.0),
-                      child: FutureBuilder<void>(
-                        future: getEventIds(
-                            locationController.text, eventController.text),
-                        builder: (BuildContext context,
-                            AsyncSnapshot<void> snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return const CircularProgressIndicator();
-                          } else if (snapshot.hasError) {
-                            return const Text('Error loading events');
-                          } else {
-                            return DropdownButtonFormField<String>(
-                              decoration: InputDecoration(
-                                labelText: 'Event Name',
-                                labelStyle:
-                                    const TextStyle(color: Colors.white),
-                                enabledBorder: const OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.lime),
-                                ),
-                                focusedBorder: const OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: Color.fromARGB(255, 200, 99, 92)),
-                                ),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                  borderSide: const BorderSide(
-                                      color: Colors.lime, width: 2.0),
-                                ),
-                              ),
-                              value: selectedEventId,
-                              style: const TextStyle(color: Colors.white),
-                              dropdownColor:
-                                  const Color.fromARGB(255, 38, 36, 36),
-                              items: events.keys.map((key) {
-                                return DropdownMenuItem<String>(
-                                  value: key.toString(),
-                                  child: Text(events[key]!),
-                                );
-                              }).toList(),
-                              onChanged: (String? newValue) {
-                                setState(() {
-                                  selectedEventId = newValue;
-                                });
-                              },
+                content: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      CustomTextField(
+                          hintText: 'Location',
+                          labelText: 'Location',
+                          controller: locationController,
+                          readOnly: false),
+                      Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: TextField(
+                          controller: distributionDateController,
+                          style: TextStyle(color: Colors.white),
+                          decoration: InputDecoration(
+                            hintText: 'Start Date',
+                            labelText: 'Start Date',
+                            labelStyle: TextStyle(color: Colors.white),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(5.0),
+                              borderSide: const BorderSide(color: Colors.lime),
+                            ),
+                          ),
+                          readOnly: true,
+                          onTap: () async {
+                            DateTime? pickedDate = await showDatePicker(
+                              context: context,
+                              initialDate: DateTime.now(),
+                              firstDate: DateTime(1900),
+                              lastDate: DateTime(2100),
                             );
-                          }
-                        },
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.all(4.0),
-                      child: FutureBuilder<void>(
-                        future: getResourceIds(resourceController.text),
-                        builder: (BuildContext context,
-                            AsyncSnapshot<void> snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return const CircularProgressIndicator();
-                          } else if (snapshot.hasError) {
-                            return const Text('Error loading resources');
-                          } else {
-                            return DropdownButtonFormField<String>(
-                              decoration: InputDecoration(
-                                labelText: 'Resource Name',
-                                labelStyle:
-                                    const TextStyle(color: Colors.white),
-                                enabledBorder: const OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.lime),
-                                ),
-                                focusedBorder: const OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: Color.fromARGB(255, 200, 99, 92)),
-                                ),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                  borderSide: const BorderSide(
-                                      color: Colors.lime, width: 2.0),
-                                ),
-                              ),
-                              value: selectedResourceId,
-                              style: const TextStyle(color: Colors.white),
-                              dropdownColor:
-                                  const Color.fromARGB(255, 38, 36, 36),
-                              items: resources.keys.map((key) {
-                                return DropdownMenuItem<String>(
-                                  value: key.toString(),
-                                  child: Text(resources[key]!),
-                                );
-                              }).toList(),
-                              onChanged: (String? newValue) {
-                                setState(() {
-                                  selectedResourceId = newValue!;
-                                });
-                              },
-                            );
-                          }
-                        },
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.all(4.0),
-                      child: FutureBuilder(
-                        future: getVolunteerIds(volunteerController.text),
-                        builder: (BuildContext context,
-                            AsyncSnapshot<void> snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return const CircularProgressIndicator();
-                          } else if (snapshot.hasError) {
-                            return const Text('Error loading volunteers');
-                          } else {
-                            return DropdownButtonFormField<String>(
-                              decoration: InputDecoration(
-                                labelText: 'Volunteer Name',
-                                labelStyle:
-                                    const TextStyle(color: Colors.white),
-                                enabledBorder: const OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.lime),
-                                ),
-                                focusedBorder: const OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: Color.fromARGB(255, 200, 99, 92)),
-                                ),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                  borderSide: const BorderSide(
-                                      color: Colors.lime, width: 2.0),
-                                ),
-                              ),
-                              value: selectedVolunteerId,
-                              style: const TextStyle(color: Colors.white),
-                              dropdownColor:
-                                  const Color.fromARGB(255, 38, 36, 36),
-                              items: volunteers.keys.map((key) {
-                                return DropdownMenuItem<String>(
-                                  value: key.toString(),
-                                  child: Text(volunteers[key]!),
-                                );
-                              }).toList(),
-                              onChanged: (String? newValue) {
-                                setState(() {
-                                  selectedVolunteerId = newValue!;
-                                });
-                              },
-                            );
-                          }
-                        },
-                      ),
-                    ),
-                    CustomTextField(
-                        hintText: 'Quantity Distributed',
-                        labelText: 'Quantity Distributed',
-                        controller: quantityDistributedController,
-                        readOnly: false),
-                    TextField(
-                      controller: distributionDateController,
-                      style: TextStyle(color: Colors.white),
-                      decoration: InputDecoration(
-                        hintText: 'Start Date',
-                        labelText: 'Start Date',
-                        labelStyle: TextStyle(color: Colors.white),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5.0),
-                          borderSide: const BorderSide(color: Colors.lime),
+                            if (pickedDate != null) {
+                              distributionDateController.text =
+                                  pickedDate.toIso8601String().substring(0, 10);
+                            }
+                          },
                         ),
                       ),
-                      readOnly: true,
-                      onTap: () async {
-                        DateTime? pickedDate = await showDatePicker(
-                          context: context,
-                          initialDate: DateTime.now(),
-                          firstDate: DateTime(1900),
-                          lastDate: DateTime(2100),
-                        );
-                        if (pickedDate != null) {
-                          distributionDateController.text =
-                              pickedDate.toIso8601String().substring(0, 10);
-                        }
-                      },
-                    ),
-                  ],
+                      CustomTextField(
+                          hintText: 'Quantity Distributed',
+                          labelText: 'Quantity Distributed',
+                          controller: quantityDistributedController,
+                          readOnly: false
+                        ),
+                      Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: FutureBuilder<void>(
+                          future: getEventIds(
+                              locationController.text, eventController.text),
+                          builder: (BuildContext context,
+                              AsyncSnapshot<void> snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const CircularProgressIndicator();
+                            } else if (snapshot.hasError) {
+                              return const Text('Error loading events');
+                            } else {
+                              return DropdownButtonFormField<String>(
+                                decoration: InputDecoration(
+                                  labelText: 'Event Name',
+                                  labelStyle:
+                                      const TextStyle(color: Colors.white),
+                                  enabledBorder: const OutlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.lime),
+                                  ),
+                                  focusedBorder: const OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: Color.fromARGB(255, 200, 99, 92)),
+                                  ),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    borderSide: const BorderSide(
+                                        color: Colors.lime, width: 2.0),
+                                  ),
+                                ),
+                                value: selectedEventId,
+                                style: const TextStyle(color: Colors.white),
+                                dropdownColor:
+                                    const Color.fromARGB(255, 38, 36, 36),
+                                items: events.keys.map((key) {
+                                  return DropdownMenuItem<String>(
+                                    value: key.toString(),
+                                    child: Text(events[key]!),
+                                  );
+                                }).toList(),
+                                onChanged: (String? newValue) {
+                                  setState(() {
+                                    selectedEventId = newValue;
+                                  });
+                                },
+                              );
+                            }
+                          },
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.all(4.0),
+                        child: FutureBuilder<void>(
+                          future: getResourceIds(resourceController.text),
+                          builder: (BuildContext context,
+                              AsyncSnapshot<void> snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const CircularProgressIndicator();
+                            } else if (snapshot.hasError) {
+                              return const Text('Error loading resources');
+                            } else {
+                              return DropdownButtonFormField<String>(
+                                decoration: InputDecoration(
+                                  labelText: 'Resource Name',
+                                  labelStyle:
+                                      const TextStyle(color: Colors.white),
+                                  enabledBorder: const OutlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.lime),
+                                  ),
+                                  focusedBorder: const OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: Color.fromARGB(255, 200, 99, 92)),
+                                  ),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    borderSide: const BorderSide(
+                                        color: Colors.lime, width: 2.0),
+                                  ),
+                                ),
+                                value: selectedResourceId,
+                                style: const TextStyle(color: Colors.white),
+                                dropdownColor:
+                                    const Color.fromARGB(255, 38, 36, 36),
+                                items: resources.keys.map((key) {
+                                  return DropdownMenuItem<String>(
+                                    value: key.toString(),
+                                    child: Text(resources[key]!),
+                                  );
+                                }).toList(),
+                                onChanged: (String? newValue) {
+                                  setState(() {
+                                    selectedResourceId = newValue!;
+                                  });
+                                },
+                              );
+                            }
+                          },
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.all(4.0),
+                        child: FutureBuilder(
+                          future: getVolunteerIds(volunteerController.text),
+                          builder: (BuildContext context,
+                              AsyncSnapshot<void> snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const CircularProgressIndicator();
+                            } else if (snapshot.hasError) {
+                              return const Text('Error loading volunteers');
+                            } else {
+                              return DropdownButtonFormField<String>(
+                                decoration: InputDecoration(
+                                  labelText: 'Volunteer Name',
+                                  labelStyle:
+                                      const TextStyle(color: Colors.white),
+                                  enabledBorder: const OutlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.lime),
+                                  ),
+                                  focusedBorder: const OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: Color.fromARGB(255, 200, 99, 92)),
+                                  ),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    borderSide: const BorderSide(
+                                        color: Colors.lime, width: 2.0),
+                                  ),
+                                ),
+                                value: selectedVolunteerId,
+                                style: const TextStyle(color: Colors.white),
+                                dropdownColor:
+                                    const Color.fromARGB(255, 38, 36, 36),
+                                items: volunteers.keys.map((key) {
+                                  return DropdownMenuItem<String>(
+                                    value: key.toString(),
+                                    child: Text(volunteers[key]!),
+                                  );
+                                }).toList(),
+                                onChanged: (String? newValue) {
+                                  setState(() {
+                                    selectedVolunteerId = newValue!;
+                                  });
+                                },
+                              );
+                            }
+                          },
+                        ),
+                      ),
+                      
+                    ],
+                  ),
                 ),
                 actions: <Widget>[
                   // Insert Cancel Button

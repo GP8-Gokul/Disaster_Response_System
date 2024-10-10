@@ -8,21 +8,40 @@ import 'package:flutter/material.dart';
 
 dynamic response;
 var events = {};
-Future<void> getEventIds(String resourceType, String eventController) async {
+Future<void> getEventIdsforEdit(String resourceType, String eventController) async {
   events.clear();
   List<Map<String, dynamic>> value = await fetchdata('disaster_events');
   for (var event in value) {
     events[event['event_id']] = event['event_name'];
   }
+
   devtools.log(events.toString());
   devtools.log(eventController);
   devtools.log(resourceType);
-  if (checkAcess('resources', userName) == true) {
-    events.removeWhere(
-        (key, value) => key.toString() != eventController.toString());
+  if (!(checkAcess('resources', userName))) {
+    events.removeWhere((key, value) => key.toString() != eventController.toString());
   }
+
   devtools.log(events.toString());
 }
+
+Future<void> getEventIdsNoEdit(String resourceType, String eventController) async {
+  events.clear();
+  List<Map<String, dynamic>> value = await fetchdata('disaster_events');
+  for (var event in value) {
+    events[event['event_id']] = event['event_name'];
+  }
+
+  devtools.log(events.toString());
+  devtools.log(eventController);
+  devtools.log(resourceType);
+  if (checkAcess('resources', userName)) {
+    events.removeWhere((key, value) => key.toString() != eventController.toString());
+  }
+
+  devtools.log(events.toString());
+}
+
 
 class ResourceListTile extends StatefulWidget {
   final dynamic content;
@@ -42,8 +61,7 @@ class ResourceListTileState extends State<ResourceListTile> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(
-            color: const Color.fromARGB(255, 153, 153, 43), width: 2.0),
+        border: Border.all(color: const Color.fromARGB(255, 153, 153, 43), width: 2.0),
         borderRadius: BorderRadius.circular(25.0),
       ),
 
@@ -53,37 +71,31 @@ class ResourceListTileState extends State<ResourceListTile> {
         title: Text("Name: ${widget.content['resource_name']}"),
         subtitle: Text("ID: ${widget.content['resource_id']}"),
         tileColor: const Color.fromARGB(255, 255, 255, 255).withOpacity(0.05),
-        contentPadding:
-            const EdgeInsets.symmetric(vertical: 1.0, horizontal: 16.0),
+        contentPadding: const EdgeInsets.symmetric(vertical: 1.0, horizontal: 16.0),
         textColor: const Color.fromARGB(255, 255, 255, 255),
-        titleTextStyle:
-            const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-        subtitleTextStyle:
-            const TextStyle(fontSize: 14.0, fontWeight: FontWeight.w500),
-        shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(25.0)),
+        titleTextStyle: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+        subtitleTextStyle: const TextStyle(fontSize: 14.0, fontWeight: FontWeight.w500),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25.0)),
         onTap: () {
+
           //Additional Details of Resource
 
           bool readonly = true;
           showDialog(
             context: context,
             builder: (BuildContext context) {
-              TextEditingController resourcenamecontroller =
-                  TextEditingController(
-                      text: widget.content['resource_name'].toString());
+              TextEditingController resourcenamecontroller = 
+                  TextEditingController(text: widget.content['resource_name'].toString());
               TextEditingController resourcetypecontroller =
-                  TextEditingController(
-                      text: widget.content['resource_type'].toString());
-              TextEditingController quantitycontroller = TextEditingController(
-                  text: widget.content['quantity'].toString());
+                  TextEditingController(text: widget.content['resource_type'].toString());
+              TextEditingController quantitycontroller = 
+                  TextEditingController(text: widget.content['quantity'].toString());
               TextEditingController availabilityStatusController =
-                  TextEditingController(
-                      text: widget.content['availability_status'].toString());
-              TextEditingController eventController = TextEditingController(
-                  text: widget.content['event_id'].toString());
+                  TextEditingController(text: widget.content['availability_status'].toString());
+              TextEditingController eventController = 
+                  TextEditingController(text: widget.content['event_id'].toString());
 
-              getEventIds(resourcenamecontroller.text, eventController.text);
+              getEventIdsNoEdit(resourcenamecontroller.text, eventController.text);
               String? selectedEventId = eventController.text;
 
               return StatefulBuilder(
@@ -97,37 +109,49 @@ class ResourceListTileState extends State<ResourceListTile> {
                     backgroundColor: const Color.fromARGB(255, 0, 0, 0),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0),
-                      side: const BorderSide(
-                          color: Color.fromARGB(255, 255, 255, 255),
-                          width: 3.0),
+                      side: const BorderSide(color: Color.fromARGB(255, 255, 255, 255), width: 3.0),
                     ),
                     content: SingleChildScrollView(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisSize: MainAxisSize.min,
                         children: [
+                          CustomText(text: 'Resource ID: ${widget.content['resource_id']}'),
+                          const SizedBox(height: 12),
                           Row(
                             children: [
-                              CustomText(
-                                  text:
-                                      'Resource ID: ${widget.content['resource_id']}'),
-                              Spacer(),
-                              Container(
-                                height: 40,
-                                width: 80,
-                                decoration: BoxDecoration(
-                                  color: Colors.green,
-                                  shape: BoxShape.circle,
-                                ),
+                              const Text(
+                              'Availability Status:',
+                              style: TextStyle(color: Colors.white),
+                              ),
+                              Checkbox(
+                              value: availabilityStatusController.text.toLowerCase() == 'yes',
+                              onChanged: readonly
+                              ? null
+                              : (bool? newValue) {
+                                setState(() {
+                                availabilityStatusController.text = newValue! ? 'Yes' : 'No';
+                                });
+                                },
+                              activeColor: Colors.green,
+                              checkColor: Colors.white,
+                              ),
+                              Text(
+                              availabilityStatusController.text,
+                              style: TextStyle(
+                              color: availabilityStatusController.text.toLowerCase() == 'yes'
+                                ? Colors.green
+                                : Colors.red,
+                              ),
                               ),
                             ],
                           ),
-                          const SizedBox(height: 12),
                           CustomTextField(
                               hintText: '${widget.content['resource_name']}',
                               labelText: 'resource Name',
                               controller: resourcenamecontroller,
-                              readOnly: readonly),
+                              readOnly: readonly
+                          ),
                           CustomTextField(
                             hintText: '${widget.content['resource_type']}',
                             labelText: 'Resource type',
@@ -140,60 +164,87 @@ class ResourceListTileState extends State<ResourceListTile> {
                             controller: quantitycontroller,
                             readOnly: readonly,
                           ),
-                          CustomTextField(
-                            hintText:
-                                '${widget.content['availability_status']}',
-                            labelText: 'Availability Status',
-                            controller: availabilityStatusController,
-                            readOnly: readonly,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(4.0),
-                            child: FutureBuilder<void>(
-                              future: getEventIds(resourcetypecontroller.text,
-                                  eventController.text),
-                              builder: (BuildContext context,
-                                  AsyncSnapshot<void> snapshot) {
-                                if (snapshot.connectionState ==
-                                    ConnectionState.waiting) {
-                                  return const CircularProgressIndicator();
-                                } else if (snapshot.hasError) {
-                                  return const Text('Error loading events');
-                                } else {
-                                  return DropdownButtonFormField<String>(
-                                    decoration: InputDecoration(
-                                      labelText: 'Event Name',
-                                      labelStyle:
-                                          const TextStyle(color: Colors.white),
-                                      enabledBorder: const OutlineInputBorder(
-                                        borderSide:
-                                            BorderSide(color: Colors.lime),
-                                      ),
-                                      focusedBorder: const OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: Color.fromARGB(
-                                                255, 200, 99, 92)),
-                                      ),
+                          Visibility(
+                            visible: readonly,
+                            child: Padding(
+                                    padding: const EdgeInsets.all(4.0),
+                                    child: FutureBuilder<void>(
+                                      future: getEventIdsNoEdit(resourcenamecontroller.text, eventController.text),
+                                      builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
+                                        if (snapshot.connectionState == ConnectionState.waiting) {
+                                          return const CircularProgressIndicator();
+                                        } else if (snapshot.hasError) {
+                                          return const Text('Error loading events');
+                                        } else{
+                                          return DropdownButtonFormField<String>(
+                                            decoration: InputDecoration(
+                                              labelText: 'Event Name',
+                                              labelStyle: const TextStyle(color: Colors.white),
+                                              enabledBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.lime),),
+                                              focusedBorder: const OutlineInputBorder(borderSide: BorderSide(
+                                                    color: Color.fromARGB(255, 200, 99, 92)),
+                                              ),
+                                            ),
+                                            value: selectedEventId,
+                                            style: const TextStyle(color: Colors.white),
+                                            dropdownColor:const Color.fromARGB(255, 38, 36, 36),
+                                            items: events.keys.map((key) {
+                                              return DropdownMenuItem<String>(
+                                                value: key.toString(),
+                                                child: Text(events[key]!),
+                                              );
+                                            }).toList(),
+                                            onChanged: (String? newValue) {
+                                              setState(() {
+                                                selectedEventId = newValue;
+                                              });
+                                            },
+                                          );
+                                        }
+                                      },
                                     ),
-                                    value: selectedEventId,
-                                    style: const TextStyle(color: Colors.white),
-                                    dropdownColor:
-                                        const Color.fromARGB(255, 38, 36, 36),
-                                    items: events.keys.map((key) {
-                                      return DropdownMenuItem<String>(
-                                        value: key.toString(),
-                                        child: Text(events[key]!),
-                                      );
-                                    }).toList(),
-                                    onChanged: (String? newValue) {
-                                      setState(() {
-                                        selectedEventId = newValue;
-                                      });
-                                    },
-                                  );
-                                }
-                              },
-                            ),
+                                  ),
+                          ),
+                          Visibility(
+                            visible: !readonly,
+                            child: Padding(
+                                    padding: const EdgeInsets.all(4.0),
+                                    child: FutureBuilder<void>(
+                                      future: getEventIdsforEdit(resourcenamecontroller.text, eventController.text),
+                                      builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
+                                        if (snapshot.connectionState == ConnectionState.waiting) {
+                                          return const CircularProgressIndicator();
+                                        } else if (snapshot.hasError) {
+                                          return const Text('Error loading events');
+                                        } else{
+                                          return DropdownButtonFormField<String>(
+                                            decoration: InputDecoration(
+                                              labelText: 'Event Name',
+                                              labelStyle: const TextStyle(color: Colors.white),
+                                              enabledBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.lime),),
+                                              focusedBorder: const OutlineInputBorder(borderSide: BorderSide(
+                                                    color: Color.fromARGB(255, 200, 99, 92)),
+                                              ),
+                                            ),
+                                            value: selectedEventId,
+                                            style: const TextStyle(color: Colors.white),
+                                            dropdownColor:const Color.fromARGB(255, 38, 36, 36),
+                                            items: events.keys.map((key) {
+                                              return DropdownMenuItem<String>(
+                                                value: key.toString(),
+                                                child: Text(events[key]!),
+                                              );
+                                            }).toList(),
+                                            onChanged: (String? newValue) {
+                                              setState(() {
+                                                selectedEventId = newValue;
+                                              });
+                                            },
+                                          );
+                                        }
+                                      },
+                                    ),
+                                  ),
                           ),
                         ],
                       ),
@@ -202,20 +253,16 @@ class ResourceListTileState extends State<ResourceListTile> {
                       //Edit Functionality
 
                       TextButton(
-                        style: TextButton.styleFrom(
-                          backgroundColor: Colors.white,
-                        ),
+                        style: TextButton.styleFrom(backgroundColor: Colors.white),
                         child: const Icon(Icons.edit, color: Colors.blue),
                         onPressed: () {
-                          if (checkAcess('resources', userName) == true) {
+                          if (checkAcess('resources', userName)) {
                             setState(() {
                               readonly = !readonly;
                             });
                           } else {
                             Navigator.pop(context);
-                            customSnackBar(
-                                context: context,
-                                message: 'You cannot Edit this data');
+                            customSnackBar(context: context, message: 'You cannot Edit this data');
                           }
                         },
                       ),
@@ -223,26 +270,22 @@ class ResourceListTileState extends State<ResourceListTile> {
                       //Update Functionality
 
                       TextButton(
-                        style: TextButton.styleFrom(
-                          backgroundColor: Colors.white,
-                        ),
+                        style: TextButton.styleFrom(backgroundColor: Colors.white,),
                         child: const Icon(Icons.update, color: Colors.blue),
                         onPressed: () async {
                           if (selectedEventId == null) {
-                            customSnackBar(
-                                context: context,
-                                message: 'Please select an event ID');
+                            customSnackBar(context: context, message: 'Please select an event ID');
                           }
-                          if (checkAcess('resources', userName) == true) {
+                          if (checkAcess('resources', userName)) {
                             devtools.log(resourcenamecontroller.text);
                             response = await updateData(
                               {
                                 'table': 'resources',
+                                'resource_id': widget.content['resource_id'],
                                 'resource_name': resourcenamecontroller.text,
                                 'resource_type': resourcetypecontroller.text,
                                 'quantity': quantitycontroller.text,
-                                'availability_status':
-                                    availabilityStatusController.text,
+                                'availability_status': availabilityStatusController.text,
                                 'event_id': selectedEventId,
                               },
                             );
@@ -252,9 +295,7 @@ class ResourceListTileState extends State<ResourceListTile> {
                             }
                           } else {
                             Navigator.pop(context);
-                            customSnackBar(
-                                context: context,
-                                message: 'You cannot Update this data');
+                            customSnackBar( context: context, message: 'You cannot Update this data');
                           }
                         },
                       ),
