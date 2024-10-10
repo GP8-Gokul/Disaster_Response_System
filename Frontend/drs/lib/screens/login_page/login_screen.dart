@@ -125,7 +125,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           height: 50,
                           child: RiveAnimation.asset(
                             'assets/rive/loading_symbol.riv',
-                            fit: BoxFit.cover,
                           ),
                         )
                       : ElevatedButton(
