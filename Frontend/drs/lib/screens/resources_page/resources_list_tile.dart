@@ -5,7 +5,6 @@ import 'package:drs/widgets/custom_text.dart';
 import 'package:drs/widgets/custom_text_field.dart';
 import 'dart:developer' as devtools show log;
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 dynamic response;
 var events = {};
@@ -23,21 +22,6 @@ Future<void> getEventIds(String resourceType, String eventController) async {
         (key, value) => key.toString() != eventController.toString());
   }
   devtools.log(events.toString());
-}
-
-void sendMessageToWhatsApp(
-    String phoneNumber, String message, BuildContext context) async {
-  final Uri whatsappUri = Uri.parse(
-      "https://wa.me/$phoneNumber?text=${Uri.encodeComponent(message)}");
-  if (await canLaunchUrl(whatsappUri)) {
-    await launchUrl(whatsappUri);
-  } else {
-    if (context.mounted) {
-      devtools.log('Could not launch WhatsApp with URL: $whatsappUri');
-      Navigator.pop(context);
-      customSnackBar(context: context, message: 'Could not launch WhatsApp');
-    }
-  }
 }
 
 class ResourceListTile extends StatefulWidget {
@@ -63,7 +47,7 @@ class ResourceListTileState extends State<ResourceListTile> {
         borderRadius: BorderRadius.circular(25.0),
       ),
 
-      //Main details of volunteer
+      //Main details of Resource
 
       child: ListTile(
         title: Text("Name: ${widget.content['resource_name']}"),
@@ -79,7 +63,7 @@ class ResourceListTileState extends State<ResourceListTile> {
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(25.0)),
         onTap: () {
-          //Additional Details of volunteer
+          //Additional Details of Resource
 
           bool readonly = true;
           showDialog(
@@ -93,7 +77,7 @@ class ResourceListTileState extends State<ResourceListTile> {
                       text: widget.content['resource_type'].toString());
               TextEditingController quantitycontroller = TextEditingController(
                   text: widget.content['quantity'].toString());
-              TextEditingController availability_status_controller =
+              TextEditingController availabilityStatusController =
                   TextEditingController(
                       text: widget.content['availability_status'].toString());
               TextEditingController eventController = TextEditingController(
@@ -160,7 +144,7 @@ class ResourceListTileState extends State<ResourceListTile> {
                             hintText:
                                 '${widget.content['availability_status']}',
                             labelText: 'Availability Status',
-                            controller: availability_status_controller,
+                            controller: availabilityStatusController,
                             readOnly: readonly,
                           ),
                           Padding(
@@ -257,8 +241,7 @@ class ResourceListTileState extends State<ResourceListTile> {
                                 'resource_name': resourcenamecontroller.text,
                                 'resource_type': resourcetypecontroller.text,
                                 'quantity': quantitycontroller.text,
-                                'availability_status':
-                                    availability_status_controller.text,
+                                'availability_status': availabilityStatusController.text,
                                 'event_id': selectedEventId,
                               },
                             );

@@ -134,42 +134,43 @@ class IncidentReportListTileState extends State<IncidentReportListTile> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                              CustomText(
-                                text:
-                                  'Report ID: ${widget.content['report_id']}'),
+                              CustomText(text:'Report ID: ${widget.content['report_id']}'),
                               const SizedBox(height: 12),
                               CustomTextField(
                                 hintText: '${widget.content['report_name']}',
                                 labelText: 'Report Name',
                                 controller: incidentReportNameController,
                                 readOnly: readonly),
-                              TextField(
-                                controller: incidentReportDateController,
-                                style: TextStyle(color: Colors.white),
-                                decoration: InputDecoration(
-                                hintText: 'Start Date',
-                                labelText: 'Start Date',
-                                labelStyle: TextStyle(color: Colors.white),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(5.0),
-                                  borderSide:
-                                    const BorderSide(color: Colors.lime),
+                              Padding(
+                                padding: const EdgeInsets.all(4.0),
+                                child: TextField(
+                                  controller: incidentReportDateController,
+                                  style: TextStyle(color: Colors.white),
+                                  decoration: InputDecoration(
+                                  hintText: 'Start Date',
+                                  labelText: 'Start Date',
+                                  labelStyle: TextStyle(color: Colors.white),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(5.0),
+                                    borderSide:
+                                      const BorderSide(color: Colors.lime),
+                                  ),
+                                  ),
+                                  readOnly: readonly,
+                                  onTap: () async {
+                                  DateTime? pickedDate = await showDatePicker(
+                                    context: context,
+                                    initialDate: DateTime.now(),
+                                    firstDate: DateTime(1900),
+                                    lastDate: DateTime(2100),
+                                  );
+                                  if (pickedDate != null) {
+                                    incidentReportDateController.text = pickedDate
+                                      .toIso8601String()
+                                      .substring(0, 10);
+                                  }
+                                  },
                                 ),
-                                ),
-                                readOnly: readonly,
-                                onTap: () async {
-                                DateTime? pickedDate = await showDatePicker(
-                                  context: context,
-                                  initialDate: DateTime.now(),
-                                  firstDate: DateTime(1900),
-                                  lastDate: DateTime(2100),
-                                );
-                                if (pickedDate != null) {
-                                  incidentReportDateController.text = pickedDate
-                                    .toIso8601String()
-                                    .substring(0, 10);
-                                }
-                                },
                               ),
                               CustomTextField(
                                 hintText: '${widget.content['reported_by']}',
