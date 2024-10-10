@@ -93,7 +93,7 @@ class ResourceListTileState extends State<ResourceListTile> {
                       text: widget.content['resource_type'].toString());
               TextEditingController quantitycontroller = TextEditingController(
                   text: widget.content['quantity'].toString());
-              TextEditingController availability_status_controller =
+              TextEditingController availabilityStatusController =
                   TextEditingController(
                       text: widget.content['availability_status'].toString());
               TextEditingController eventController = TextEditingController(
@@ -160,7 +160,7 @@ class ResourceListTileState extends State<ResourceListTile> {
                             hintText:
                                 '${widget.content['availability_status']}',
                             labelText: 'Availability Status',
-                            controller: availability_status_controller,
+                            controller: availabilityStatusController,
                             readOnly: readonly,
                           ),
                           Padding(
@@ -258,7 +258,7 @@ class ResourceListTileState extends State<ResourceListTile> {
                                 'resource_type': resourcetypecontroller.text,
                                 'quantity': quantitycontroller.text,
                                 'availability_status':
-                                    availability_status_controller.text,
+                                    availabilityStatusController.text,
                                 'event_id': selectedEventId,
                               },
                             );

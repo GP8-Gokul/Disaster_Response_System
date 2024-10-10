@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:drs/services/api/login_api.dart';
 import 'package:drs/screens/main_menu_page/main_menu_screen.dart';
 import 'dart:developer' as devtools show log;
+import 'package:rive/rive.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -31,6 +32,12 @@ class _LoginScreenState extends State<LoginScreen> {
     String password = _passwordController.text;
 
     try {
+      if (username.isEmpty || password.isEmpty) {
+        setState(() {
+          _errorMessage = 'Please fill in all fields';
+        });
+        return;
+      }
       var response = await loginUser(username, password);
       devtools.log(response.statusCode.toString());
       if (response.statusCode == 200) {
@@ -43,7 +50,7 @@ class _LoginScreenState extends State<LoginScreen> {
         );
       } else {
         setState(() {
-          _errorMessage = 'Password Mismatch';
+          _errorMessage = 'Invalid username or password';
         });
       }
     } catch (e) {
@@ -92,7 +99,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 30),
                   _isLoading
-                      ? const CircularProgressIndicator()
+                      ? const SizedBox.shrink()
                       : ElevatedButton(
                           onPressed: login,
                           style: ElevatedButton.styleFrom(
@@ -113,7 +120,14 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                   const SizedBox(height: 30),
                   _isLoading
-                      ? const SizedBox.shrink()
+                      ? const SizedBox(
+                          width: 50,
+                          height: 50,
+                          child: RiveAnimation.asset(
+                            'assets/rive/loading_symbol.riv',
+                            fit: BoxFit.cover,
+                          ),
+                        )
                       : ElevatedButton(
                           onPressed: () async {
                             userRole = 'guest';

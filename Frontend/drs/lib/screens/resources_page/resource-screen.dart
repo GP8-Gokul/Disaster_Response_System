@@ -62,6 +62,7 @@ class _ResourceScreenBState extends State<ResourceScreenB> {
     final query = searchController.text.toLowerCase();
     setState(() {
       filteredData = allData.where((element) {
+        // ignore: non_constant_identifier_names
         final ResourceName = element['resource_name'].toString().toLowerCase();
         return ResourceName.contains(query);
       }).toList();
@@ -202,7 +203,7 @@ class _ResourceScreenBState extends State<ResourceScreenB> {
                   TextEditingController();
               TextEditingController quantitycontroller =
                   TextEditingController();
-              TextEditingController availability_status_controller =
+              TextEditingController availabilityStatusController =
                   TextEditingController();
               TextEditingController eventController = TextEditingController();
 
@@ -241,7 +242,7 @@ class _ResourceScreenBState extends State<ResourceScreenB> {
                     CustomTextField(
                         hintText: 'Availability Status',
                         labelText: 'Availability Status',
-                        controller: availability_status_controller,
+                        controller: availabilityStatusController,
                         readOnly: false),
                     Padding(
                       padding: const EdgeInsets.all(4.0),
@@ -330,7 +331,7 @@ class _ResourceScreenBState extends State<ResourceScreenB> {
                             'resource_type': resourcetypecontroller.text,
                             'quantity': quantitycontroller.text,
                             'availability_status':
-                                availability_status_controller.text,
+                                availabilityStatusController.text,
                             'event_id': selectedEventId,
                           });
                           if (response != null) {
