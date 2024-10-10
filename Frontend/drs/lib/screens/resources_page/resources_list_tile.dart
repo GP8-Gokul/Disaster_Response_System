@@ -242,7 +242,7 @@ class ResourceListTileState extends State<ResourceListTile> {
                                 'resource_type': resourcetypecontroller.text,
                                 'quantity': quantitycontroller.text,
                                 'availability_status':
-                                    availability_status_controller.text,
+                                    availabilityStatusController.text,
                                 'event_id': selectedEventId,
                               },
                             );
