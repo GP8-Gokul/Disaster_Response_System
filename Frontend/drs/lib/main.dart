@@ -3,10 +3,6 @@ import 'package:drs/screens/disaster_events_page/disaster_events_screen.dart';
 import 'package:drs/screens/Incident_reports_page/incident_reports_screen.dart';
 import 'package:drs/screens/main_menu_page/main_menu_screen.dart';
 import 'package:drs/screens/resources_page/resource-screen.dart';
-<<<<<<< Updated upstream
-=======
-//import 'package:drs/screens/resources_page/resource-screen.dart';
->>>>>>> Stashed changes
 import 'package:drs/screens/volunteers_page/volunteers_screen.dart';
 import 'package:drs/screens/login_page/login_screen.dart';
 import 'package:flutter/material.dart';
