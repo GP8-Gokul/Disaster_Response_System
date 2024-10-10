@@ -89,7 +89,7 @@ class IncidentReportListTileState extends State<IncidentReportListTile> {
                   return AlertDialog(
                     title: const Text('Report Details',
                         style: TextStyle(
-                            color: Colors.white,
+                            color: Colors.lime,
                             fontSize: 24,
                             fontWeight: FontWeight.bold)),
                     backgroundColor: const Color.fromARGB(255, 0, 0, 0),
@@ -104,104 +104,138 @@ class IncidentReportListTileState extends State<IncidentReportListTile> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          CustomText(
-                              text:
-                                  'Report ID: ${widget.content['report_id']}'),
-                          const SizedBox(height: 12),
-                          CustomTextField(
-                              hintText: '${widget.content['report_name']}',
-                              labelText: 'Report Name',
-                              controller: incidentReportNameController,
-                              readOnly: readonly),
-                          TextField(
-                            controller: incidentReportDateController,
-                            style: TextStyle(color: Colors.white),
-                            decoration: InputDecoration(
-                              hintText: 'Start Date',
-                              labelText: 'Start Date',
-                              labelStyle: TextStyle(color: Colors.white),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(5.0),
-                                borderSide:
-                                    const BorderSide(color: Colors.lime),
-                              ),
+                            Visibility(
+                            visible: readonly,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                              Divider(color: Colors.white),
+                              Center(child: Text(widget.content['report_name'].toString().toUpperCase(),
+                                style: const TextStyle(
+                                  fontSize: 24, 
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white
+                                  ),
+                              )),
+                              Divider(color: Colors.white),
+                              CustomText(text: 'Date: ${widget.content['report_date']}'),
+                              const SizedBox(height: 6),
+                              CustomText(text: 'Reported By: ${widget.content['reported_by']}'),
+                              const SizedBox(height: 6),
+                              Divider(color: Colors.grey,),
+                              CustomText(text: '${widget.content['description']}'),
+                              Divider(color: Colors.grey,),
+                              const SizedBox(height: 15),
+                              ],
                             ),
-                            readOnly: readonly,
-                            onTap: () async {
-                              DateTime? pickedDate = await showDatePicker(
-                                context: context,
-                                initialDate: DateTime.now(),
-                                firstDate: DateTime(1900),
-                                lastDate: DateTime(2100),
-                              );
-                              if (pickedDate != null) {
-                                incidentReportDateController.text = pickedDate
+                            ),
+                            Visibility(
+                            visible: !readonly,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                              CustomText(
+                                text:
+                                  'Report ID: ${widget.content['report_id']}'),
+                              const SizedBox(height: 12),
+                              CustomTextField(
+                                hintText: '${widget.content['report_name']}',
+                                labelText: 'Report Name',
+                                controller: incidentReportNameController,
+                                readOnly: readonly),
+                              TextField(
+                                controller: incidentReportDateController,
+                                style: TextStyle(color: Colors.white),
+                                decoration: InputDecoration(
+                                hintText: 'Start Date',
+                                labelText: 'Start Date',
+                                labelStyle: TextStyle(color: Colors.white),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(5.0),
+                                  borderSide:
+                                    const BorderSide(color: Colors.lime),
+                                ),
+                                ),
+                                readOnly: readonly,
+                                onTap: () async {
+                                DateTime? pickedDate = await showDatePicker(
+                                  context: context,
+                                  initialDate: DateTime.now(),
+                                  firstDate: DateTime(1900),
+                                  lastDate: DateTime(2100),
+                                );
+                                if (pickedDate != null) {
+                                  incidentReportDateController.text = pickedDate
                                     .toIso8601String()
                                     .substring(0, 10);
-                              }
-                            },
-                          ),
-                          CustomTextField(
-                            hintText: '${widget.content['reported_by']}',
-                            labelText: 'Reported By',
-                            controller: incidentReportedByController,
-                            readOnly: readonly,
-                          ),
-                          CustomTextField(
-                            hintText: '${widget.content['description']}',
-                            labelText: 'Description',
-                            controller: incidentReportDescriptionController,
-                            readOnly: readonly,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(4.0),
-                            child: FutureBuilder<void>(
-                              future: getEventIds(
-                                  incidentReportNameController.text,
-                                  eventController.text),
-                              builder: (BuildContext context,
-                                  AsyncSnapshot<void> snapshot) {
-                                if (snapshot.connectionState ==
-                                    ConnectionState.waiting) {
-                                  return const CircularProgressIndicator();
-                                } else if (snapshot.hasError) {
-                                  return const Text('Error loading events');
-                                } else {
-                                  return DropdownButtonFormField<String>(
-                                    decoration: InputDecoration(
-                                      labelText: 'Event Name',
-                                      labelStyle:
-                                          const TextStyle(color: Colors.white),
-                                      enabledBorder: const OutlineInputBorder(
-                                        borderSide:
-                                            BorderSide(color: Colors.lime),
-                                      ),
-                                      focusedBorder: const OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: Color.fromARGB(
-                                                255, 200, 99, 92)),
-                                      ),
-                                    ),
-                                    value: selectedEventId,
-                                    style: const TextStyle(color: Colors.white),
-                                    dropdownColor:
-                                        const Color.fromARGB(255, 38, 36, 36),
-                                    items: events.keys.map((key) {
-                                      return DropdownMenuItem<String>(
-                                        value: key.toString(),
-                                        child: Text(events[key]!),
-                                      );
-                                    }).toList(),
-                                    onChanged: (String? newValue) {
-                                      setState(() {
-                                        selectedEventId = newValue;
-                                      });
-                                    },
-                                  );
                                 }
-                              },
+                                },
+                              ),
+                              CustomTextField(
+                                hintText: '${widget.content['reported_by']}',
+                                labelText: 'Reported By',
+                                controller: incidentReportedByController,
+                                readOnly: readonly,
+                              ),
+                              CustomTextField(
+                                hintText: '${widget.content['description']}',
+                                labelText: 'Description',
+                                controller: incidentReportDescriptionController,
+                                readOnly: readonly,
+                              ),
+                              Padding(
+                                  padding: const EdgeInsets.all(4.0),
+                                  child: FutureBuilder<void>(
+                                    future: getEventIds(
+                                        incidentReportNameController.text,
+                                        eventController.text),
+                                    builder: (BuildContext context,
+                                        AsyncSnapshot<void> snapshot) {
+                                      if (snapshot.connectionState ==
+                                          ConnectionState.waiting) {
+                                        return const CircularProgressIndicator();
+                                      } else if (snapshot.hasError) {
+                                        return const Text('Error loading events');
+                                      } else {
+                                        return DropdownButtonFormField<String>(
+                                          decoration: InputDecoration(
+                                            labelText: 'Event Name',
+                                            labelStyle:
+                                                const TextStyle(color: Colors.white),
+                                            enabledBorder: const OutlineInputBorder(
+                                              borderSide:
+                                                  BorderSide(color: Colors.lime),
+                                            ),
+                                            focusedBorder: const OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: Color.fromARGB(
+                                                      255, 200, 99, 92)),
+                                            ),
+                                          ),
+                                          value: selectedEventId,
+                                          style: const TextStyle(color: Colors.white),
+                                          dropdownColor:
+                                              const Color.fromARGB(255, 38, 36, 36),
+                                          items: events.keys.map((key) {
+                                            return DropdownMenuItem<String>(
+                                              value: key.toString(),
+                                              child: Text(events[key]!),
+                                            );
+                                          }).toList(),
+                                          onChanged: (String? newValue) {
+                                            setState(() {
+                                              selectedEventId = newValue;
+                                            });
+                                          },
+                                        );
+                                      }
+                                    },
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
+                            ),
+                          
                         ],
                       ),
                     ),

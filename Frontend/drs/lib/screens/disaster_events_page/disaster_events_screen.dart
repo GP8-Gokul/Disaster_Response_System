@@ -127,8 +127,8 @@ class _DisasterEventsScreenState extends State<DisasterEventsScreen> {
                                                 filteredEvents.remove(event);
                                               });
                                             } else {
-                                              // ignore: use_build_context_synchronously
                                               customSnackBar(
+                                                  // ignore: use_build_context_synchronously
                                                   context: context,
                                                   message:
                                                       'Failed to delete event');
@@ -254,8 +254,8 @@ class _DisasterEventsScreenState extends State<DisasterEventsScreen> {
                       });
                     });
                   } else {
-                    // ignore: use_build_context_synchronously
                     customSnackBar(
+                        // ignore: use_build_context_synchronously
                         context: context,
                         message: 'Please fill all the fields');
                     // ignore: use_build_context_synchronously
