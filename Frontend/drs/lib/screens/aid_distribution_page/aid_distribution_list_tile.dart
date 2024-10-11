@@ -125,7 +125,7 @@ class AidDistributionTileState extends State<AidDistributionListTile> {
         borderRadius: BorderRadius.circular(25.0),
       ),
 
-      //Main details of volunteer
+      //Main details of aid distribution
 
       child: ListTile(
         title: Text("location: ${widget.content['location']}"),
