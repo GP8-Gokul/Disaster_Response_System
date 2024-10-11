@@ -182,14 +182,18 @@ class _DisasterEventsScreenState extends State<DisasterEventsScreen> {
                                     },
                                     child: Container(
                                       decoration: BoxDecoration(
+                                        border: Border.all(
+                                            color: const Color.fromARGB(
+                                                255, 153, 153, 43),
+                                            width: 2.0),
                                         color: const Color.fromARGB(
                                                 255, 227, 217, 217)
-                                            .withOpacity(0.3),
+                                            .withOpacity(0.1),
                                         borderRadius:
                                             BorderRadius.circular(25.0),
                                       ),
                                       padding: const EdgeInsets.symmetric(
-                                          vertical: 16.0, horizontal: 24.0),
+                                          vertical: 12.0, horizontal: 24.0),
                                       child: Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
@@ -205,7 +209,7 @@ class _DisasterEventsScreenState extends State<DisasterEventsScreen> {
                                                     fontSize: 20.0,
                                                     fontWeight: FontWeight.bold,
                                                     color: Color.fromARGB(
-                                                        255, 23, 22, 22),
+                                                        255, 229, 219, 219),
                                                   ),
                                                   overflow:
                                                       TextOverflow.ellipsis,
@@ -216,7 +220,7 @@ class _DisasterEventsScreenState extends State<DisasterEventsScreen> {
                                                   style: const TextStyle(
                                                     fontSize: 14.0,
                                                     color: Color.fromARGB(
-                                                        209, 31, 30, 30),
+                                                        209, 180, 172, 172),
                                                   ),
                                                   overflow:
                                                       TextOverflow.ellipsis,
