@@ -13,19 +13,17 @@ import 'package:drs/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-Future<void> launchGooglePay(BuildContext context,amount) async {
-  final String upiId = '9495829018@okbizaxis';
-  final String googlePayUri = 'upi://pay?pa=$upiId&am=$amount&cu=INR&tn=Support';
+Future<void> launchGooglePay(BuildContext context, String amount) async {
+  final String upiId = 'gokulpjayan2004-1@okicici'; // Your UPI ID
+  final String googlePayUri =
+      'upi://pay?pa=$upiId&am=$amount&cu=INR&tn=Support&mode=00';
   final Uri launchUri = Uri.parse(googlePayUri);
 
   if (await canLaunchUrl(launchUri)) {
     await launchUrl(launchUri);
   } else {
-  
-    // ignore: duplicate_ignore
-    // ignore: use_build_context_synchronously
     Navigator.pop(context);
-    customSnackBar(context: context, message: 'Could not launch googlePay');
+    customSnackBar(context: context, message: 'Could not launch Google Pay');
     throw 'Could not launch $googlePayUri';
   }
 }
@@ -88,66 +86,74 @@ class MainMenuScreen extends StatelessWidget {
           backgroundColor: Colors.transparent,
           appBar: AppBar(
             leading: IconButton(
-                icon: const Icon(Icons.help),
+              icon: const Icon(Icons.help),
               color: Colors.white,
               onPressed: () {
                 showDialog(
                   context: context,
                   builder: (BuildContext context) {
-                    TextEditingController amountController = TextEditingController(text: '10');
+                    TextEditingController amountController =
+                        TextEditingController(text: '10');
                     return AlertDialog(
                       backgroundColor: const Color.fromARGB(255, 250, 250, 250),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15.0),
-                        side: const BorderSide(color: Color.fromARGB(255, 0, 0, 0), width: 3.0),
+                        side: const BorderSide(
+                            color: Color.fromARGB(255, 0, 0, 0), width: 3.0),
                       ),
-                      title: const Text('Support the Initiative',
+                      title: const Text(
+                        'Support the Initiative',
                         style: TextStyle(color: Colors.black),
                       ),
-                      content: 
-                        Column(
+                      content: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           StatefulBuilder(
-                          builder: (BuildContext context, StateSetter setState) {
-                            return Slider(
-                            value: double.parse(amountController.text.isEmpty ? '100' : amountController.text),
-                            min: 10,
-                            max: 1000,
-                            divisions: 100,
-                            label: amountController.text,
-                            onChanged: (double value) {
-                              setState(() {
-                              amountController.text = value.toStringAsFixed(0);
-                              });
+                            builder:
+                                (BuildContext context, StateSetter setState) {
+                              return Slider(
+                                value: double.parse(
+                                    amountController.text.isEmpty
+                                        ? '100'
+                                        : amountController.text),
+                                min: 10,
+                                max: 1000,
+                                divisions: 100,
+                                label: amountController.text,
+                                onChanged: (double value) {
+                                  setState(() {
+                                    amountController.text =
+                                        value.toStringAsFixed(0);
+                                  });
+                                },
+                              );
                             },
-                            );
-                          },
                           ),
                           TextField(
-                          controller: amountController,
-                          keyboardType: TextInputType.number,
-                          decoration: const InputDecoration(
-                            labelText: 'Amount',
-                            hintText: 'Enter amount',
-                          ),
+                            controller: amountController,
+                            keyboardType: TextInputType.number,
+                            decoration: const InputDecoration(
+                              labelText: 'Amount',
+                              hintText: 'Enter amount',
+                            ),
                           ),
                           SizedBox(height: 10),
                           TextButton(
                             style: TextButton.styleFrom(
                               backgroundColor: Colors.black.withOpacity(0.7),
-                              side: const BorderSide(color: Colors.white, width: 2),
+                              side: const BorderSide(
+                                  color: Colors.white, width: 2),
                             ),
-                          child: const Text('Donate',
-                            style: TextStyle(color: Colors.greenAccent),
-                          ),
-
-                          onPressed: () {
-                            launchGooglePay(context, amountController.text);
-                          },
+                            child: const Text(
+                              'Donate',
+                              style: TextStyle(color: Colors.greenAccent),
+                            ),
+                            onPressed: () {
+                              launchGooglePay(context, amountController.text);
+                            },
                           ),
                         ],
-                        ),
+                      ),
                       actions: <Widget>[
                         TextButton(
                           child: const Text('Close'),
@@ -204,7 +210,7 @@ class MainMenuScreen extends StatelessWidget {
                         'The Disaster Response System (DRS) is a comprehensive platform designed to assist in managing disaster response activities. It facilitates the distribution of aid, efficient management of resources, accurate reporting of incidents, and effective oversight of volunteers, ensuring a coordinated and timely response to disasters.',
                         style: TextStyle(
                           fontStyle: FontStyle.italic,
-                            color: Color(0xFFFFDB58),
+                          color: Color(0xFFFFDB58),
                           fontSize: 20.0,
                         ),
                         textAlign: TextAlign.center,
