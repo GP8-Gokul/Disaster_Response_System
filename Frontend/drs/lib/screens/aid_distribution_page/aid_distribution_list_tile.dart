@@ -56,17 +56,21 @@ Future<void> getEventIdsNoEdit(String location, String eventController) async {
   devtools.log(events.toString());
 }
 
-Future<void> getResourceIdsNoEdit(String location,String resourceController) async {
+Future<void> getResourceIdsNoEdit(String location, String resourceController) async {
   resources.clear();
   List<Map<String, dynamic>> value = await fetchdata('resources');
   for (var resource in value) {
     resources[resource['resource_id']] = resource['resource_name'];
   }
+
   devtools.log(resources.toString());
   devtools.log(resourceController);
-  events.removeWhere((key, value) => key.toString() == resourceController.toString());
+
+  resources.removeWhere((key, value) => key.toString() != resourceController.toString());
+  
   devtools.log(resources.toString());
 }
+
 
 Future<void> getVolunteerIdsForEdit(String volunteerController) async {
   volunteers.clear();
@@ -91,8 +95,7 @@ Future<void> getVolunteerIdsNoEdit(String volunteerController) async {
   }
   devtools.log(volunteers.toString());
   devtools.log(volunteerController);
-
-  events.removeWhere((key, value) => key.toString() != volunteerController.toString());
+  volunteers.removeWhere((key, value) => key.toString() != volunteerController.toString());
   devtools.log(volunteers.toString());
 }
 
