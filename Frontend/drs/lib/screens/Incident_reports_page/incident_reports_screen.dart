@@ -1,6 +1,5 @@
 import 'package:drs/screens/Incident_reports_page/incident_report_list_tile.dart';
 import 'package:drs/services/api/root_api.dart';
-import 'package:drs/services/api/unused_disaster_event_api.dart';
 import 'package:drs/services/authorization/check_access.dart';
 import 'package:drs/widgets/background_image.dart';
 import 'package:drs/widgets/custom_appbar.dart';
@@ -15,7 +14,7 @@ var events = {};
 
 void getEventIds() {
   late Future<List<Map<String, dynamic>>> futureGetDisasterEvents;
-  futureGetDisasterEvents = fetchDisasterEvents();
+  futureGetDisasterEvents = fetchdata('disaster_events');
   futureGetDisasterEvents.then((value) {
     for (var event in value) {
       events[event['event_id']] = event['event_name'];
