@@ -14,9 +14,8 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 Future<void> launchGooglePay(BuildContext context, String amount) async {
-  final String upiId = '9495829018@okbizaxis'; 
-  final String googlePayUri =
-      'upi://pay?pa=$upiId&am=$amount&cu=INR&tn=Support&mode=00';
+  final String upiId = 'cmdrfkerala@sbi'; 
+  final String googlePayUri ='upi://pay?pa=$upiId&am=$amount&cu=INR&tn=Support';
   final Uri launchUri = Uri.parse(googlePayUri);
 
   if (await canLaunchUrl(launchUri)) {
@@ -86,83 +85,99 @@ class MainMenuScreen extends StatelessWidget {
           backgroundColor: Colors.transparent,
           appBar: AppBar(
             leading: IconButton(
-              icon: const Icon(Icons.help),
+              icon: const Icon(Icons.money),
               color: Colors.white,
               onPressed: () {
                 showDialog(
                   context: context,
                   builder: (BuildContext context) {
-                    TextEditingController amountController =
-                        TextEditingController(text: '10');
-                    return AlertDialog(
-                      backgroundColor: const Color.fromARGB(255, 250, 250, 250),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15.0),
-                        side: const BorderSide(
-                            color: Color.fromARGB(255, 0, 0, 0), width: 3.0),
-                      ),
-                      title: const Text(
-                        'Support the Initiative',
-                        style: TextStyle(color: Colors.black),
-                      ),
-                      content: Column(
-                        mainAxisSize: MainAxisSize.min,
+                  TextEditingController amountController =
+                    TextEditingController(text: '1');
+                  return AlertDialog(
+                    backgroundColor: const Color.fromARGB(255, 250, 250, 250),
+                    shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15.0),
+                    side: const BorderSide(
+                      color: Color.fromARGB(255, 0, 0, 0), width: 3.0),
+                    ),
+                    title: const Text(
+                    'Support the Initiative',
+                    style: TextStyle(color: Colors.black),
+                    ),
+                    content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      StatefulBuilder(
+                      builder:
+                        (BuildContext context, StateSetter setState) {
+                        return Column(
                         children: [
-                          StatefulBuilder(
-                            builder:
-                                (BuildContext context, StateSetter setState) {
-                              return Slider(
-                                value: double.parse(
-                                    amountController.text.isEmpty
-                                        ? '100'
-                                        : amountController.text),
-                                min: 10,
-                                max: 1000,
-                                divisions: 100,
-                                label: amountController.text,
-                                onChanged: (double value) {
-                                  setState(() {
-                                    amountController.text =
-                                        value.toStringAsFixed(0);
-                                  });
-                                },
-                              );
-                            },
+                          Slider(
+                          value: double.parse(amountController.text
+                              .isEmpty
+                            ? '1'
+                            : amountController.text),
+                          min: 1,
+                          max: 1000,
+                          divisions: 100,
+                          label: amountController.text,
+                          onChanged: (double value) {
+                            setState(() {
+                            amountController.text =
+                              value.toStringAsFixed(0);
+                            });
+                          },
                           ),
                           TextField(
-                            controller: amountController,
-                            keyboardType: TextInputType.number,
-                            decoration: const InputDecoration(
-                              labelText: 'Amount',
-                              hintText: 'Enter amount',
-                            ),
+                          controller: amountController,
+                          keyboardType: TextInputType.number,
+                          decoration: const InputDecoration(
+                            labelText: 'Amount',
+                            hintText: 'Enter amount',
                           ),
-                          SizedBox(height: 10),
-                          TextButton(
-                            style: TextButton.styleFrom(
-                              backgroundColor: Colors.black.withOpacity(0.7),
-                              side: const BorderSide(
-                                  color: Colors.white, width: 2),
-                            ),
-                            child: const Text(
-                              'Donate',
-                              style: TextStyle(color: Colors.greenAccent),
-                            ),
-                            onPressed: () {
-                              launchGooglePay(context, amountController.text);
-                            },
+                          onChanged: (value) {
+                            setState(() {
+                            double parsedValue = double.tryParse(
+                                value.isEmpty ? '1' : value) ??
+                              1;
+                            if (parsedValue > 1000) {
+                              parsedValue = 1000;
+                            }
+                            amountController.text =
+                              parsedValue.toStringAsFixed(0);
+                            });
+                          },
                           ),
                         ],
+                        );
+                      },
                       ),
-                      actions: <Widget>[
-                        TextButton(
-                          child: const Text('Close'),
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                      ],
-                    );
+                      const SizedBox(height: 10),
+                      TextButton(
+                      style: TextButton.styleFrom(
+                        backgroundColor: Colors.black.withOpacity(0.7),
+                        side: const BorderSide(
+                          color: Colors.white, width: 2),
+                      ),
+                      child: const Text(
+                        'Donate',
+                        style: TextStyle(color: Colors.greenAccent),
+                      ),
+                      onPressed: () {
+                        launchGooglePay(context, amountController.text);
+                      },
+                      ),
+                    ],
+                    ),
+                    actions: <Widget>[
+                    TextButton(
+                      child: const Text('Close'),
+                      onPressed: () {
+                      Navigator.of(context).pop();
+                      },
+                    ),
+                    ],
+                  );
                   },
                 );
               },

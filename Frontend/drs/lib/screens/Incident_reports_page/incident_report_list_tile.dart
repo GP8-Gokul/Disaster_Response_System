@@ -282,10 +282,8 @@ class IncidentReportListTileState extends State<IncidentReportListTile> {
                                     incidentReportNameController.text,
                                 'report_date':
                                     incidentReportDateController.text,
-                                'reported_by':
-                                    incidentReportedByController.text,
-                                'report_description':
-                                    incidentReportDescriptionController.text,
+                                'reported_by':incidentReportedByController.text,
+                                'description': incidentReportDescriptionController.text,
                                 'event_id': selectedEventId,
                               },
                             );
