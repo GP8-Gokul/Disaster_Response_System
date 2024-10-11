@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:drs/screens/aid_distribution_page/aid_distribution_screen.dart';
 import 'package:drs/screens/disaster_events_page/disaster_events_screen.dart';
 import 'package:drs/screens/Incident_reports_page/incident_reports_screen.dart';
@@ -6,11 +8,12 @@ import 'package:drs/screens/resources_page/resource_screen.dart';
 import 'package:drs/screens/volunteers_page/volunteers_screen.dart';
 import 'package:drs/services/api/root_api.dart';
 import 'package:drs/widgets/background_image.dart';
+import 'package:drs/widgets/custom_snack_bar.dart';
 import 'package:drs/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-Future<void> launchGooglePay(amount) async {
+Future<void> launchGooglePay(BuildContext context,amount) async {
   final String upiId = 'gokulpjayan2004-1@okicici';
   final String payeeName = 'Gokul P Jayan';
   final String googlePayUri =
@@ -20,6 +23,11 @@ Future<void> launchGooglePay(amount) async {
   if (await canLaunchUrl(launchUri)) {
     await launchUrl(launchUri);
   } else {
+  
+    // ignore: duplicate_ignore
+    // ignore: use_build_context_synchronously
+    Navigator.pop(context);
+    customSnackBar(context: context, message: 'Could not launch googlePay');
     throw 'Could not launch $googlePayUri';
   }
 }
@@ -137,7 +145,7 @@ class MainMenuScreen extends StatelessWidget {
                           ),
 
                           onPressed: () {
-                            launchGooglePay(amountController.text);
+                            launchGooglePay(context, amountController.text);
                           },
                           ),
                         ],
