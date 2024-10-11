@@ -4,7 +4,9 @@ import 'package:drs/screens/Incident_reports_page/incident_reports_screen.dart';
 import 'package:drs/screens/login_page/login_screen.dart';
 import 'package:drs/screens/resources_page/resource_screen.dart';
 import 'package:drs/screens/volunteers_page/volunteers_screen.dart';
+import 'package:drs/services/api/root_api.dart';
 import 'package:drs/widgets/background_image.dart';
+import 'package:drs/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -180,6 +182,12 @@ class MainMenuScreen extends StatelessWidget {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
+                    Row(
+                      children: [
+                        CustomText(text: 'logged in as: $userName'),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
                     Container(
                       padding: const EdgeInsets.all(8.0),
                       decoration: BoxDecoration(

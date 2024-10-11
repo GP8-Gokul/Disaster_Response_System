@@ -124,6 +124,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       : ElevatedButton(
                           onPressed: () async {
                             userRole = 'guest';
+                            userName = 'Guest';
                             await dummyCall();
                             Navigator.pushReplacement(
                               // ignore: use_build_context_synchronously
