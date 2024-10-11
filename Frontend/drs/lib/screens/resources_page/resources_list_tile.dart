@@ -35,9 +35,7 @@ Future<void> getEventIdsNoEdit(String resourceType, String eventController) asyn
   devtools.log(events.toString());
   devtools.log(eventController);
   devtools.log(resourceType);
-  if (checkAcess('resources', userName)) {
-    events.removeWhere((key, value) => key.toString() != eventController.toString());
-  }
+  events.removeWhere((key, value) => key.toString() != eventController.toString());
 
   devtools.log(events.toString());
 }

@@ -50,10 +50,9 @@ Future<void> getEventIdsNoEdit(String location, String eventController) async {
   devtools.log(events.toString());
   devtools.log(eventController);
   devtools.log(location);
-  if (checkAcess('aid_distribution', location)) {
-    events.removeWhere(
-        (key, value) => key.toString() != eventController.toString());
-  }
+  
+  events.removeWhere((key, value) => key.toString() != eventController.toString());
+  
   devtools.log(events.toString());
 }
 
@@ -65,10 +64,7 @@ Future<void> getResourceIdsNoEdit(String location,String resourceController) asy
   }
   devtools.log(resources.toString());
   devtools.log(resourceController);
-  if (checkAcess('aid_distribution', location)) {
-    events.removeWhere(
-        (key, value) => key.toString() != resourceController.toString());
-  }
+  events.removeWhere((key, value) => key.toString() == resourceController.toString());
   devtools.log(resources.toString());
 }
 
@@ -95,10 +91,8 @@ Future<void> getVolunteerIdsNoEdit(String volunteerController) async {
   }
   devtools.log(volunteers.toString());
   devtools.log(volunteerController);
-  if (checkAcess('aid_distribution', '')) {
-    events.removeWhere(
-        (key, value) => key.toString() != volunteerController.toString());
-  }
+
+  events.removeWhere((key, value) => key.toString() != volunteerController.toString());
   devtools.log(volunteers.toString());
 }
 

@@ -33,10 +33,7 @@ Future<void> getEventIdsNoEdit(String volunteerName, String eventController) asy
   devtools.log(events.toString());
   devtools.log(eventController);
   devtools.log(volunteerName);
-  if (checkAcess('volunteers', volunteerName)) {
-    events.removeWhere((key, value) => key.toString() != eventController.toString());
-  }
-  devtools.log(events.toString());
+  events.removeWhere((key, value) => key.toString() != eventController.toString());
 }
 
 void sendMessageToWhatsApp(String phoneNumber, String message, BuildContext context) async {
