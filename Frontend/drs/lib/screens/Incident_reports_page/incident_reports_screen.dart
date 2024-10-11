@@ -129,8 +129,7 @@ class _IncidentReportsScreenState extends State<IncidentReportsScreen> {
               children: [
                 SlidableAction(
                   onPressed: (context) async {
-                    if (checkAcess(
-                        'incident_reports', content['report_name'])) {
+                    if (checkAcess('incident_reports', content['report_name'])) {
                       response = await deleteData('incident_reports',
                           'report_id', content['report_id'].toString());
                       if (response != null) {
@@ -147,9 +146,7 @@ class _IncidentReportsScreenState extends State<IncidentReportsScreen> {
                         });
                       }
                     } else {
-                      Navigator.pop(context);
-                      customSnackBar(
-                          context: context, message: 'Access Denied');
+                      customSnackBar(context: context, message: 'Access Denied');
                     }
                   },
                   backgroundColor: const Color.fromARGB(138, 236, 70, 70),
@@ -184,7 +181,8 @@ class _IncidentReportsScreenState extends State<IncidentReportsScreen> {
       backgroundColor: Colors.white.withOpacity(0.7),
       child: const Icon(Icons.add),
       onPressed: () {
-        showDialog(
+        if(checkAcess('incident_reports', 'insert')){
+          showDialog(
           context: context,
           builder: (BuildContext context) {
             TextEditingController incidentReportNameController =
@@ -309,7 +307,7 @@ class _IncidentReportsScreenState extends State<IncidentReportsScreen> {
                   child: const Text('Submit',
                       style: TextStyle(color: Colors.black)),
                   onPressed: () async {
-                    if (checkAcess('incident_reports', '')) {
+                    if (checkAcess('incident_reports', 'insert')) {
                       response = await insertData({
                         'table': 'incident_reports',
                         'report_name': incidentReportNameController.text,
@@ -345,6 +343,10 @@ class _IncidentReportsScreenState extends State<IncidentReportsScreen> {
             );
           },
         );
+        } else {
+          customSnackBar(context: context, message: 'Access Denied');
+        }
+        
       },
     );
   }

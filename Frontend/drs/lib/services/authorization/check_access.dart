@@ -11,7 +11,18 @@ bool checkAcess(tableName, conditionName) {
     } else {
       return false;
     }
-  } else {
+  } else if(userRole == 'reporter'){
+    if (tableName == 'incident_reports' && conditionName == 'insert') {
+      return true;
+    } 
+    else if (tableName == 'incident_reports' && conditionName == userName) {
+      return true;
+    } 
+    else {
+      return false;
+    }
+  } 
+  else {
     return false;
   }
 }

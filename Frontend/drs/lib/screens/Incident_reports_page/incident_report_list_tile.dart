@@ -247,9 +247,15 @@ class IncidentReportListTileState extends State<IncidentReportListTile> {
                         ),
                         child: const Icon(Icons.edit, color: Colors.blue),
                         onPressed: () {
-                          setState(() {
+                          if(checkAcess('incident_reports', incidentReportedByController.text)) {
+                            setState(() {
                             readonly = !readonly;
                           });
+                          } else {
+                            customSnackBar(context: context, message:'You do not have access to edit this incident report');
+                            Navigator.pop(context);
+                          }
+                          
                         },
                       ),
                       TextButton(
@@ -267,7 +273,7 @@ class IncidentReportListTileState extends State<IncidentReportListTile> {
                             return;
                           }
                           if (checkAcess('incident_reports',
-                              incidentReportNameController.text)) {
+                              incidentReportedByController.text)) {
                             response = await updateData(
                               {
                                 'table': 'incident_reports',
