@@ -14,7 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 Future<void> launchGooglePay(BuildContext context, String amount) async {
-  final String upiId = 'cmdrfkerala@sbi'; 
+  final String upiId = 'cmdrfkerala@fbl'; 
   final String googlePayUri ='upi://pay?pa=$upiId&am=$amount&cu=INR&tn=Support';
   final Uri launchUri = Uri.parse(googlePayUri);
 

@@ -2,6 +2,31 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSAppTransportSecurity</key>
+    <key>NSAllowsArbitraryLoads</key>
+    <true/>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>whatsapp</string>
+		<string>walletnfcrel</string>
+	</array>
+
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Your app needs access to the photo library to upload images.</string>
+
+	<key>NSCameraUsageDescription</key>
+	<string>Your app needs access to the camera to take pictures.</string>
+
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Your app needs access to your location for XYZ feature.</string>
+
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>Your app needs access to Bluetooth for XYZ feature.</string>
+
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Your app needs access to the microphone for XYZ feature.</string>
+
+
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
