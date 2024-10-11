@@ -15,9 +15,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 Future<void> launchGooglePay(BuildContext context,amount) async {
   final String upiId = 'gokulpjayan2004-1@okicici';
-  final String payeeName = 'Gokul P Jayan';
-  final String googlePayUri =
-      'upi://pay?pa=$upiId&pn=$payeeName&am=$amount&cu=INR';
+  final String googlePayUri = 'upi://pay?pa=$upiId&am=$amount&cu=INR&tn=Support';
   final Uri launchUri = Uri.parse(googlePayUri);
 
   if (await canLaunchUrl(launchUri)) {
@@ -167,12 +165,12 @@ class MainMenuScreen extends StatelessWidget {
             automaticallyImplyLeading: false,
             centerTitle: true,
             title: Text(
-              'DISASTER RESPONSE',
+              'DRS',
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
-                fontSize: 24.0,
+                fontSize: 36.0,
                 decorationThickness: 2.0,
               ),
             ),
@@ -205,9 +203,9 @@ class MainMenuScreen extends StatelessWidget {
                       child: const Text(
                         'The Disaster Response System (DRS) is a comprehensive platform designed to assist in managing disaster response activities. It facilitates the distribution of aid, efficient management of resources, accurate reporting of incidents, and effective oversight of volunteers, ensuring a coordinated and timely response to disasters.',
                         style: TextStyle(
-                          color: Colors.white,
+                          fontStyle: FontStyle.italic,
+                            color: Color(0xFFFFDB58),
                           fontSize: 20.0,
-                          fontWeight: FontWeight.bold,
                         ),
                         textAlign: TextAlign.center,
                       ),
