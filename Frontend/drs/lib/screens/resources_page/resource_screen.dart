@@ -132,64 +132,71 @@ class _ResourceScreenBState extends State<ResourceScreenB> {
           children: [
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: SearchTextField(
-                    labelText: 'Search Resources',
-                    hintText: 'Enter item Name',
-                    searchController: searchController),
+          padding: const EdgeInsets.symmetric(horizontal: 1.0),
+          child: SearchTextField(
+            labelText: 'Search Resources',
+            hintText: 'Enter item Name',
+            searchController: searchController,
+          ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: GestureDetector(
-                onTap: () {
-                  setState(() {
-                    shouldSort = !shouldSort;
-                    _sortData(shouldSort);
+            GestureDetector(
+              onTap: () {
+          setState(() {
+            shouldSort = !shouldSort;
+            _sortData(shouldSort);
 
-                    // Update the Rive animation's 'check' input
-                    if (_controller != null) {
-                      final input = _controller?.findInput<bool>('check');
-                      if (input != null) {
-                        input.value = shouldSort;
-                      }
-                    }
-                  });
-                },
-                child: SizedBox(
-                  width: 50,
-                  height: 50,
-                  child: RiveAnimation.asset(
-                    'assets/rive/dbms_animation.riv',
-                    artboard: 'sort_button',
-                    onInit: (artboard) {
-                      final controller = StateMachineController.fromArtboard(
-                        artboard,
-                        'State Machine 1',
-                      );
-                      if (controller != null) {
-                        artboard.addController(controller);
-                        _controller =
-                            controller; // Save controller globally to access it in onTap
+            // Update the Rive animation's 'check' input
+            if (_controller != null) {
+              final input = _controller?.findInput<bool>('check');
+              if (input != null) {
+                input.value = shouldSort;
+              }
+            }
+          });
+              },
+              child: SizedBox(
+          width: 80, // Increased width
+          height: 100, // Increased height
+          child: RiveAnimation.asset(
+            'assets/rive/dbms_animation.riv',
+            artboard: 'sort_button',
+            onInit: (artboard) {
+              final controller = StateMachineController.fromArtboard(
+                artboard,
+                'State Machine 1',
+              );
+              if (controller != null) {
+                artboard.addController(controller);
+                _controller =
+              controller; // Save controller globally to access it in onTap
 
-                        final input = controller.findInput<bool>('check');
-                        if (input != null) {
-                          input.value = shouldSort;
-                        }
-                      }
-                    },
-                  ),
-                ),
+                final input = controller.findInput<bool>('check');
+                if (input != null) {
+            input.value = shouldSort;
+                }
+              }
+            },
+          ),
               ),
             ),
           ],
         ),
         Expanded(
-          child: filteredData.isEmpty
-              ? const Center(
-                  child: Text('No resource found'),
-                )
-              : buildFutureBuilder(),
+          child: FutureBuilder(
+            future: futureGetResources,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CustomLoadingAnimation());
+              } else if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return const Center(child: Text('No resource found'));
+              } else {
+          return buildListview(snapshot);
+              }
+            },
+          ),
         ),
         SizedBox(height: 70),
       ],
@@ -256,7 +263,7 @@ class _ResourceScreenBState extends State<ResourceScreenB> {
               ],
             ),
 
-            //Display Volunteer Details
+            //Displaey Resource Details
 
             child: ResourceListTile(
               content: content,
