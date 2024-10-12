@@ -194,42 +194,56 @@ class _DisasterEventsScreenState extends State<DisasterEventsScreen> {
                                       ),
                                       padding: const EdgeInsets.symmetric(
                                           vertical: 12.0, horizontal: 24.0),
-                                      child: Row(
+                                        child: Row(
                                         mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
+                                          MainAxisAlignment.spaceBetween,
                                         children: [
                                           Expanded(
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  "Name: ${event['event_name']}",
-                                                  style: const TextStyle(
-                                                    fontSize: 20.0,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Color.fromARGB(
-                                                        255, 229, 219, 219),
-                                                  ),
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                ),
-                                                const SizedBox(height: 6),
-                                                Text(
-                                                  "ID: ${event['event_id']}",
-                                                  style: const TextStyle(
-                                                    fontSize: 14.0,
-                                                    color: Color.fromARGB(
-                                                        209, 180, 172, 172),
-                                                  ),
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                ),
-                                              ],
+                                          child: Column(
+                                            crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                            children: [
+                                            Text(
+                                              "Name: ${event['event_name']}",
+                                              style: const TextStyle(
+                                              fontSize: 20.0,
+                                              fontWeight: FontWeight.bold,
+                                              color: Color.fromARGB(
+                                                255, 229, 219, 219),
+                                              ),
+                                              overflow:
+                                                TextOverflow.ellipsis,
                                             ),
+                                            const SizedBox(height: 6),
+                                            Text(
+                                              "ID: ${event['event_id']}",
+                                              style: const TextStyle(
+                                              fontSize: 14.0,
+                                              color: Color.fromARGB(
+                                                209, 180, 172, 172),
+                                              ),
+                                              overflow:
+                                                TextOverflow.ellipsis,
+                                            ),
+                                            ],
+                                          ),
+                                          ),
+                                          IconButton(
+                                          icon: const Icon(Icons.chat_bubble, color: Colors.white),
+                                          onPressed: () {
+                                            if(checkAcess('messages', '')){
+                                                Navigator.pushNamed(
+                                                  context, 
+                                                  'chat-room', 
+                                                  arguments: {'event_id': event['event_id']}
+                                                );
+                                            } else {
+                                              customSnackBar(context: context, message: 'You do not have access to chat');
+                                            }
+                                          },
                                           ),
                                         ],
-                                      ),
+                                        ),
                                     ),
                                   ),
                                 ),

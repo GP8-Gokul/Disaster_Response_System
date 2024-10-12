@@ -1,4 +1,5 @@
 import 'package:drs/screens/aid_distribution_page/aid_distribution_screen.dart';
+import 'package:drs/screens/chat_room/chat_room.dart';
 import 'package:drs/screens/disaster_events_page/disaster_events_screen.dart';
 import 'package:drs/screens/Incident_reports_page/incident_reports_screen.dart';
 import 'package:drs/screens/main_menu_page/main_menu_screen.dart';
@@ -35,6 +36,7 @@ class MyApp extends StatelessWidget {
         ResourceScreenB.routeName: (context) => const ResourceScreenB(),
         VolunteersScreen.routeName: (context) => const VolunteersScreen(),
         LoginScreen.routeName: (context) => const LoginScreen(),
+        ChatRoom.routeName: (context) => const ChatRoom(),
       },
       initialRoute: LoginScreen.routeName,
     );

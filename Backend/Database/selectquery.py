@@ -88,6 +88,22 @@ def get_incident_reports():
 
     return (incident_reports)
 
+def get_messages():
+    cursor = get_cursor()
+    
+    try:
+        cursor.execute("SELECT * FROM messages")
+        rows = cursor.fetchall()
+
+        column_names = ['id', 'sender', 'text', 'event_id']
+
+        messages = [dict(zip(column_names, row)) for row in rows]
+
+    except:
+        return None
+
+    return (messages)
+
 def get_record_by_id(table, record_id):
     cursor = get_cursor()
     
@@ -119,6 +135,7 @@ def get_record_by_id(table, record_id):
         return None
 
     return row
+
 
 
 

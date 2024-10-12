@@ -22,6 +22,8 @@ def select_interface(data):
             return get_aid_distribution()
         elif table == "incident_reports":
             return get_incident_reports()
+        elif table == "messages":
+            return get_messages()
         else:
             return {"status": "error", "message": "Invalid table name"}, 400
 

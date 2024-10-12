@@ -17,9 +17,22 @@ List<Map<String, dynamic>> decodeTableSelect(String tableName, response){
   else if(tableName == 'resources'){
     return decodeResources(response);
   }
+  else if(tableName == 'messages'){
+    return decodeMessages(response);
+  }
   throw Exception('Unsupported table name: $tableName');
 }
 
+
+List<Map<String, dynamic>> decodeMessages(response){
+  List<dynamic> data = jsonDecode(response.body);
+      return data.map((content) => {
+        'id': content['id'],
+        'text': content['text'],
+        'sender': content['sender'],
+        'event_id': content['event_id'],
+      }).toList();
+}
 
 List<Map<String, dynamic>> decodeVolunteer(response){
   List<dynamic> data = jsonDecode(response.body);

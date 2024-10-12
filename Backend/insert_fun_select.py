@@ -31,6 +31,8 @@ def insert_interface(data):
         elif table == 'aid_distribution':
              insert_aid_distribution(data['event_id'],data['resource_id'],data['volunteer_id'],data['quantity_distributed'],data['distribution_date'],data['location'])
 
+        elif table == 'messages':
+            insert_message(data['sender'],data['text'],data['event_id'])
 
         else:
             return {"status": "error", "message": f"Unknown table: {table}"}

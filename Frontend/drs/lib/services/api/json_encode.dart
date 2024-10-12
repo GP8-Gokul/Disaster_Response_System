@@ -16,7 +16,14 @@ String dataEncode(data){
   else if(data['table'] == 'resources'){
     return encodeResources(data);
   }
+  else if(data['table'] == 'messages'){
+    return encodeMessages(data);
+  }
   throw Exception('Unsupported table name: ${data['table']}');
+}
+
+String encodeMessages(data){
+  return jsonEncode(data);
 }
 
 String encodeVolunteer(data){

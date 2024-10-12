@@ -44,3 +44,8 @@ def insert_incident_report(event_id, report_date, description, reported_by,repor
  cursor.execute("insert into incident_reports(event_id,report_date,description,reported_by,report_name) values(?,?,?,?,?);",(event_id,report_date,description,reported_by,report_name))
  commit()
 
+def insert_message(sender,text,event_id):
+ cursor=get_cursor()
+ cursor.execute("insert into messages(sender,text,eventid) values(?,?,?);",(sender,text,event_id))
+ commit()
+
