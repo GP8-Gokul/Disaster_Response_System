@@ -95,140 +95,140 @@ class _ChatRoomState extends State<ChatRoom> {
                           curve: Curves.easeOut,
                         );
                       });
-                      return ListView.builder(
+                        return ListView.builder(
                         controller: scrollController,
                         itemCount: snapshot.data!.length,
                         itemBuilder: (context, index) {
-                          return Slidable(
+                          return Column(
+                          children: [
+                            Slidable(
                             endActionPane: ActionPane(
-                                motion: const ScrollMotion(),
-                                children: [
-                                  SlidableAction(
-                                    backgroundColor:
-                                        const Color.fromARGB(138, 236, 70, 70),
-                                    icon: Icons.delete,
-                                    foregroundColor: const Color.fromARGB(
-                                        255, 238, 230, 230),
-                                    onPressed: (context) async {
-                                      if (chatDeleteAccess(
-                                          snapshot.data![index]['sender'])) {
-                                        var response = await deleteData(
-                                            'messages',
-                                            'id',
-                                            snapshot.data![index]['id']);
-                                        if (response != null) {
-                                          setState(() {
-                                            futureGetMessages =
-                                                futureGetMessages
-                                                    .then((messages) {
-                                              var updatedMessages = messages
-                                                  .where((message) =>
-                                                      message['event_id'] ==
-                                                      event)
-                                                  .toList();
-                                              updatedMessages.removeWhere(
-                                                  (message) =>
-                                                      message['id'] ==
-                                                      snapshot.data![index]
-                                                          ['id']);
-                                              return updatedMessages;
-                                            });
-                                          });
-                                        }
-                                      } else {
-                                        customSnackBar(
-                                            context: context,
-                                            message:
-                                                'You do not have access to delete this message.');
-                                      }
-                                    },
-                                  )
-                                ]),
+                              motion: const ScrollMotion(),
+                              children: [
+                                SlidableAction(
+                                backgroundColor:
+                                  const Color.fromARGB(138, 236, 70, 70),
+                                icon: Icons.delete,
+                                foregroundColor: const Color.fromARGB(
+                                  255, 238, 230, 230),
+                                onPressed: (context) async {
+                                  if (chatDeleteAccess(
+                                    snapshot.data![index]['sender'])) {
+                                  var response = await deleteData(
+                                    'messages',
+                                    'id',
+                                    snapshot.data![index]['id']);
+                                  if (response != null) {
+                                    setState(() {
+                                    futureGetMessages =
+                                      futureGetMessages
+                                        .then((messages) {
+                                      var updatedMessages = messages
+                                        .where((message) =>
+                                          message['event_id'] ==
+                                          event)
+                                        .toList();
+                                      updatedMessages.removeWhere(
+                                        (message) =>
+                                          message['id'] ==
+                                          snapshot.data![index]
+                                            ['id']);
+                                      return updatedMessages;
+                                    });
+                                    });
+                                  }
+                                  } else {
+                                  customSnackBar(
+                                    context: context,
+                                    message:
+                                      'You do not have access to delete this message.');
+                                  }
+                                },
+                                )
+                              ]),
                             child: ListTile(
                               title: Row(
-                                children: [
-                                  if (snapshot.data![index]['sender'] ==
-                                      userName) ...[
-                                    Expanded(
-                                      child: Text(
-                                        '${snapshot.data![index]['text']}',
-                                        textAlign: TextAlign.end,
-                                        style: const TextStyle(
-                                          fontSize: 20,
-                                          color: Color.fromARGB(
-                                              255, 255, 255, 255),
-                                          shadows: [
-                                            Shadow(
-                                              blurRadius: 10.0,
-                                              color: Colors.blueAccent,
-                                              offset: Offset(0, 0),
-                                            ),
-                                            Shadow(
-                                              blurRadius: 10.0,
-                                              color: Colors.redAccent,
-                                              offset: Offset(0, 0),
-                                            ),
-                                          ],
-                                        ),
-                                        overflow: TextOverflow.visible,
-                                      ),
+                              children: [
+                                if (snapshot.data![index]['sender'] ==
+                                  userName) ...[
+                                Expanded(
+                                  child: Text(
+                                  '${snapshot.data![index]['text']}',
+                                  textAlign: TextAlign.end,
+                                  style: const TextStyle(
+                                    fontSize: 20,
+                                    color: Color.fromARGB(
+                                      255, 255, 255, 255),
+                                    shadows: [
+                                    Shadow(
+                                      blurRadius: 10.0,
+                                      color: Colors.blueAccent,
+                                      offset: Offset(0, 0),
                                     ),
-                                    Text(
-                                      ' : You',
-                                      style: const TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.limeAccent,
-                                      ),
+                                    Shadow(
+                                      blurRadius: 10.0,
+                                      color: Colors.redAccent,
+                                      offset: Offset(0, 0),
                                     ),
-                                  ] else ...[
-                                    Text(
-                                      '${snapshot.data![index]['sender']} : ',
-                                      style: const TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.limeAccent,
-                                      ),
+                                    ],
+                                  ),
+                                  overflow: TextOverflow.visible,
+                                  ),
+                                ),
+                                ] else ...[
+                                Text(
+                                  '${snapshot.data![index]['sender']} : ',
+                                  style: const TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.limeAccent,
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Text(
+                                  snapshot.data![index]['text'],
+                                  style: const TextStyle(
+                                    fontSize: 20,
+                                    color: Color.fromARGB(
+                                      255, 255, 255, 255),
+                                    shadows: [
+                                    Shadow(
+                                      blurRadius: 10.0,
+                                      color: Colors.blueAccent,
+                                      offset: Offset(0, 0),
                                     ),
-                                    Expanded(
-                                      child: Text(
-                                        snapshot.data![index]['text'],
-                                        style: const TextStyle(
-                                          fontSize: 20,
-                                          color: Color.fromARGB(
-                                              255, 255, 255, 255),
-                                          shadows: [
-                                            Shadow(
-                                              blurRadius: 10.0,
-                                              color: Colors.blueAccent,
-                                              offset: Offset(0, 0),
-                                            ),
-                                            Shadow(
-                                              blurRadius: 10.0,
-                                              color: Colors.redAccent,
-                                              offset: Offset(0, 0),
-                                            ),
-                                          ],
-                                        ),
-                                        overflow: TextOverflow.visible,
-                                      ),
+                                    Shadow(
+                                      blurRadius: 10.0,
+                                      color: Colors.redAccent,
+                                      offset: Offset(0, 0),
                                     ),
-                                  ],
+                                    ],
+                                  ),
+                                  overflow: TextOverflow.visible,
+                                  ),
+                                ),
                                 ],
+                              ],
                               ),
                             ),
+                            ),
+                            Divider(
+                            color: Colors.white.withOpacity(0.3),
+                            thickness: 1,
+                            ),
+                          ],
                           );
                         },
-                      );
-                    } else if (snapshot.hasError) {
-                      devtools.log('An error occurred ${snapshot.error}');
-                      return Center(
+                        );
+                      } else if (snapshot.hasError) {
+                        devtools.log('An error occurred ${snapshot.error}');
+                        return Center(
                           child: Text('An error occurred ${snapshot.error}'));
-                    }
-                    return const Center(child: CircularProgressIndicator());
-                  },
-                ),
-              ),
+                      }
+                      return const Center(child: CircularProgressIndicator());
+                      },
+                    ),
+                    ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
