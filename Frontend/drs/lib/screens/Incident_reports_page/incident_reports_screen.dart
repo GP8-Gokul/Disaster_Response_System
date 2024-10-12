@@ -3,6 +3,7 @@ import 'package:drs/services/api/root_api.dart';
 import 'package:drs/services/authorization/check_access.dart';
 import 'package:drs/widgets/background_image.dart';
 import 'package:drs/widgets/custom_appbar.dart';
+import 'package:drs/widgets/custom_loading_animation.dart';
 import 'package:drs/widgets/custom_snack_bar.dart';
 import 'package:drs/widgets/custom_text_field.dart';
 import 'package:drs/widgets/search_text_field.dart';
@@ -88,9 +89,20 @@ class _IncidentReportsScreenState extends State<IncidentReportsScreen> {
             hintText: 'Enter Report Name',
             searchController: searchController),
         Expanded(
-          child: filteredData.isEmpty
-              ? const Center(child: Text('No Reports found.'))
-              : buildFutureBuilder(),
+          child: FutureBuilder(
+            future: futureGetIncidentReports,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CustomLoadingAnimation());
+              } else if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return const Center(child: Text('No Reports found.'));
+              } else {
+          return buildListview(snapshot);
+              }
+            },
+          ),
         ),
         SizedBox(
           height: 70,

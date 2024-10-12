@@ -85,7 +85,7 @@ class MainMenuScreen extends StatelessWidget {
           backgroundColor: Colors.transparent,
           appBar: AppBar(
             leading: IconButton(
-              icon: const Icon(Icons.money),
+                icon: const Icon(Icons.attach_money),
               color: Colors.white,
               onPressed: () {
                 showDialog(

@@ -5,6 +5,7 @@ import 'package:drs/widgets/custom_text.dart';
 import 'package:drs/widgets/custom_text_field.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer' as devtools;
+import 'package:flutter_tts/flutter_tts.dart';
 
 dynamic response;
 
@@ -87,11 +88,23 @@ class IncidentReportListTileState extends State<IncidentReportListTile> {
               return StatefulBuilder(
                 builder: (BuildContext context, StateSetter setState) {
                   return AlertDialog(
-                    title: const Text('Report Details',
-                        style: TextStyle(
-                            color: Colors.lime,
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold)),
+                    title: Row(
+                      children: [
+                        const Text('Report Details',
+                            style: TextStyle(
+                                color: Colors.lime,
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold)),
+                        const Spacer(),
+                        IconButton(
+                          icon: const Icon(Icons.volume_up, color: Colors.white),
+                          onPressed: () async {
+                            FlutterTts flutterTts = FlutterTts();
+                            flutterTts.speak(widget.content['description'].toString());
+                          },
+                          ),
+                      ],
+                    ),
                     backgroundColor: const Color.fromARGB(255, 0, 0, 0),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0),
@@ -123,7 +136,16 @@ class IncidentReportListTileState extends State<IncidentReportListTile> {
                               CustomText(text: 'Reported By: ${widget.content['reported_by']}'),
                               const SizedBox(height: 6),
                               Divider(color: Colors.grey,),
-                              CustomText(text: '${widget.content['description']}'),
+                              Text(
+                              widget.content['description'],
+                              style: const TextStyle(
+                                fontSize: 16,
+                                color: Colors.white,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 100,
+                              ),
+                              const SizedBox(height: 6),
                               Divider(color: Colors.grey,),
                               const SizedBox(height: 15),
                               ],

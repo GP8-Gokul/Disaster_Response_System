@@ -3,6 +3,7 @@ import 'package:drs/screens/disaster_events_page/update_disaster_events.dart';
 import 'package:drs/services/api/root_api.dart';
 import 'package:drs/widgets/background_image.dart';
 import 'package:drs/widgets/custom_appbar.dart';
+import 'package:drs/widgets/custom_loading_animation.dart';
 import 'package:drs/widgets/custom_snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:drs/services/authorization/check_access.dart';
@@ -89,167 +90,188 @@ class _DisasterEventsScreenState extends State<DisasterEventsScreen> {
                 ),
                 Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.only(bottom: 85.0),
-                    child: filteredEvents.isEmpty
-                        ? const Center(
-                            child: Text(
-                              'Record not present.',
-                              style: TextStyle(
-                                fontSize: 18.0,
-                                color: Color.fromARGB(255, 222, 211, 211),
-                              ),
-                            ),
-                          )
-                        : ListView.builder(
-                            itemCount: filteredEvents.length,
-                            itemBuilder: (context, index) {
-                              final event = filteredEvents[index];
-                              return Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 8.0, horizontal: 16.0),
-                                child: Slidable(
-                                  endActionPane: ActionPane(
-                                    motion: const StretchMotion(),
-                                    children: [
-                                      SlidableAction(
-                                        borderRadius: BorderRadius.circular(25),
-                                        onPressed: (context) async {
-                                          devtools.log('Slide action pressed');
-                                          if (checkAcess(
-                                              'disaster_events', userName)) {
-                                            final result = await deleteData(
-                                                'disaster_events',
-                                                'event_id',
-                                                event['event_id']);
-                                            if (result != 0) {
-                                              setState(() {
-                                                allEvents.remove(event);
-                                                filteredEvents.remove(event);
-                                              });
-                                            } else {
-                                              customSnackBar(
-                                                  // ignore: use_build_context_synchronously
-                                                  context: context,
-                                                  message:
-                                                      'Failed to delete event');
-                                            }
-                                          } else {
-                                            // ignore: use_build_context_synchronously
-                                            customSnackBar(
-                                                context: context,
-                                                message:
-                                                    'You do not have access to delete events');
-                                          }
-                                        },
-                                        backgroundColor: const Color.fromARGB(
-                                            138, 236, 70, 70),
-                                        icon: Icons.delete,
-                                        foregroundColor: const Color.fromARGB(
-                                            255, 238, 230, 230),
-                                      ),
-                                    ],
-                                  ),
-                                  child: GestureDetector(
-                                    onTap: () async {
-                                      devtools.log('Event tapped');
-                                      final updatedEvent = await showDialog<
-                                          Map<String, dynamic>>(
-                                        context: context,
-                                        builder: (context) =>
-                                            UpdateDisasterEventsDialog(
-                                          fetchDisasterEvents: () =>
-                                              fetchdata('disaster_events'),
-                                          event: event,
-                                          response:
-                                              null, // Pass any additional data you need
-                                        ),
-                                      );
-                                      devtools.log(updatedEvent.toString());
-                                      if (updatedEvent != null) {
-                                        devtools.log('change reflected');
-                                        setState(() {
-                                          futureGetDisasterEvents =
-                                              fetchdata('disaster_events');
-                                          futureGetDisasterEvents
-                                              .then((events) {
-                                            setState(() {
-                                              allEvents = events;
-                                              filteredEvents = events;
-                                            });
-                                          });
-                                        });
-                                      }
-                                    },
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        border: Border.all(
-                                            color: const Color.fromARGB(
-                                                255, 153, 153, 43),
-                                            width: 2.0),
-                                        color: const Color.fromARGB(
-                                                255, 227, 217, 217)
-                                            .withOpacity(0.1),
-                                        borderRadius:
-                                            BorderRadius.circular(25.0),
-                                      ),
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 12.0, horizontal: 24.0),
-                                        child: Row(
-                                        mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Expanded(
-                                          child: Column(
-                                            crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                            children: [
-                                            Text(
-                                              "Name: ${event['event_name']}",
-                                              style: const TextStyle(
-                                              fontSize: 20.0,
-                                              fontWeight: FontWeight.bold,
-                                              color: Color.fromARGB(
-                                                255, 229, 219, 219),
-                                              ),
-                                              overflow:
-                                                TextOverflow.ellipsis,
-                                            ),
-                                            const SizedBox(height: 6),
-                                            Text(
-                                              "ID: ${event['event_id']}",
-                                              style: const TextStyle(
-                                              fontSize: 14.0,
-                                              color: Color.fromARGB(
-                                                209, 180, 172, 172),
-                                              ),
-                                              overflow:
-                                                TextOverflow.ellipsis,
-                                            ),
-                                            ],
-                                          ),
-                                          ),
-                                          IconButton(
-                                          icon: const Icon(Icons.chat_bubble, color: Colors.white),
-                                          onPressed: () {
-                                            if(checkAcess('messages', '')){
-                                                Navigator.pushNamed(
-                                                  context, 
-                                                  'chat-room', 
-                                                  arguments: {'event_id': event['event_id']}
-                                                );
-                                            } else {
-                                              customSnackBar(context: context, message: 'You do not have access to chat');
-                                            }
-                                          },
-                                          ),
-                                        ],
-                                        ),
-                                    ),
-                                  ),
-                                ),
-                              );
+                  padding: const EdgeInsets.only(bottom: 85.0),
+                  child: FutureBuilder<List<Map<String, dynamic>>>(
+                    future: futureGetDisasterEvents,
+                    builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(
+                      child: CustomLoadingAnimation(),
+                      );
+                    } else if (snapshot.hasError) {
+                      return const Center(
+                      child: Text(
+                        'Error loading events.',
+                        style: TextStyle(
+                        fontSize: 18.0,
+                        color: Color.fromARGB(255, 222, 211, 211),
+                        ),
+                      ),
+                      );
+                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return const Center(
+                      child: Text(
+                        'Record not present.',
+                        style: TextStyle(
+                        fontSize: 18.0,
+                        color: Color.fromARGB(255, 222, 211, 211),
+                        ),
+                      ),
+                      );
+                    } else {
+                      return ListView.builder(
+                      itemCount: filteredEvents.length,
+                      itemBuilder: (context, index) {
+                        final event = filteredEvents[index];
+                        return Padding(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 8.0, horizontal: 16.0),
+                        child: Slidable(
+                          endActionPane: ActionPane(
+                          motion: const StretchMotion(),
+                          children: [
+                            SlidableAction(
+                            borderRadius: BorderRadius.circular(25),
+                            onPressed: (context) async {
+                              devtools.log('Slide action pressed');
+                              if (checkAcess(
+                                'disaster_events', userName)) {
+                              final result = await deleteData(
+                                'disaster_events',
+                                'event_id',
+                                event['event_id']);
+                              if (result != 0) {
+                                setState(() {
+                                allEvents.remove(event);
+                                filteredEvents.remove(event);
+                                });
+                              } else {
+                                customSnackBar(
+                                  // ignore: use_build_context_synchronously
+                                  context: context,
+                                  message:
+                                    'Failed to delete event');
+                              }
+                              } else {
+                              // ignore: use_build_context_synchronously
+                              customSnackBar(
+                                context: context,
+                                message:
+                                  'You do not have access to delete events');
+                              }
                             },
+                            backgroundColor: const Color.fromARGB(
+                              138, 236, 70, 70),
+                            icon: Icons.delete,
+                            foregroundColor: const Color.fromARGB(
+                              255, 238, 230, 230),
+                            ),
+                          ],
                           ),
+                          child: GestureDetector(
+                          onTap: () async {
+                            devtools.log('Event tapped');
+                            final updatedEvent = await showDialog<
+                              Map<String, dynamic>>(
+                            context: context,
+                            builder: (context) =>
+                              UpdateDisasterEventsDialog(
+                              fetchDisasterEvents: () =>
+                                fetchdata('disaster_events'),
+                              event: event,
+                              response:
+                                null, // Pass any additional data you need
+                            ),
+                            );
+                            devtools.log(updatedEvent.toString());
+                            if (updatedEvent != null) {
+                            devtools.log('change reflected');
+                            setState(() {
+                              futureGetDisasterEvents =
+                                fetchdata('disaster_events');
+                              futureGetDisasterEvents
+                                .then((events) {
+                              setState(() {
+                                allEvents = events;
+                                filteredEvents = events;
+                              });
+                              });
+                            });
+                            }
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                            border: Border.all(
+                              color: const Color.fromARGB(
+                                255, 153, 153, 43),
+                              width: 2.0),
+                            color: const Color.fromARGB(
+                                255, 227, 217, 217)
+                              .withOpacity(0.1),
+                            borderRadius:
+                              BorderRadius.circular(25.0),
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 12.0, horizontal: 24.0),
+                            child: Row(
+                            mainAxisAlignment:
+                              MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                              child: Column(
+                              crossAxisAlignment:
+                                CrossAxisAlignment.start,
+                              children: [
+                              Text(
+                                "Name: ${event['event_name']}",
+                                style: const TextStyle(
+                                fontSize: 20.0,
+                                fontWeight: FontWeight.bold,
+                                color: Color.fromARGB(
+                                255, 229, 219, 219),
+                                ),
+                                overflow:
+                                TextOverflow.ellipsis,
+                              ),
+                              const SizedBox(height: 6),
+                              Text(
+                                "ID: ${event['event_id']}",
+                                style: const TextStyle(
+                                fontSize: 14.0,
+                                color: Color.fromARGB(
+                                209, 180, 172, 172),
+                                ),
+                                overflow:
+                                TextOverflow.ellipsis,
+                              ),
+                              ],
+                              ),
+                              ),
+                              IconButton(
+                              icon: const Icon(Icons.chat_bubble, color: Colors.white),
+                              onPressed: () {
+                              if(checkAcess('messages', '')){
+                                Navigator.pushNamed(
+                                  context, 
+                                  'chat-room', 
+                                  arguments: {'event_id': event['event_id']}
+                                );
+                              } else {
+                                customSnackBar(context: context, message: 'You do not have access to chat');
+                              }
+                              },
+                              ),
+                            ],
+                            ),
+                          ),
+                          ),
+                        ),
+                        );
+                      },
+                      );
+                    }
+                    },
+                  ),
                   ),
                 ),
               ],

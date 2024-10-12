@@ -157,9 +157,18 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
           ],
         ),
         Expanded(
-          child: filteredData.isEmpty
-              ? const Center(child: Text('No volunteers found.'))
-              : buildFutureBuilder(),
+          child: FutureBuilder(
+            future: futureGetVolunteers,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CustomLoadingAnimation());
+              } else if (filteredData.isEmpty) {
+          return const Center(child: Text('No volunteers found.'));
+              } else {
+          return buildListview(snapshot);
+              }
+            },
+          ),
         ),
         SizedBox(height: 70),
       ],
