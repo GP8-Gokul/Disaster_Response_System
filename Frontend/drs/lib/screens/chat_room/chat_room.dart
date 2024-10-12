@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:drs/services/api/root_api.dart';
 import 'package:drs/services/authorization/check_access.dart';
 import 'package:drs/widgets/background_image.dart';
@@ -20,10 +22,22 @@ class _ChatRoomState extends State<ChatRoom> {
 
   late Future<List<Map<String, dynamic>>> futureGetMessages;
   late int event;
+  Timer? _timer;
 
   @override
   void initState() {
     super.initState();
+    _timer = Timer.periodic(Duration(seconds: 2), (timer) {
+      setState(() {
+        futureGetMessages = fetchdata('messages');
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
   }
 
   @override
