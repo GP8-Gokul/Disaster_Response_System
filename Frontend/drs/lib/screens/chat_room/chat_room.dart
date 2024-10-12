@@ -159,9 +159,20 @@ class _ChatRoomState extends State<ChatRoom> {
                                     child: Text(
                                       snapshot.data![index]['text'],
                                       style: const TextStyle(
-                                        fontSize: 20,
-                                        color:
-                                            Color.fromARGB(255, 255, 255, 255),
+                                      fontSize: 20,
+                                      color: Color.fromARGB(255, 255, 255, 255),
+                                      shadows: [
+                                        Shadow(
+                                        blurRadius: 10.0,
+                                        color: Colors.blueAccent,
+                                        offset: Offset(0, 0),
+                                        ),
+                                        Shadow(
+                                        blurRadius: 10.0,
+                                        color: Colors.redAccent,
+                                        offset: Offset(0, 0),
+                                        ),
+                                      ],
                                       ),
                                       overflow: TextOverflow.visible,
                                     ),
