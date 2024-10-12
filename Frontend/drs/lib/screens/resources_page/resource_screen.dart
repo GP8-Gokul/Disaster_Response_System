@@ -9,13 +9,13 @@ import 'package:drs/widgets/custom_text_field.dart';
 import 'package:drs/widgets/search_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:rive/rive.dart';
 import 'dart:developer' as devtools show log;
 
 bool changeInState = false;
 var events = {};
 
 Future<void> getEventIds(String eventController) async {
-
   events.clear();
   List<Map<String, dynamic>> value = await fetchdata('disaster_events');
   for (var event in value) {
@@ -24,9 +24,10 @@ Future<void> getEventIds(String eventController) async {
 
   devtools.log(events.toString());
   devtools.log(eventController);
-  
+
   if (!(checkAcess('resources', " "))) {
-    events.removeWhere((key, value) => key.toString() != eventController.toString());
+    events.removeWhere(
+        (key, value) => key.toString() != eventController.toString());
   }
 
   devtools.log(events.toString());
@@ -43,7 +44,8 @@ class ResourceScreenB extends StatefulWidget {
 class _ResourceScreenBState extends State<ResourceScreenB> {
   late Future<List<Map<String, dynamic>>> futureGetResources;
   dynamic response;
-
+  bool shouldSort = false;
+  StateMachineController? _controller;
   TextEditingController searchController = TextEditingController();
   List<Map<String, dynamic>> allData = [];
   List<Map<String, dynamic>> filteredData = [];
@@ -72,6 +74,40 @@ class _ResourceScreenBState extends State<ResourceScreenB> {
     });
   }
 
+  void _sortData(bool shouldSort) {
+    if (shouldSort) {
+      setState(() {
+        filteredData.sort((a, b) {
+          int quantityA = int.tryParse(a['quantity'].toString()) ?? 0;
+          int quantityB = int.tryParse(b['quantity'].toString()) ?? 0;
+          String availabilityA =
+              a['availability_status'].toString().toLowerCase();
+          String availabilityB =
+              b['availability_status'].toString().toLowerCase();
+
+          if (availabilityA == 'yes' && availabilityB == 'yes') {
+            return quantityB.compareTo(quantityA); // Descending order
+          } else if (availabilityA == 'yes') {
+            return -1;
+          } else if (availabilityB == 'yes') {
+            return 1;
+          } else {
+            return 0;
+          }
+        });
+      });
+    } else {
+      setState(() {
+        filteredData.sort((a, b) {
+          int resourceIdA = int.tryParse(a['resource_id'].toString()) ?? 0;
+          int resourceIdB = int.tryParse(b['resource_id'].toString()) ?? 0;
+          return resourceIdA.compareTo(resourceIdB); // Ascending order
+        });
+      });
+    }
+    devtools.log(filteredData.toString());
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -92,14 +128,67 @@ class _ResourceScreenBState extends State<ResourceScreenB> {
   Column bodyColumn() {
     return Column(
       children: [
-        SearchTextField(
-            labelText: 'Search Resources',
-            hintText: 'Enter item Name',
-            searchController: searchController
+        Row(
+          children: [
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: SearchTextField(
+                    labelText: 'Search Resources',
+                    hintText: 'Enter item Name',
+                    searchController: searchController),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: GestureDetector(
+                onTap: () {
+                  setState(() {
+                    shouldSort = !shouldSort;
+                    _sortData(shouldSort);
+
+                    // Update the Rive animation's 'check' input
+                    if (_controller != null) {
+                      final input = _controller?.findInput<bool>('check');
+                      if (input != null) {
+                        input.value = shouldSort;
+                      }
+                    }
+                  });
+                },
+                child: SizedBox(
+                  width: 50,
+                  height: 50,
+                  child: RiveAnimation.asset(
+                    'assets/rive/dbms_animation.riv',
+                    artboard: 'sort_button',
+                    onInit: (artboard) {
+                      final controller = StateMachineController.fromArtboard(
+                        artboard,
+                        'State Machine 1',
+                      );
+                      if (controller != null) {
+                        artboard.addController(controller);
+                        _controller =
+                            controller; // Save controller globally to access it in onTap
+
+                        final input = controller.findInput<bool>('check');
+                        if (input != null) {
+                          input.value = shouldSort;
+                        }
+                      }
+                    },
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
         Expanded(
           child: filteredData.isEmpty
-              ? const Center(child: Text('No resource found'),)
+              ? const Center(
+                  child: Text('No resource found'),
+                )
               : buildFutureBuilder(),
         ),
         SizedBox(height: 70),
@@ -135,7 +224,6 @@ class _ResourceScreenBState extends State<ResourceScreenB> {
             endActionPane: ActionPane(
               motion: const ScrollMotion(),
               children: [
-
                 //Delete Functionality
 
                 SlidableAction(
@@ -144,7 +232,8 @@ class _ResourceScreenBState extends State<ResourceScreenB> {
                   foregroundColor: const Color.fromARGB(255, 238, 230, 230),
                   onPressed: (context) async {
                     if (checkAcess('resources', userName) == true) {
-                      response = await deleteData('resources', 'resource_id',content['resource_id'].toString());
+                      response = await deleteData('resources', 'resource_id',
+                          content['resource_id'].toString());
                       if (response != null) {
                         setState(() {
                           futureGetResources = fetchdata('resources');
@@ -158,7 +247,9 @@ class _ResourceScreenBState extends State<ResourceScreenB> {
                         });
                       }
                     } else {
-                      customSnackBar(context: context,message: 'You do not have access to delete .');
+                      customSnackBar(
+                          context: context,
+                          message: 'You do not have access to delete .');
                     }
                   },
                 ),
@@ -199,10 +290,14 @@ class _ResourceScreenBState extends State<ResourceScreenB> {
           showDialog(
             context: context,
             builder: (BuildContext context) {
-              TextEditingController resourcenamecontroller = TextEditingController();
-              TextEditingController resourcetypecontroller = TextEditingController();
-              TextEditingController quantitycontroller = TextEditingController();
-              TextEditingController availabilityStatusController = TextEditingController();
+              TextEditingController resourcenamecontroller =
+                  TextEditingController();
+              TextEditingController resourcetypecontroller =
+                  TextEditingController();
+              TextEditingController quantitycontroller =
+                  TextEditingController();
+              TextEditingController availabilityStatusController =
+                  TextEditingController();
               TextEditingController eventController = TextEditingController();
 
               getEventIds(eventController.text);
@@ -213,8 +308,7 @@ class _ResourceScreenBState extends State<ResourceScreenB> {
                 titleTextStyle: const TextStyle(
                     color: Colors.white,
                     fontSize: 24,
-                    fontWeight: FontWeight.bold
-                ),
+                    fontWeight: FontWeight.bold),
                 backgroundColor: Colors.grey[900],
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.0),
@@ -227,32 +321,30 @@ class _ResourceScreenBState extends State<ResourceScreenB> {
                         hintText: 'Resource Name',
                         labelText: 'Resource Name',
                         controller: resourcenamecontroller,
-                        readOnly: false
-                    ),
+                        readOnly: false),
                     CustomTextField(
                         hintText: 'Resource Type',
                         labelText: 'Resource Type',
                         controller: resourcetypecontroller,
-                        readOnly: false
-                    ),
+                        readOnly: false),
                     CustomTextField(
                         hintText: 'Quantity',
                         labelText: 'Quantity',
                         controller: quantitycontroller,
-                        readOnly: false
-                    ),
+                        readOnly: false),
                     CustomTextField(
                         hintText: 'Availability Status',
                         labelText: 'Availability Status',
                         controller: availabilityStatusController,
-                        readOnly: false
-                    ),
+                        readOnly: false),
                     Padding(
                       padding: const EdgeInsets.all(4.0),
                       child: FutureBuilder<void>(
                         future: getEventIds(eventController.text),
-                        builder: (BuildContext context,AsyncSnapshot<void> snapshot) {
-                          if (snapshot.connectionState ==ConnectionState.waiting) {
+                        builder: (BuildContext context,
+                            AsyncSnapshot<void> snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
                             return const CircularProgressIndicator();
                           } else if (snapshot.hasError) {
                             return const Text('Error loading events');
@@ -260,19 +352,25 @@ class _ResourceScreenBState extends State<ResourceScreenB> {
                             return DropdownButtonFormField<String>(
                               decoration: InputDecoration(
                                 labelText: 'Event Name',
-                                labelStyle: const TextStyle(color: Colors.white),
-                                enabledBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.lime),),
-                                focusedBorder: const OutlineInputBorder(borderSide: BorderSide(
-                                  color: Color.fromARGB(255, 200, 99, 92)),
+                                labelStyle:
+                                    const TextStyle(color: Colors.white),
+                                enabledBorder: const OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.lime),
+                                ),
+                                focusedBorder: const OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Color.fromARGB(255, 200, 99, 92)),
                                 ),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10.0),
-                                  borderSide: const BorderSide(color: Colors.lime, width: 2.0),
+                                  borderSide: const BorderSide(
+                                      color: Colors.lime, width: 2.0),
                                 ),
                               ),
                               value: selectedEventId,
                               style: const TextStyle(color: Colors.white),
-                              dropdownColor:const Color.fromARGB(255, 38, 36, 36),
+                              dropdownColor:
+                                  const Color.fromARGB(255, 38, 36, 36),
                               items: events.keys.map((key) {
                                 return DropdownMenuItem<String>(
                                   value: key.toString(),
@@ -296,7 +394,8 @@ class _ResourceScreenBState extends State<ResourceScreenB> {
 
                   TextButton(
                     style: TextButton.styleFrom(backgroundColor: Colors.white),
-                    child: const Text('Cancel',style: TextStyle(color: Colors.black)),
+                    child: const Text('Cancel',
+                        style: TextStyle(color: Colors.black)),
                     onPressed: () {
                       Navigator.pop(context);
                     },
@@ -312,7 +411,9 @@ class _ResourceScreenBState extends State<ResourceScreenB> {
                         style: TextStyle(color: Colors.black)),
                     onPressed: () async {
                       if (resourcenamecontroller.text.isEmpty) {
-                        customSnackBar(context: context, message: 'Please Enter Resource Name');
+                        customSnackBar(
+                            context: context,
+                            message: 'Please Enter Resource Name');
                       } else {
                         if (checkAcess('resources', userName)) {
                           devtools.log('inserting data');
@@ -322,7 +423,8 @@ class _ResourceScreenBState extends State<ResourceScreenB> {
                             'resource_name': resourcenamecontroller.text,
                             'resource_type': resourcetypecontroller.text,
                             'quantity': quantitycontroller.text,
-                            'availability_status': availabilityStatusController.text,
+                            'availability_status':
+                                availabilityStatusController.text,
                             'event_id': selectedEventId,
                           });
                           if (response != null) {
@@ -350,7 +452,9 @@ class _ResourceScreenBState extends State<ResourceScreenB> {
             },
           );
         } else {
-          customSnackBar(context: context, message: 'You do not have access to add new resources.');
+          customSnackBar(
+              context: context,
+              message: 'You do not have access to add new resources.');
         }
       },
     );
