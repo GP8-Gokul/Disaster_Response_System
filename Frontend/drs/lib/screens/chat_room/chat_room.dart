@@ -147,36 +147,73 @@ class _ChatRoomState extends State<ChatRoom> {
                             child: ListTile(
                               title: Row(
                                 children: [
-                                  Text(
-                                    '${snapshot.data![index]['sender']} : ',
-                                    style: const TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.limeAccent,
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: Text(
-                                      snapshot.data![index]['text'],
-                                      style: const TextStyle(
-                                      fontSize: 20,
-                                      color: Color.fromARGB(255, 255, 255, 255),
-                                      shadows: [
-                                        Shadow(
-                                        blurRadius: 10.0,
-                                        color: Colors.blueAccent,
-                                        offset: Offset(0, 0),
+                                  if (snapshot.data![index]['sender'] ==
+                                      userName) ...[
+                                    Expanded(
+                                      child: Text(
+                                        '${snapshot.data![index]['text']}',
+                                        textAlign: TextAlign.end,
+                                        style: const TextStyle(
+                                          fontSize: 20,
+                                          color: Color.fromARGB(
+                                              255, 255, 255, 255),
+                                          shadows: [
+                                            Shadow(
+                                              blurRadius: 10.0,
+                                              color: Colors.blueAccent,
+                                              offset: Offset(0, 0),
+                                            ),
+                                            Shadow(
+                                              blurRadius: 10.0,
+                                              color: Colors.redAccent,
+                                              offset: Offset(0, 0),
+                                            ),
+                                          ],
                                         ),
-                                        Shadow(
-                                        blurRadius: 10.0,
-                                        color: Colors.redAccent,
-                                        offset: Offset(0, 0),
-                                        ),
-                                      ],
+                                        overflow: TextOverflow.visible,
                                       ),
-                                      overflow: TextOverflow.visible,
                                     ),
-                                  ),
+                                    Text(
+                                      ' : You',
+                                      style: const TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.limeAccent,
+                                      ),
+                                    ),
+                                  ] else ...[
+                                    Text(
+                                      '${snapshot.data![index]['sender']} : ',
+                                      style: const TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.limeAccent,
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Text(
+                                        snapshot.data![index]['text'],
+                                        style: const TextStyle(
+                                          fontSize: 20,
+                                          color: Color.fromARGB(
+                                              255, 255, 255, 255),
+                                          shadows: [
+                                            Shadow(
+                                              blurRadius: 10.0,
+                                              color: Colors.blueAccent,
+                                              offset: Offset(0, 0),
+                                            ),
+                                            Shadow(
+                                              blurRadius: 10.0,
+                                              color: Colors.redAccent,
+                                              offset: Offset(0, 0),
+                                            ),
+                                          ],
+                                        ),
+                                        overflow: TextOverflow.visible,
+                                      ),
+                                    ),
+                                  ],
                                 ],
                               ),
                             ),
@@ -217,7 +254,7 @@ class _ChatRoomState extends State<ChatRoom> {
                       icon: const Icon(Icons.send,
                           color: Color.fromARGB(255, 255, 255, 255)),
                       onPressed: () async {
-                        if(messageController.text.isEmpty){
+                        if (messageController.text.isEmpty) {
                           customSnackBar(
                               context: context,
                               message: 'Message cannot be empty.');
