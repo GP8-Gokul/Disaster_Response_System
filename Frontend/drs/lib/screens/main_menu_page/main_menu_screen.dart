@@ -14,7 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 Future<void> launchGooglePay(BuildContext context, String amount) async {
-  final String upiId = '9495829018@okbizaxis'; 
+  final String upiId = 'cmdrfkerala@fbl'; 
   final String googlePayUri ='upi://pay?pa=$upiId&am=$amount&cu=INR&tn=Support';
   final Uri launchUri = Uri.parse(googlePayUri);
 
@@ -118,7 +118,7 @@ class MainMenuScreen extends StatelessWidget {
                             ? '1'
                             : amountController.text),
                           min: 1,
-                          max: 1000,
+                          max: 100,
                           divisions: 100,
                           label: amountController.text,
                           onChanged: (double value) {
@@ -140,8 +140,8 @@ class MainMenuScreen extends StatelessWidget {
                             double parsedValue = double.tryParse(
                                 value.isEmpty ? '1' : value) ??
                               1;
-                            if (parsedValue > 1000) {
-                              parsedValue = 1000;
+                            if (parsedValue > 100) {
+                              parsedValue = 100;
                             }
                             amountController.text =
                               parsedValue.toStringAsFixed(0);
