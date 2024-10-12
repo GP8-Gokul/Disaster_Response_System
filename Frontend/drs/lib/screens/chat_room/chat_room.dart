@@ -152,7 +152,7 @@ class _ChatRoomState extends State<ChatRoom> {
                                     style: const TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold,
-                                      color: Color.fromARGB(255, 183, 183, 190),
+                                      color: Colors.limeAccent,
                                     ),
                                   ),
                                   Expanded(
