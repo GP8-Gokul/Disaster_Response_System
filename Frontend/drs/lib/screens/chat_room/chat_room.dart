@@ -29,7 +29,7 @@ class _ChatRoomState extends State<ChatRoom> {
   @override
   void initState() {
     super.initState();
-    _timer = Timer.periodic(Duration(seconds: 2), (timer) {
+    _timer = Timer.periodic(Duration(seconds: 5), (timer) {
       setState(() {
         futureGetMessages = fetchdata('messages');
       });
@@ -51,6 +51,17 @@ class _ChatRoomState extends State<ChatRoom> {
     final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
     var eventId = args['event_id'];
     event = eventId;
+
+    _timer = Timer.periodic(Duration(seconds: 5), (timer) {
+      setState(() {
+        futureGetMessages = fetchdata('messages').then((messages) {
+          devtools.log('Fetched messages: $messages');
+          var newMessage = messages.where((message) => message['event_id'] == eventId).toList();
+          devtools.log('Filtered messages: $newMessage');
+          return newMessage;
+        });
+      });
+    });
 
     futureGetMessages = fetchdata('messages').then((messages) {
       devtools.log('Fetched messages: $messages');
