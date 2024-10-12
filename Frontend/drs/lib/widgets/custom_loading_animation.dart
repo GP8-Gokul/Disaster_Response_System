@@ -10,7 +10,8 @@ class CustomLoadingAnimation extends StatelessWidget {
       width: 50,
       height: 50,
       child: RiveAnimation.asset(
-        'assets/rive/loading_symbol.riv',
+        'assets/rive/dbms_animation.riv',
+        artboard: 'Loading_artboard',
       ),
     );
   }
