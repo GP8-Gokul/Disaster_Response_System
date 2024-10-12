@@ -5,6 +5,7 @@ import 'package:drs/widgets/custom_text.dart';
 import 'package:drs/widgets/custom_text_field.dart';
 import 'dart:developer' as devtools show log;
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 dynamic response;
 var events = {};
@@ -126,6 +127,19 @@ class AidDistributionTileState extends State<AidDistributionListTile> {
 
       child: ListTile(
         title: Text("location: ${widget.content['location']}"),
+        trailing: IconButton(
+            icon: Icon(Icons.map, color: const Color.fromARGB(255, 191, 194, 16), size: 30.0),
+          onPressed: () async {
+            final location = widget.content['location'];
+            final url = 'https://www.google.com/maps/search/?api=1&query=$location';
+            if (await canLaunchUrl(Uri.parse(url))) {
+              await launchUrl(Uri.parse(url));
+            } else {
+              // ignore: use_build_context_synchronously
+              customSnackBar(context: context, message: 'Could not launch Maps');
+            }
+          },
+        ),
         subtitle: Text("Quantity: ${widget.content['quantity_distributed']}"),
         tileColor: const Color.fromARGB(255, 255, 255, 255).withOpacity(0.05),
         contentPadding:
