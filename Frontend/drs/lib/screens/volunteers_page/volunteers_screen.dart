@@ -24,7 +24,8 @@ Future<void> getEventIds(String volunteerName, String eventController) async {
   devtools.log(eventController);
   devtools.log(volunteerName);
   if (!(checkAcess('volunteers', volunteerName))) {
-    events.removeWhere((key, value) => key.toString() != eventController.toString());
+    events.removeWhere(
+        (key, value) => key.toString() != eventController.toString());
   }
   devtools.log(events.toString());
 }
@@ -42,6 +43,7 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
   dynamic response;
 
   TextEditingController searchController = TextEditingController();
+  ValueNotifier<bool> isAvailable = ValueNotifier<bool>(false);
   List<Map<String, dynamic>> allData = [];
   List<Map<String, dynamic>> filteredData = [];
 
@@ -56,15 +58,36 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
       });
     });
     searchController.addListener(_filterData);
+    isAvailable.addListener(() {
+      _isAvailable(isAvailable.value);
+    });
   }
 
   void _filterData() {
     final query = searchController.text.toLowerCase();
     setState(() {
       filteredData = allData.where((element) {
-        final volunteerName = element['volunteer_name'].toString().toLowerCase();
+        final volunteerName =
+            element['volunteer_name'].toString().toLowerCase();
         return volunteerName.contains(query);
       }).toList();
+    });
+  }
+
+  void _isAvailable(bool isAvailable) {
+    setState(() {
+      if (isAvailable) {
+        filteredData = allData.where((element) {
+          final availabilityStatus = element['volunteer_availability_status']
+              .toString()
+              .trim()
+              .toLowerCase();
+          return availabilityStatus == 'yes';
+        }).toList();
+      } else {
+        filteredData = allData;
+      }
+      devtools.log(filteredData.toString());
     });
   }
 
@@ -88,10 +111,50 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
   Column bodyColumn() {
     return Column(
       children: [
-        SearchTextField(
-            labelText: 'Search Volunteers',
-            hintText: 'Enter Volunteer Name',
-            searchController: searchController
+        Row(
+          children: [
+            Expanded(
+              child: SearchTextField(
+                labelText: 'Search Volunteers',
+                hintText: 'Enter Volunteer Name',
+                searchController: searchController,
+              ),
+            ),
+            ValueListenableBuilder<bool>(
+              valueListenable: isAvailable,
+              builder: (context, value, child) {
+                return GestureDetector(
+                  child: Container(
+                    height: 72,
+                    padding: const EdgeInsets.all(8.0),
+                    decoration: BoxDecoration(
+                      color: value
+                          ? Colors.green
+                          : const Color.fromARGB(255, 127, 120, 120),
+                      borderRadius: BorderRadius.circular(10.0),
+                      border: Border.all(
+                        color: Colors.white,
+                        width: 2.0,
+                      ),
+                    ),
+                    child: Center(
+                      child: Text(
+                        value ? 'Available' : 'Everyone',
+                        style: const TextStyle(
+                          color: Color.fromARGB(255, 20, 20, 20),
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                  onTap: () {
+                    isAvailable.value = !isAvailable.value;
+                  },
+                );
+              },
+            ),
+          ],
         ),
         Expanded(
           child: filteredData.isEmpty
@@ -131,7 +194,6 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
             endActionPane: ActionPane(
               motion: const ScrollMotion(),
               children: [
-
                 //Delete Functionality
 
                 SlidableAction(
@@ -140,27 +202,27 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
                   foregroundColor: const Color.fromARGB(255, 238, 230, 230),
                   onPressed: (context) async {
                     if (checkAcess('volunteers', content['volunteer_name'])) {
-                      response = await deleteData('volunteers', 'volunteer_id',content['volunteer_id'].toString());
+                      response = await deleteData('volunteers', 'volunteer_id',
+                          content['volunteer_id'].toString());
                       if (response != null) {
+                        setState(() {
+                          futureGetVolunteers = fetchdata('volunteers');
+                          futureGetVolunteers.then((events) {
                             setState(() {
-                              futureGetVolunteers = fetchdata('volunteers');
-                              futureGetVolunteers.then((events) {
-                                setState(() {
-                                  allData = events;
-                                  filteredData = events;
-                                });
-                              });
-                              searchController.addListener(_filterData);
+                              allData = events;
+                              filteredData = events;
                             });
+                          });
+                          searchController.addListener(_filterData);
+                        });
                       }
                     } else {
                       customSnackBar(
                           context: context,
-                          message:'You do not have access to delete this volunteer.'
-                          );
+                          message:
+                              'You do not have access to delete this volunteer.');
                     }
                   },
-                  
                 ),
               ],
             ),
@@ -195,195 +257,206 @@ class _VolunteersScreenState extends State<VolunteersScreen> {
       backgroundColor: Colors.white.withOpacity(0.7),
       child: const Icon(Icons.add),
       onPressed: () {
-        if(checkAcess('volunteers', '')){
+        if (checkAcess('volunteers', '')) {
           showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            TextEditingController volunteerNameController = TextEditingController();
-            TextEditingController volunteerContactInfoController = TextEditingController();
-            TextEditingController volunteerSkillsController = TextEditingController();
-            TextEditingController volunteerAvailabilityStatusController = TextEditingController(text: 'Yes');
-            TextEditingController eventController = TextEditingController();
-            bool isAvailable = false;
+            context: context,
+            builder: (BuildContext context) {
+              TextEditingController volunteerNameController =
+                  TextEditingController();
+              TextEditingController volunteerContactInfoController =
+                  TextEditingController();
+              TextEditingController volunteerSkillsController =
+                  TextEditingController();
+              TextEditingController volunteerAvailabilityStatusController =
+                  TextEditingController(text: 'Yes');
+              TextEditingController eventController = TextEditingController();
+              bool isAvailable = false;
 
-            getEventIds(volunteerNameController.text, eventController.text);
-            String? selectedEventId; 
+              getEventIds(volunteerNameController.text, eventController.text);
+              String? selectedEventId;
 
-            return AlertDialog(
-              title: const Text('Add New Volunteer'),
-              titleTextStyle: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold
-              ),
-              backgroundColor: Colors.grey[900],
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
-                side: const BorderSide(color: Colors.white, width: 2.0),
-              ),
-              content: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    StatefulBuilder(
-                      builder: (BuildContext context, StateSetter setState) {
-                        return Row(
-                          children: [
-                            const Text(
-                              'Availability Status:',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            Checkbox(
-                              value: isAvailable,
-                              onChanged: (bool? newValue) {
-                                setState(() {
-                                  isAvailable = newValue ?? false; 
-                                });
-                              },
-                              activeColor: Colors.green,
-                              checkColor: Colors.white,
-                            ),
-                            Text(
-                              isAvailable ? 'Yes' : 'No',
-                              style: TextStyle(
-                                color: isAvailable ? Colors.green : Colors.red,
+              return AlertDialog(
+                title: const Text('Add New Volunteer'),
+                titleTextStyle: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold),
+                backgroundColor: Colors.grey[900],
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                  side: const BorderSide(color: Colors.white, width: 2.0),
+                ),
+                content: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      StatefulBuilder(
+                        builder: (BuildContext context, StateSetter setState) {
+                          return Row(
+                            children: [
+                              const Text(
+                                'Availability Status:',
+                                style: TextStyle(color: Colors.white),
                               ),
-                            ),
-                          ],
-                        );
-                      },
-                    ),
-
-   
-
-
-                    CustomTextField(
-                        hintText: 'Volunteer Name',
-                        labelText: 'Volunteer Name',
-                        controller: volunteerNameController,
-                        readOnly: false
-                    ),
-                    CustomTextField(
-                        hintText: 'Contact Info',
-                        labelText: 'Contact Info',
-                        controller: volunteerContactInfoController,
-                        readOnly: false
-                    ),
-                    CustomTextField(
-                        hintText: 'Skills',
-                        labelText: 'Skills',
-                        controller: volunteerSkillsController,
-                        readOnly: false
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(4.0),
-                      child: FutureBuilder<void>(
-                        future: getEventIds(volunteerNameController.text,eventController.text),
-                        builder: (BuildContext context,AsyncSnapshot<void> snapshot) {
-                          if (snapshot.connectionState == ConnectionState.waiting) {
-                            return const CircularProgressIndicator();
-                          } else if (snapshot.hasError) {
-                            return const Text('Error loading events');
-                          } else {
-                            return DropdownButtonFormField<String>(
-                              decoration: InputDecoration(
-                                labelText: 'Event Name',
-                                labelStyle: const TextStyle(color: Colors.white),
-                                enabledBorder: const OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.lime),
-                                ),
-                                focusedBorder: const OutlineInputBorder(
-                                  borderSide: BorderSide(color: Color.fromARGB(255, 200, 99, 92)),
-                                ),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                  borderSide: const BorderSide(color: Colors.lime, width: 2.0),
+                              Checkbox(
+                                value: isAvailable,
+                                onChanged: (bool? newValue) {
+                                  setState(() {
+                                    isAvailable = newValue ?? false;
+                                  });
+                                },
+                                activeColor: Colors.green,
+                                checkColor: Colors.white,
+                              ),
+                              Text(
+                                isAvailable ? 'Yes' : 'No',
+                                style: TextStyle(
+                                  color:
+                                      isAvailable ? Colors.green : Colors.red,
                                 ),
                               ),
-                              value: selectedEventId,
-                              style: const TextStyle(color: Colors.white),
-                              dropdownColor:const Color.fromARGB(255, 38, 36, 36),
-                              items: events.keys.map((key) {
-                                return DropdownMenuItem<String>(
-                                  value: key.toString(),
-                                  child: Text(events[key]!),
-                                );
-                              }).toList(),
-                              onChanged: (String? newValue) {
-                                setState(() {
-                                  selectedEventId = newValue;
-                                });
-                              },
-                            );
-                          }
+                            ],
+                          );
                         },
                       ),
-                    ),
-                  ],
-                ),
-              ),
-              actions: <Widget>[
-
-                // Insert Cancel Button
-
-                TextButton(
-                  style: TextButton.styleFrom(backgroundColor: Colors.white),
-                  child: const Text('Cancel', style: TextStyle(color: Colors.black)),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                ),
-
-                //Insert Button
-
-                TextButton(
-                  style: TextButton.styleFrom(
-                    backgroundColor: Colors.white,
+                      CustomTextField(
+                          hintText: 'Volunteer Name',
+                          labelText: 'Volunteer Name',
+                          controller: volunteerNameController,
+                          readOnly: false),
+                      CustomTextField(
+                          hintText: 'Contact Info',
+                          labelText: 'Contact Info',
+                          controller: volunteerContactInfoController,
+                          readOnly: false),
+                      CustomTextField(
+                          hintText: 'Skills',
+                          labelText: 'Skills',
+                          controller: volunteerSkillsController,
+                          readOnly: false),
+                      Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: FutureBuilder<void>(
+                          future: getEventIds(volunteerNameController.text,
+                              eventController.text),
+                          builder: (BuildContext context,
+                              AsyncSnapshot<void> snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const CircularProgressIndicator();
+                            } else if (snapshot.hasError) {
+                              return const Text('Error loading events');
+                            } else {
+                              return DropdownButtonFormField<String>(
+                                decoration: InputDecoration(
+                                  labelText: 'Event Name',
+                                  labelStyle:
+                                      const TextStyle(color: Colors.white),
+                                  enabledBorder: const OutlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.lime),
+                                  ),
+                                  focusedBorder: const OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color:
+                                            Color.fromARGB(255, 200, 99, 92)),
+                                  ),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    borderSide: const BorderSide(
+                                        color: Colors.lime, width: 2.0),
+                                  ),
+                                ),
+                                value: selectedEventId,
+                                style: const TextStyle(color: Colors.white),
+                                dropdownColor:
+                                    const Color.fromARGB(255, 38, 36, 36),
+                                items: events.keys.map((key) {
+                                  return DropdownMenuItem<String>(
+                                    value: key.toString(),
+                                    child: Text(events[key]!),
+                                  );
+                                }).toList(),
+                                onChanged: (String? newValue) {
+                                  setState(() {
+                                    selectedEventId = newValue;
+                                  });
+                                },
+                              );
+                            }
+                          },
+                        ),
+                      ),
+                    ],
                   ),
-                  child: const Text('Submit', style: TextStyle(color: Colors.black)),
-                  onPressed: () async {
-                    if(volunteerNameController.text.isEmpty){
-                      customSnackBar(context: context, message: 'Please Enter Volunteer Name');
-                    } else if(selectedEventId == null){
-                      customSnackBar(context: context, message: 'Please Select Event Name');
-                    } 
-                    else{
-                      if (checkAcess('volunteers', '')) {
-                        response = await insertData({
-                          'table': 'volunteers',
-                          'name': volunteerNameController.text,
-                          'contact_info': volunteerContactInfoController.text,
-                          'skills': volunteerSkillsController.text,
-                          'availability_status': volunteerAvailabilityStatusController.text,
-                          'event_id': selectedEventId,
-                        });
-                        if (response != null) {
-                          setState(() {
-                            futureGetVolunteers = fetchdata('volunteers');
-                            futureGetVolunteers.then((events) {
-                              setState(() {
-                                allData = events;
-                                filteredData = events;
-                              });
-                            });
-                            searchController.addListener(_filterData);
+                ),
+                actions: <Widget>[
+                  // Insert Cancel Button
+
+                  TextButton(
+                    style: TextButton.styleFrom(backgroundColor: Colors.white),
+                    child: const Text('Cancel',
+                        style: TextStyle(color: Colors.black)),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+
+                  //Insert Button
+
+                  TextButton(
+                    style: TextButton.styleFrom(
+                      backgroundColor: Colors.white,
+                    ),
+                    child: const Text('Submit',
+                        style: TextStyle(color: Colors.black)),
+                    onPressed: () async {
+                      if (volunteerNameController.text.isEmpty) {
+                        customSnackBar(
+                            context: context,
+                            message: 'Please Enter Volunteer Name');
+                      } else if (selectedEventId == null) {
+                        customSnackBar(
+                            context: context,
+                            message: 'Please Select Event Name');
+                      } else {
+                        if (checkAcess('volunteers', '')) {
+                          response = await insertData({
+                            'table': 'volunteers',
+                            'name': volunteerNameController.text,
+                            'contact_info': volunteerContactInfoController.text,
+                            'skills': volunteerSkillsController.text,
+                            'availability_status':
+                                volunteerAvailabilityStatusController.text,
+                            'event_id': selectedEventId,
                           });
+                          if (response != null) {
+                            setState(() {
+                              futureGetVolunteers = fetchdata('volunteers');
+                              futureGetVolunteers.then((events) {
+                                setState(() {
+                                  allData = events;
+                                  filteredData = events;
+                                });
+                              });
+                              searchController.addListener(_filterData);
+                            });
+                          }
                         }
                       }
-                    }
-                    if(mounted){
-                      // ignore: use_build_context_synchronously
-                      Navigator.pop(context);
-                    }
-                  },
-                ),
-              ],
-            );
-          },
-        );
-        }
-        else{
-          customSnackBar(context: context, message: 'You do not have access to add new volunteers.');
+                      if (mounted) {
+                        // ignore: use_build_context_synchronously
+                        Navigator.pop(context);
+                      }
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        } else {
+          customSnackBar(
+              context: context,
+              message: 'You do not have access to add new volunteers.');
         }
       },
     );
