@@ -217,6 +217,12 @@ class _ChatRoomState extends State<ChatRoom> {
                       icon: const Icon(Icons.send,
                           color: Color.fromARGB(255, 255, 255, 255)),
                       onPressed: () async {
+                        if(messageController.text.isEmpty){
+                          customSnackBar(
+                              context: context,
+                              message: 'Message cannot be empty.');
+                          return;
+                        }
                         dynamic response = await insertData({
                           'table': 'messages',
                           'sender': userName,
