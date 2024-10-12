@@ -23,11 +23,13 @@ class _ChatRoomState extends State<ChatRoom> {
   late Future<List<Map<String, dynamic>>> futureGetMessages;
   late int event;
   Timer? _timer;
+  TextEditingController messageController = TextEditingController();
+  ScrollController scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
-    _timer = Timer.periodic(Duration(seconds: 2), (timer) {
+    _timer = Timer.periodic(Duration(seconds: 5), (timer) {
       setState(() {
         futureGetMessages = fetchdata('messages');
       });
@@ -38,6 +40,8 @@ class _ChatRoomState extends State<ChatRoom> {
   void dispose() {
     _timer?.cancel();
     super.dispose();
+    messageController.dispose(); 
+    scrollController.dispose(); 
   }
 
   @override
@@ -60,8 +64,7 @@ class _ChatRoomState extends State<ChatRoom> {
   @override
   Widget build(BuildContext context) {
 
-    TextEditingController messageController = TextEditingController();
-    ScrollController scrollController = ScrollController();
+    
 
     return SafeArea(
       child: Stack(
