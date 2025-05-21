@@ -13,7 +13,7 @@ from flask_jwt_extended import JWTManager, get_jwt, jwt_required, create_access_
 app = Flask(__name__)
 CORS(app)
 
-app.config['JWT_SECRET_KEY'] = 'jaggajasoos'
+app.config['JWT_SECRET_KEY'] = 'APIKEY'
 jwt = JWTManager(app)
 
 
